@@ -8,4 +8,4 @@ import { CustomerAuthResolver } from './resolvers/customer-auth.resolver';
     providers: [CustomerAuthService, CustomerAuthResolver],
     imports: [AuthModule, SharedModule],
 })
-export class CustomerAuthModule {}
+export class CustomerAuthModule { }
