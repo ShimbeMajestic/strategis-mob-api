@@ -3,14 +3,14 @@ import * as argon2 from 'argon2';
 import { InternalServerErrorException } from '@nestjs/common';
 
 export class Hash {
-    static async make(value: string, algorithm = 'argon2'): Promise<string> {
+    static async make(value: string, algorithm = 'bcrypt'): Promise<string> {
         // Is bcrypt Hash
-        if (algorithm.localeCompare('argon2') === 0) {
+        if (algorithm === 'argon2') {
             return Hash.argon2Hash(value);
         }
 
         // Is Argon2 hash
-        if (algorithm.localeCompare('bcrypt')) {
+        if (algorithm === 'bcrypt') {
             return Hash.brcryptHash(value);
         }
 
