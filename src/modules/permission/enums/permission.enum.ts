@@ -15,14 +15,9 @@ export enum PermissionEnum {
     VIEW_PRODUCTS = 'view products',
     MANAGE_PRODUCTS = 'manage products',
 
-    VIEW_CAMPAIGNS = 'view campaigns',
-    MANAGE_CAMPAIGNS = 'manage campaigns',
-
-    VIEW_ORDERS = 'view orders',
-    MANAGE_ORDERS = 'manage orders',
-
     VIEW_ROLES = 'view roles',
     MANAGE_ROLES = 'manage roles',
 
     VIEW_PERMISSIONS = 'view permissions',
+    MANAGE_PERMISSIONS = 'manage permissions'
 }
