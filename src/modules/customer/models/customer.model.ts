@@ -8,7 +8,6 @@ import {
     DeleteDateColumn,
     ManyToOne,
     BaseEntity,
-    OneToMany,
 } from 'typeorm';
 import {
     FilterableField,
@@ -17,6 +16,7 @@ import {
 } from '@nestjs-query/query-graphql';
 import { Region } from 'src/modules/lists/models/region.model';
 import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.interface';
+import { IdType } from '../enum/id-type.enum';
 
 @ObjectType()
 @KeySet(['id'])
@@ -85,6 +85,25 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
 
         return names.join(' ').trim();
     }
+
+    @Field({ nullable: true })
+    @Column({
+        enum: IdType,
+        nullable: true
+    })
+    identityType: IdType;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    identityNumber: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    location: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    dob: string;
 
     @Field({ nullable: true })
     @Column({ nullable: true })
