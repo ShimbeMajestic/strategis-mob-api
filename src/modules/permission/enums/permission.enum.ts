@@ -19,5 +19,9 @@ export enum PermissionEnum {
     MANAGE_ROLES = 'manage roles',
 
     VIEW_PERMISSIONS = 'view permissions',
-    MANAGE_PERMISSIONS = 'manage permissions'
+    MANAGE_PERMISSIONS = 'manage permissions',
+
+    MANAGE_COVER_DURATION = 'manage cover duration',
+
+    MANAGE_COVER_TYPES = 'manage cover types'
 }

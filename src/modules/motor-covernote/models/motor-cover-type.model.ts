@@ -17,7 +17,7 @@ export class MotorCoverType extends BaseEntity {
     @Field()
     productName: string;
 
-    @Column()
+    @Column({ unique: true })
     @Field()
     riskCode: string;
 

@@ -12,15 +12,12 @@ export default class RoleSeed implements Seeder {
             'view customers',
             'view settings',
             'manage settings',
-            'view products',
-            'manage products',
-            'view campaigns',
-            'manage campaigns',
-            'view orders',
-            'manage orders',
             'view roles',
             'manage roles',
+            'manage permissions',
             'view permissions',
+            'manage cover duration',
+            'manager cover types'
         ];
 
         const permissionModels: Permission[] = [];

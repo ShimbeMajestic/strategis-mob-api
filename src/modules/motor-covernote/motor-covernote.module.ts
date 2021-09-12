@@ -7,24 +7,39 @@ import { UpdateMotorCoverDurationDto } from './dtos/update-motor-cover-duration.
 import { UpdateMotorCoverTypeDto } from './dtos/update-cover-type.dto';
 import { MotorCoverDuration } from './models/motor-cover-duration.model';
 import { MotorCoverType } from './models/motor-cover-type.model';
+import { GqlAuthGuard } from '../auth/auth.guard';
+import { SortDirection } from '@nestjs-query/core';
+import { UsePermission } from '../permission/decorators/permission.decorator';
+import { PermissionEnum } from '../permission/enums/permission.enum';
 
 @Module({
     imports: [
         NestjsQueryGraphQLModule.forFeature({
 
             imports: [NestjsQueryTypeOrmModule.forFeature([MotorCoverDuration, MotorCoverType])],
-            dtos: [
+            resolvers: [
                 {
                     DTOClass: MotorCoverDuration,
+                    EntityClass: MotorCoverDuration,
                     CreateDTOClass: CreateMotorCoverDurationDto,
-                    UpdateDTOClass: UpdateMotorCoverDurationDto
-                }, {
-                    DTOClass: MotorCoverType,
-                    CreateDTOClass: CreateMotorCoverTypeDto,
-                    UpdateDTOClass: UpdateMotorCoverTypeDto
-                }
-            ]
+                    UpdateDTOClass: UpdateMotorCoverDurationDto,
+                    guards: [GqlAuthGuard],
 
+                    create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
+                    update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
+                    delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
+                },
+                {
+                    DTOClass: MotorCoverType,
+                    EntityClass: MotorCoverType,
+                    CreateDTOClass: CreateMotorCoverTypeDto,
+                    UpdateDTOClass: UpdateMotorCoverTypeDto,
+                    guards: [GqlAuthGuard],
+                    create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                    update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                    delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                }
+            ],
         }),
     ],
     providers: []
