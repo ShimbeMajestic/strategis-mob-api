@@ -13,6 +13,7 @@ import { ListsModule } from './modules/lists/lists.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { UserModule } from './modules/user/user.module';
 import { SharedModule } from './shared/shared.module';
+import { MotorCovernoteModule } from './modules/motor-covernote/motor-covernote.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { SharedModule } from './shared/shared.module';
     CustomerModule,
     CustomerAuthModule,
     ScheduleModule.forRoot(),
+    MotorCovernoteModule,
   ],
 })
 export class AppModule { }
