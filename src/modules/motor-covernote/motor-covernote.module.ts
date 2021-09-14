@@ -1,6 +1,6 @@
 import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { CreateMotorCoverDurationDto } from './dtos/create-motor-cover-duration.dto';
 import { CreateMotorCoverTypeDto } from './dtos/create-motor-cover-type.dto';
 import { UpdateMotorCoverDurationDto } from './dtos/update-motor-cover-duration.dto';
@@ -11,9 +11,20 @@ import { GqlAuthGuard } from '../auth/auth.guard';
 import { SortDirection } from '@nestjs-query/core';
 import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
+import { redisConfig } from 'src/config/redis.config';
+import { TiraSharedModule } from 'src/shared/tira-shared/tira-shared.module';
+import { VehicleDetailService } from './providers/vehicle-detail.service';
+import { VehicleDetailTransformer } from './providers/vehicle-detail.transformer';
+import { VehicleDetailResolver } from './resolvers/vehicle-detail.resolver';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
     imports: [
+        CacheModule.register({
+            store: redisStore,
+            ...redisConfig.default
+        }),
+        TiraSharedModule,
         NestjsQueryGraphQLModule.forFeature({
 
             imports: [NestjsQueryTypeOrmModule.forFeature([MotorCoverDuration, MotorCoverType])],
@@ -42,6 +53,13 @@ import { PermissionEnum } from '../permission/enums/permission.enum';
             ],
         }),
     ],
-    providers: []
+    providers: [
+        VehicleDetailTransformer,
+        VehicleDetailService,
+        VehicleDetailResolver
+    ],
+    exports: [
+        VehicleDetailService,
+    ]
 })
 export class MotorCovernoteModule { }
