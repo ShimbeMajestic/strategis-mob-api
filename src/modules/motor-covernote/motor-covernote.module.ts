@@ -35,7 +35,6 @@ import * as redisStore from 'cache-manager-redis-store';
                     CreateDTOClass: CreateMotorCoverDurationDto,
                     UpdateDTOClass: UpdateMotorCoverDurationDto,
                     guards: [GqlAuthGuard],
-
                     create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
                     update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
                     delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
