@@ -29,4 +29,7 @@ export class UpdateCustomerProfileInput {
 
     @Field({ nullable: true })
     dob?: string;
+
+    @Field({ nullable: true })
+    location?: string;
 }
