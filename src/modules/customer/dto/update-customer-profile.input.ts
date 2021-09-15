@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { IdType } from '../enum/id-type.enum';
 
 @InputType()
 export class UpdateCustomerProfileInput {
@@ -19,4 +20,10 @@ export class UpdateCustomerProfileInput {
 
     @Field({ nullable: true })
     token?: string;
+
+    @Field({ nullable: true })
+    identityType?: IdType;
+
+    @Field({ nullable: true })
+    dob?: string;
 }
