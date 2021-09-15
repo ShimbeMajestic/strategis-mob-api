@@ -25,5 +25,8 @@ export class UpdateCustomerProfileInput {
     identityType?: IdType;
 
     @Field({ nullable: true })
+    identityNumber?: string;
+
+    @Field({ nullable: true })
     dob?: string;
 }
