@@ -1,0 +1,7 @@
+export enum MotorCoverRequestStatus {
+    PENDING = 'PENDING',
+    NEEDS_VEHICLE_INFO = 'NEEDS VEHICLE INFO',
+    PAID = 'PAID',
+    WAIT_FOR_STICKER = 'WAIT FOR STICKER',
+    SUCCESS = 'SUCCESS'
+}
