@@ -1,9 +1,13 @@
-import { FilterableField } from "@nestjs-query/query-graphql";
+import { FilterableField, OffsetConnection } from "@nestjs-query/query-graphql";
 import { Field, GraphQLISODateTime, ID, ObjectType } from "@nestjs/graphql";
-import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { MotorCover } from "./motor-cover.model";
 
 @ObjectType()
 @Entity()
+@OffsetConnection('motorCover', () => MotorCover, {
+    nullable: true
+})
 export class MotorCoverDuration extends BaseEntity {
     @PrimaryGeneratedColumn()
     @Field(() => ID)
@@ -18,6 +22,16 @@ export class MotorCoverDuration extends BaseEntity {
         description: "Duration in terms of days. i.e 30, 90"
     })
     duration: number;
+
+    @ManyToOne(
+        () => MotorCover,
+        cover => cover.durations,
+        { nullable: true })
+    motorCover: MotorCover;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    motorCoverId: number;
 
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()

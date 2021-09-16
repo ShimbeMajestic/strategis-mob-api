@@ -17,6 +17,9 @@ import { VehicleDetailService } from './providers/vehicle-detail.service';
 import { VehicleDetailTransformer } from './providers/vehicle-detail.transformer';
 import { VehicleDetailResolver } from './resolvers/vehicle-detail.resolver';
 import * as redisStore from 'cache-manager-redis-store';
+import { MotorCover } from './models/motor-cover.model';
+import { CreateMotorCoverDto } from './dtos/create-motor-cover.dto';
+import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
 
 @Module({
     imports: [
@@ -27,7 +30,7 @@ import * as redisStore from 'cache-manager-redis-store';
         TiraSharedModule,
         NestjsQueryGraphQLModule.forFeature({
 
-            imports: [NestjsQueryTypeOrmModule.forFeature([MotorCoverDuration, MotorCoverType])],
+            imports: [NestjsQueryTypeOrmModule.forFeature([MotorCoverDuration, MotorCoverType, MotorCover])],
             resolvers: [
                 {
                     DTOClass: MotorCoverDuration,
@@ -44,6 +47,16 @@ import * as redisStore from 'cache-manager-redis-store';
                     EntityClass: MotorCoverType,
                     CreateDTOClass: CreateMotorCoverTypeDto,
                     UpdateDTOClass: UpdateMotorCoverTypeDto,
+                    guards: [GqlAuthGuard],
+                    create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                    update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                    delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                },
+                {
+                    DTOClass: MotorCover,
+                    EntityClass: MotorCover,
+                    CreateDTOClass: CreateMotorCoverDto,
+                    UpdateDTOClass: UpdateMotorCoverDto,
                     guards: [GqlAuthGuard],
                     create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                     update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },

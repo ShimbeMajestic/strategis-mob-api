@@ -16,7 +16,7 @@ export class VehicleDetailResolver {
     ) { }
 
     @UseGuards(UserTypeGuard)
-    @AllowUserType(UserTypeEnum.CUSTOMER)
+    // @AllowUserType(UserTypeEnum.CUSTOMER)
     @Query(() => VehicleDetailResponse)
     GetVehicleDetails(@Args('registrationNumber') regNo: string): Promise<VehicleDetailResponse> {
         return this.vehicleDetailsService.execute({

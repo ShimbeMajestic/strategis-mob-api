@@ -80,13 +80,13 @@ export class VehicleDetailDto {
     GrossWeight?: number;
 
     @Field()
-    MotorUsage?: number;
+    MotorUsage?: string;
 
     @Field()
     OwnerName?: string;
 
     @Field()
-    OwnerCategory?: number;
+    OwnerCategory?: string;
 
 }
 
