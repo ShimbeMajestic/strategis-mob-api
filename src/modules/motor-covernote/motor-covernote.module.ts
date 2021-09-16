@@ -1,4 +1,4 @@
-import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
+import { NestjsQueryGraphQLModule, PagingStrategies } from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
 import { CacheModule, Module } from '@nestjs/common';
 import { CreateMotorCoverDurationDto } from './dtos/create-motor-cover-duration.dto';
@@ -61,6 +61,7 @@ import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
                     CreateDTOClass: CreateMotorCoverDto,
                     UpdateDTOClass: UpdateMotorCoverDto,
                     guards: [GqlAuthGuard],
+                    read: { pagingStrategy: PagingStrategies.NONE },
                     create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                     update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                     delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
