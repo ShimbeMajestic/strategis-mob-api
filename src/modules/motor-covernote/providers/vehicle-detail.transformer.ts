@@ -3,8 +3,8 @@ import * as xml from 'xml';
 import { tiraConfig } from "../../../config/tira.config";
 import { TiraHelper } from "src/shared/tira-shared";
 import { Str } from "src/shared/helpers/string.helper";
-import { VehicleDetailRequest } from "../dtos/vehicle-detail.request";
 import { VehicleDetailResponse, VehicleDetailDto } from "../dtos/vehicle-detail.response";
+import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
 
 @Injectable()
 export class VehicleDetailTransformer {
@@ -15,7 +15,7 @@ export class VehicleDetailTransformer {
         protected readonly tiraHelper: TiraHelper,
     ) { }
 
-    async toXml(input: VehicleDetailRequest): Promise<string> {
+    async toXml(input: VehicleDetailRequestDto): Promise<string> {
 
         this.logger.debug(input);
 

@@ -20,6 +20,9 @@ import * as redisStore from 'cache-manager-redis-store';
 import { MotorCover } from './models/motor-cover.model';
 import { CreateMotorCoverDto } from './dtos/create-motor-cover.dto';
 import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
+import { MotorCoverRequest } from './models/mover-cover-req.model';
+import { MotorCovernoteService } from './providers/motor-covernote.service';
+import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
 
 @Module({
     imports: [
@@ -30,7 +33,7 @@ import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
         TiraSharedModule,
         NestjsQueryGraphQLModule.forFeature({
 
-            imports: [NestjsQueryTypeOrmModule.forFeature([MotorCoverDuration, MotorCoverType, MotorCover])],
+            imports: [NestjsQueryTypeOrmModule.forFeature([MotorCoverDuration, MotorCoverType, MotorCover, MotorCoverRequest])],
             resolvers: [
                 {
                     DTOClass: MotorCoverDuration,
@@ -48,7 +51,7 @@ import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
                     CreateDTOClass: CreateMotorCoverTypeDto,
                     UpdateDTOClass: UpdateMotorCoverTypeDto,
                     guards: [GqlAuthGuard],
-                    create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                    create: { disabled: true },
                     update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                     delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                 },
@@ -61,6 +64,14 @@ import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
                     create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                     update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                     delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
+                },
+                {
+                    DTOClass: MotorCoverRequest,
+                    EntityClass: MotorCoverRequest,
+                    guards: [GqlAuthGuard],
+                    create: { disabled: true },
+                    update: { disabled: true },
+                    delete: { disabled: true },
                 }
             ],
         }),
@@ -68,10 +79,13 @@ import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
     providers: [
         VehicleDetailTransformer,
         VehicleDetailService,
-        VehicleDetailResolver
+        VehicleDetailResolver,
+        MotorCovernoteResolver,
+        MotorCovernoteService
     ],
     exports: [
         VehicleDetailService,
+        MotorCovernoteService
     ]
 })
 export class MotorCovernoteModule { }

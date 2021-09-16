@@ -26,7 +26,8 @@ export class MotorCoverDuration extends BaseEntity {
     @ManyToOne(
         () => MotorCover,
         cover => cover.durations,
-        { nullable: true })
+        { nullable: true }
+    )
     motorCover: MotorCover;
 
     @Column({ nullable: true })

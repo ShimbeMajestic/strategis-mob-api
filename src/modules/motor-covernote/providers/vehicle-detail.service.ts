@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Inject, Injectable, Logger } from "@nestjs/common";
 import { Cache } from "cache-manager";
 import { TiraClient, TiraSigner } from "src/shared/tira-shared";
 import { tiraConfig } from "../../../config/tira.config";
-import { VehicleDetailRequest } from "../dtos/vehicle-detail.request";
+import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
 import { VehicleDetailResponse } from "../dtos/vehicle-detail.response";
 import { VehicleDetailTransformer } from "./vehicle-detail.transformer";
 
@@ -18,7 +18,7 @@ export class VehicleDetailService {
         @Inject(CACHE_MANAGER) private cacheManager: Cache
     ) { }
 
-    async execute(input: VehicleDetailRequest): Promise<VehicleDetailResponse> {
+    async execute(input: VehicleDetailRequestDto): Promise<VehicleDetailResponse> {
 
         const cacheKey = input.registrationNumber
             ? `vehicle-details:registration:${input.registrationNumber}`
@@ -41,7 +41,7 @@ export class VehicleDetailService {
         return result;
     }
 
-    protected async _execute(input: VehicleDetailRequest): Promise<VehicleDetailResponse> {
+    protected async _execute(input: VehicleDetailRequestDto): Promise<VehicleDetailResponse> {
 
         const xmlMessage = await this.transformer.toXml(input);
 
