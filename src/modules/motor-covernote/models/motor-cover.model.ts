@@ -1,4 +1,4 @@
-import { FilterableField, OffsetConnection } from "@nestjs-query/query-graphql";
+import { FilterableField, OffsetConnection, PagingStrategies } from "@nestjs-query/query-graphql";
 import { Field, GraphQLISODateTime, ID, ObjectType } from "@nestjs/graphql";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { MotorCoverDuration } from "./motor-cover-duration.model";
@@ -6,7 +6,8 @@ import { MotorCoverDuration } from "./motor-cover-duration.model";
 @ObjectType()
 @Entity()
 @OffsetConnection('durations', () => MotorCoverDuration, {
-    nullable: true
+    nullable: true,
+    pagingStrategy: PagingStrategies.NONE
 })
 export class MotorCover {
 
