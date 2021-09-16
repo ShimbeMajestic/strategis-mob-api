@@ -23,14 +23,14 @@ export class MotorCovernoteResolver {
     @Mutation(() => MotorCoverRequest)
     @UseGuards(UserTypeGuard)
     @AllowUserType(UserTypeEnum.CUSTOMER)
-    SetMotorCoverAndDurationToRequest(@Args('input') input: SetMotorCoverDurationDto, @CurrentUser() customer: Customer): Promise<MotorCoverRequest> {
+    setMotorCoverAndDurationToRequest(@Args('input') input: SetMotorCoverDurationDto, @CurrentUser() customer: Customer): Promise<MotorCoverRequest> {
         return this.motorCovernoteService.setMotorCoverAndDuration(input, customer);
     }
 
     @UseGuards(UserTypeGuard)
     @AllowUserType(UserTypeEnum.CUSTOMER)
     @Query(() => GetVehicleDetailsDto)
-    GetVehicleDetails(@Args('input') request: VehicleDetailRequestDto): Promise<GetVehicleDetailsDto> {
+    getVehicleDetails(@Args('input') request: VehicleDetailRequestDto): Promise<GetVehicleDetailsDto> {
         return this.motorCovernoteService.getVehicleDetails(request)
     }
 
