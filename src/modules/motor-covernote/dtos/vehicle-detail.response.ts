@@ -18,7 +18,7 @@ export class TiraResponseHeaders {
 }
 
 @ObjectType()
-export class VehicleDetailDto {
+export class VehicleDetail {
 
     @Field()
     MotorCategory: MotorCategory;
@@ -90,10 +90,10 @@ export class VehicleDetailResponse {
     })
     headers?: TiraResponseHeaders;
 
-    @Field(() => VehicleDetailDto, {
+    @Field(() => VehicleDetail, {
         nullable
             : true
     })
-    data?: VehicleDetailDto;
+    data?: VehicleDetail;
 }
 

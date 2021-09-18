@@ -3,6 +3,7 @@ import { Customer } from "src/modules/customer/models/customer.model";
 import { GetVehicleDetailsDto } from "../dtos/get-vehicle-details.response";
 import { SetMotorUsageTypeDto } from "../dtos/set-motor-usage-type.dto";
 import { SetMotorCoverDurationDto } from "../dtos/set-motorcover-duration.dto";
+import { CreateVehicleDetailDto } from "../dtos/vehicle-detail.dto";
 import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
 import { MotorCoverRequest } from "../models/mover-cover-req.model";
 import { VehicleDetails } from "../models/vehicle-details.model";
@@ -92,6 +93,26 @@ export class MotorCovernoteService {
 
 
 
+
+        return motorRequest;
+    }
+
+    async setMotorVehicleDetails(input: CreateVehicleDetailDto) {
+        const { requestId } = input;
+        const motorRequest = await MotorCoverRequest.findOne({ id: requestId });
+
+        if (!motorRequest) {
+            throw new NotFoundException('Motor cover request not found!')
+        }
+
+        const vehicleDetail = new VehicleDetails();
+
+        Object.assign(vehicleDetail, input);
+
+        await vehicleDetail.save()
+
+        motorRequest.vehicleDetails = vehicleDetail;
+        motorRequest.vehicleDetailsId = vehicleDetail.id;
 
         return motorRequest;
     }
