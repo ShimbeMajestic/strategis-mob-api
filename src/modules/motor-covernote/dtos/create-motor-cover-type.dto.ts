@@ -1,4 +1,6 @@
 import { Field, InputType } from "@nestjs/graphql";
+import { MotorCategory } from "../enums/motor-category.enum";
+import { MotorUsage } from "../enums/motor-usage.enum";
 
 @InputType()
 export class CreateMotorCoverTypeDto {
@@ -21,4 +23,12 @@ export class CreateMotorCoverTypeDto {
     @Field()
     minimumAmount: number
 
+    @Field()
+    perSeatAmount: number;
+
+    @Field()
+    category: MotorCategory;
+
+    @Field()
+    usage: MotorUsage;
 }

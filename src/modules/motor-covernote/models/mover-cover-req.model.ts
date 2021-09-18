@@ -1,4 +1,4 @@
-import { FilterableField, OffsetConnection } from "@nestjs-query/query-graphql";
+import { FilterableField, Relation } from "@nestjs-query/query-graphql";
 import { Field, GraphQLISODateTime, ID, ObjectType } from "@nestjs/graphql";
 import { Customer } from "src/modules/customer/models/customer.model";
 import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
@@ -9,10 +9,10 @@ import { VehicleDetails } from "./vehicle-details.model";
 
 @Entity()
 @ObjectType()
-@OffsetConnection('motorCover', () => MotorCover, { nullable: true })
-@OffsetConnection('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
-@OffsetConnection('vehicleDetails', () => VehicleDetails, { nullable: true })
-@OffsetConnection('customer', () => Customer, { nullable: true })
+@Relation('motorCover', () => MotorCover, { nullable: true })
+@Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
+@Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
+@Relation('customer', () => Customer, { nullable: true })
 export class MotorCoverRequest extends BaseEntity {
 
     @PrimaryGeneratedColumn()

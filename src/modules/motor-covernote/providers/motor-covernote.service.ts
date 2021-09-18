@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Customer } from "src/modules/customer/models/customer.model";
 import { GetVehicleDetailsDto } from "../dtos/get-vehicle-details.response";
 import { SetMotorCoverDurationDto } from "../dtos/set-motorcover-duration.dto";
@@ -9,6 +9,7 @@ import { VehicleDetailService } from "./vehicle-detail.service";
 
 @Injectable()
 export class MotorCovernoteService {
+
     constructor(
         private readonly vehicleDetailService: VehicleDetailService
     ) { }
@@ -64,5 +65,22 @@ export class MotorCovernoteService {
             data: vehicleDetails
         }
 
+    }
+
+    async getTotalAmountToBePaid(requestId: number): Promise<MotorCoverRequest> {
+
+        const motorRequest = await MotorCoverRequest.findOne({ where: { id: requestId }, relations: ['vehicleDetails'] });
+
+        if (!motorRequest) {
+            throw new NotFoundException('Motor cover request not found!')
+        }
+
+        const isPrivate = motorRequest.vehicleDetails.MotorUsage.toLowerCase().includes("private")
+        const motorCategory = motorRequest.vehicleDetails.MotorCategory;
+
+
+
+
+        return motorRequest;
     }
 }

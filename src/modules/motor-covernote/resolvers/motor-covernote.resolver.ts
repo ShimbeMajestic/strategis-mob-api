@@ -34,5 +34,12 @@ export class MotorCovernoteResolver {
         return this.motorCovernoteService.getVehicleDetails(request)
     }
 
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    @Query(() => MotorCoverRequest)
+    getTotalAmountToBePaid(@Args('requiestId') requestId: number): Promise<MotorCoverRequest> {
+        return this.motorCovernoteService.getTotalAmountToBePaid(requestId);
+    }
+
 
 }

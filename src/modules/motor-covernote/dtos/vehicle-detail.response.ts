@@ -1,14 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { MotorCategory } from "../enums/motor-category.enum";
 
-export enum MotorCategory {
-    MOTOR_VEHICLE = 1,
-    MOTOR_CYCLE = 2,
-}
-
-export enum OwnerCategory {
-    SOLE_PROPRIETOR = 1,
-    CORPORATE = 2,
-}
 
 @ObjectType()
 export class TiraResponseHeaders {

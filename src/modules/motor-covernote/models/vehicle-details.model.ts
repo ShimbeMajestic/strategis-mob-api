@@ -1,7 +1,7 @@
 import { FilterableField, OffsetConnection } from "@nestjs-query/query-graphql";
 import { Field, GraphQLISODateTime, ID, ObjectType } from "@nestjs/graphql";
 import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { MotorCategory } from "../dtos/vehicle-detail.response";
+import { MotorCategory } from "../enums/motor-category.enum";
 import { MotorCoverRequest } from "./mover-cover-req.model";
 
 @Entity()

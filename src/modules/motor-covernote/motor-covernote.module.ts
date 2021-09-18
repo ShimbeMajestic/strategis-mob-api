@@ -51,7 +51,7 @@ import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
                     CreateDTOClass: CreateMotorCoverTypeDto,
                     UpdateDTOClass: UpdateMotorCoverTypeDto,
                     guards: [GqlAuthGuard],
-                    create: { disabled: true },
+                    // create: { disabled: true },
                     update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                     delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
                 },
