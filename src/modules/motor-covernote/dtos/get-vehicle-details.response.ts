@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { VehicleDetailDto } from "./vehicle-detail.response";
+import { VehicleDetail } from "./vehicle-detail.response";
 
 @ObjectType()
 export class GetVehicleDetailsDto {
@@ -11,5 +11,5 @@ export class GetVehicleDetailsDto {
     message: string;
 
     @Field({ nullable: true })
-    data?: VehicleDetailDto;
+    data?: VehicleDetail;
 }

@@ -3,7 +3,7 @@ import * as xml from 'xml';
 import { tiraConfig } from "../../../config/tira.config";
 import { TiraHelper } from "src/shared/tira-shared";
 import { Str } from "src/shared/helpers/string.helper";
-import { VehicleDetailResponse, VehicleDetailDto } from "../dtos/vehicle-detail.response";
+import { VehicleDetailResponse, VehicleDetail } from "../dtos/vehicle-detail.response";
 import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
 
 @Injectable()
@@ -84,7 +84,7 @@ export class VehicleDetailTransformer {
         return response;
     }
 
-    private parseVehicleDetails(details: any): VehicleDetailDto {
+    private parseVehicleDetails(details: any): VehicleDetail {
         return {
             RegistrationNumber: details['RegistrationNumber'][0],
 
