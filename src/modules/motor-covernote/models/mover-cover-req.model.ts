@@ -3,6 +3,7 @@ import { Field, GraphQLISODateTime, ID, ObjectType } from "@nestjs/graphql";
 import { Customer } from "src/modules/customer/models/customer.model";
 import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { MotorCoverRequestStatus } from "../enums/motor-cover-req-status.enum";
+import { MotorUsageType } from "../enums/motor-usage.enum";
 import { MotorCoverDuration } from "./motor-cover-duration.model";
 import { MotorCover } from "./motor-cover.model";
 import { VehicleDetails } from "./vehicle-details.model";
@@ -62,6 +63,10 @@ export class MotorCoverRequest extends BaseEntity {
     @Field({ nullable: true })
     @Column({ nullable: true })
     currency: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    usageType: MotorUsageType;
 
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()

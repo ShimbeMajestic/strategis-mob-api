@@ -7,6 +7,7 @@ import { AllowUserType } from "src/modules/permission/decorators/user-type.decor
 import { UserTypeEnum } from "src/modules/permission/enums/user-type.enum";
 import { UserTypeGuard } from "src/modules/permission/guards/user-type.guard";
 import { GetVehicleDetailsDto } from "../dtos/get-vehicle-details.response";
+import { SetMotorUsageTypeDto } from "../dtos/set-motor-usage-type.dto";
 import { SetMotorCoverDurationDto } from "../dtos/set-motorcover-duration.dto";
 import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
 import { MotorCoverRequest } from "../models/mover-cover-req.model";
@@ -41,5 +42,11 @@ export class MotorCovernoteResolver {
         return this.motorCovernoteService.getTotalAmountToBePaid(requestId);
     }
 
+    @Mutation(() => MotorCoverRequest)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    setMotorUsageType(@Args('input') input: SetMotorUsageTypeDto): Promise<MotorCoverRequest> {
+        return this.motorCovernoteService.setMotorUsageType(input);
+    }
 
 }

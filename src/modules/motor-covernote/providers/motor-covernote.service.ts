@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Customer } from "src/modules/customer/models/customer.model";
 import { GetVehicleDetailsDto } from "../dtos/get-vehicle-details.response";
+import { SetMotorUsageTypeDto } from "../dtos/set-motor-usage-type.dto";
 import { SetMotorCoverDurationDto } from "../dtos/set-motorcover-duration.dto";
 import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
 import { MotorCoverRequest } from "../models/mover-cover-req.model";
@@ -65,6 +66,17 @@ export class MotorCovernoteService {
             data: vehicleDetails
         }
 
+    }
+
+    async setMotorUsageType(input: SetMotorUsageTypeDto): Promise<MotorCoverRequest> {
+        const { requestId, usageType } = input;
+
+        const motorCoverRequest = await MotorCoverRequest.findOne({ id: requestId });
+        motorCoverRequest.usageType = usageType;
+
+        await motorCoverRequest.save()
+
+        return motorCoverRequest;
     }
 
     async getTotalAmountToBePaid(requestId: number): Promise<MotorCoverRequest> {
