@@ -98,7 +98,7 @@ export class MotorCovernoteService {
     }
 
     async setMotorVehicleDetails(input: CreateVehicleDetailDto) {
-        const { requestId } = input;
+        const { requestId, } = input;
         const motorRequest = await MotorCoverRequest.findOne({ id: requestId });
 
         if (!motorRequest) {
