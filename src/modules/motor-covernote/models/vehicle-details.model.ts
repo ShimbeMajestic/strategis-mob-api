@@ -25,8 +25,8 @@ export class VehicleDetails extends BaseEntity {
     @Column()
     BodyType: string;
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     SittingCapacity: number;
 
     @Field()
@@ -61,12 +61,12 @@ export class VehicleDetails extends BaseEntity {
     @Column()
     FuelUsed?: string;
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     NumberOfAxles?: number;
 
-    @Field()
-    @Column()
+    @Field({ nullable: true })
+    @Column({ nullable: true })
     AxleDistance?: number;
 
     @Field()

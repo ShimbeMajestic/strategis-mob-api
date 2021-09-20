@@ -60,4 +60,7 @@ export class CreateVehicleDetailDto {
     @Field()
     OwnerCategory?: string;
 
+    @Field({ nullable: true })
+    SittingCapacity?: number
+
 }

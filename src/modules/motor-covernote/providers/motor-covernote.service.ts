@@ -98,7 +98,27 @@ export class MotorCovernoteService {
     }
 
     async setMotorVehicleDetails(input: CreateVehicleDetailDto) {
-        const { requestId, } = input;
+        const {
+            requestId,
+            MotorCategory,
+            RegistrationNumber,
+            BodyType,
+            SittingCapacity,
+            ChassisNumber,
+            Make,
+            Model,
+            ModelNumber,
+            Color,
+            EngineNumber,
+            EngineCapacity,
+            FuelUsed,
+            YearOfManufacture,
+            TareWeight,
+            GrossWeight,
+            MotorUsage,
+            OwnerName,
+            OwnerCategory
+        } = input;
         const motorRequest = await MotorCoverRequest.findOne({ id: requestId });
 
         if (!motorRequest) {
@@ -107,12 +127,32 @@ export class MotorCovernoteService {
 
         const vehicleDetail = new VehicleDetails();
 
-        Object.assign(vehicleDetail, input);
+        vehicleDetail.YearOfManufacture = YearOfManufacture;
+        vehicleDetail.MotorCategory = MotorCategory
+        vehicleDetail.RegistrationNumber = RegistrationNumber
+        vehicleDetail.BodyType = BodyType
+        vehicleDetail.SittingCapacity = SittingCapacity
+        vehicleDetail.ChassisNumber = ChassisNumber
+        vehicleDetail.Make = Make
+        vehicleDetail.Model = Model
+        vehicleDetail.ModelNumber = ModelNumber
+        vehicleDetail.Color = Color
+        vehicleDetail.EngineNumber = EngineNumber
+        vehicleDetail.EngineCapacity = EngineCapacity
+        vehicleDetail.FuelUsed = FuelUsed
+        vehicleDetail.YearOfManufacture - YearOfManufacture
+        vehicleDetail.TareWeight = TareWeight
+        vehicleDetail.GrossWeight = GrossWeight
+        vehicleDetail.MotorUsage = MotorUsage
+        vehicleDetail.OwnerName = OwnerName
+        vehicleDetail.OwnerCategory = OwnerCategory
 
         await vehicleDetail.save()
 
         motorRequest.vehicleDetails = vehicleDetail;
         motorRequest.vehicleDetailsId = vehicleDetail.id;
+
+        await motorRequest.save()
 
         return motorRequest;
     }
