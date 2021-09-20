@@ -7,6 +7,7 @@ import { SetMotorCoverDurationDto } from "../dtos/set-motorcover-duration.dto";
 import { CreateVehicleDetailDto } from "../dtos/vehicle-detail.dto";
 import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
 import { MotorCategory } from "../enums/motor-category.enum";
+import { MotorCoverRequestStatus } from "../enums/motor-cover-req-status.enum";
 import { MotorUsage, MotorUsageType } from "../enums/motor-usage.enum";
 import { MotorCoverType } from "../models/motor-cover-type.model";
 import { MotorCoverRequest } from "../models/mover-cover-req.model";
@@ -195,10 +196,22 @@ export class MotorCovernoteService {
     }
 
     async payForMotorCover(input: PayMotorCoverDto) {
+        const { requestId } = input;
+
+        const motorRequest = await MotorCoverRequest.findOne({ id: requestId });
+
+        if (!motorRequest) {
+            throw new NotFoundException('Motor cover request not found!')
+        }
+
+        motorRequest.status = MotorCoverRequestStatus.WAITING_FOR_PAYMENT;
+
+        await motorRequest.save();
+
         return {
             success: true,
             message: "Successfully initiated",
-            data: null
+            data: motorRequest
         }
     }
 }
