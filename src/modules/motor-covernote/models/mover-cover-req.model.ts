@@ -67,7 +67,7 @@ export class MotorCoverRequest extends BaseEntity {
 
     @Field()
     @Column({ default: "TZS" })
-    curreny: string;
+    currency: string;
 
     @Column({ nullable: true })
     @Field({ nullable: true })
