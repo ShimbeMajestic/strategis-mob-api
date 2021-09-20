@@ -56,13 +56,34 @@ export class MotorCoverRequest extends BaseEntity {
     @Column({ default: MotorCoverRequestStatus.PENDING })
     status: MotorCoverRequestStatus;
 
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    amount: number;
 
     @Field({ nullable: true })
     @Column({ nullable: true })
-    currency: string;
+    minimumAmount: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    minimumAmountIncTax: number;
+
+    @Field()
+    @Column({ default: "TZS" })
+    curreny: string;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    productCode: string;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    productName: string;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    riskCode: string;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    riskName: string;
 
     @Field({ nullable: true })
     @Column({ nullable: true })

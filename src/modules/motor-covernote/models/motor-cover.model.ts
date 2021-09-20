@@ -28,7 +28,7 @@ export class MotorCover {
         coverDuration => coverDuration.motorCover,
         { nullable: true }
     )
-    durations: MotorCoverDuration[]
+    durations: MotorCoverDuration[];
 
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
