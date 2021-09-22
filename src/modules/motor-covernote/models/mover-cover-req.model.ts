@@ -1,5 +1,6 @@
-import { FilterableField, Relation } from "@nestjs-query/query-graphql";
+import { Authorize, FilterableField, Relation } from "@nestjs-query/query-graphql";
 import { Field, GraphQLISODateTime, ID, ObjectType } from "@nestjs/graphql";
+import { AuthenticatedUser, UserContext } from "src/modules/auth/models/authenticated-user.interface";
 import { Customer } from "src/modules/customer/models/customer.model";
 import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { MotorCoverRequestStatus } from "../enums/motor-cover-req-status.enum";
@@ -10,6 +11,7 @@ import { VehicleDetails } from "./vehicle-details.model";
 
 @Entity()
 @ObjectType()
+@Authorize({ authorize: (context: UserContext) => ({ customerId: { eq: context.req.user.id } }) })
 @Relation('motorCover', () => MotorCover, { nullable: true })
 @Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })

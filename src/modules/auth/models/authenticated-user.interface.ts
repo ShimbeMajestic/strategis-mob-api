@@ -5,3 +5,9 @@ export interface AuthenticatedUser {
 
     readonly type: UserType;
 }
+
+export type UserContext = {
+    req: {
+        user: AuthenticatedUser;
+    };
+};
