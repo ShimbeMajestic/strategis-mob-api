@@ -14,6 +14,7 @@ import { PermissionModule } from './modules/permission/permission.module';
 import { UserModule } from './modules/user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { MotorCovernoteModule } from './modules/motor-covernote/motor-covernote.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { MotorCovernoteModule } from './modules/motor-covernote/motor-covernote.
     CustomerAuthModule,
     ScheduleModule.forRoot(),
     MotorCovernoteModule,
+    TransactionsModule,
   ],
 })
 export class AppModule { }

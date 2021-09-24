@@ -1,8 +1,9 @@
-import { Authorize, FilterableField, Relation } from "@nestjs-query/query-graphql";
+import { Authorize, FilterableField, OffsetConnection, Relation } from "@nestjs-query/query-graphql";
 import { Field, GraphQLISODateTime, ID, ObjectType } from "@nestjs/graphql";
 import { AuthenticatedUser, UserContext } from "src/modules/auth/models/authenticated-user.interface";
 import { Customer } from "src/modules/customer/models/customer.model";
-import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Transaction } from "src/modules/transactions/models/transaction.model";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { MotorCoverRequestStatus } from "../enums/motor-cover-req-status.enum";
 import { MotorUsageType } from "../enums/motor-usage.enum";
 import { MotorCoverDuration } from "./motor-cover-duration.model";
@@ -16,6 +17,7 @@ import { VehicleDetails } from "./vehicle-details.model";
 @Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
+@OffsetConnection('transactions', () => Transaction, { nullable: true })
 export class MotorCoverRequest extends BaseEntity {
 
     @PrimaryGeneratedColumn()
@@ -38,7 +40,6 @@ export class MotorCoverRequest extends BaseEntity {
     )
     vehicleDetails: VehicleDetails;
 
-    @Field()
     @ManyToOne(() => Customer)
     customer: Customer;
 
@@ -58,6 +59,11 @@ export class MotorCoverRequest extends BaseEntity {
     @Column({ default: MotorCoverRequestStatus.PENDING })
     status: MotorCoverRequestStatus;
 
+    @OneToMany(
+        () => Transaction,
+        transaction => transaction.request
+    )
+    transactions: Transaction[]
 
     @Field({ nullable: true })
     @Column({ nullable: true })

@@ -8,6 +8,7 @@ import {
     DeleteDateColumn,
     ManyToOne,
     BaseEntity,
+    OneToMany,
 } from 'typeorm';
 import {
     FilterableField,
@@ -17,10 +18,16 @@ import {
 import { Region } from 'src/modules/lists/models/region.model';
 import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.interface';
 import { IdType } from '../enum/id-type.enum';
+import { Transaction } from 'src/modules/transactions/models/transaction.model';
 
 @ObjectType()
 @KeySet(['id'])
 @OffsetConnection('region', () => Region, {
+    nullable: true,
+    disableUpdate: true,
+    disableRemove: true,
+})
+@OffsetConnection('transactions', () => Transaction, {
     nullable: true,
     disableUpdate: true,
     disableRemove: true,
@@ -75,6 +82,10 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
 
     @ManyToOne(() => Region, { nullable: true })
     region: Region;
+
+    @OneToMany(() => Transaction,
+        transaction => transaction.customer)
+    transactions: Transaction[];
 
     get fullName(): string {
 

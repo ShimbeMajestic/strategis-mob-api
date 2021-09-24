@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Customer } from "src/modules/customer/models/customer.model";
+import { Transaction } from "src/modules/transactions/models/transaction.model";
 import { GetVehicleDetailsDto } from "../dtos/get-vehicle-details.response";
 import { PayMotorCoverDto } from "../dtos/pay-motor-cover.dto";
 import { SetMotorUsageTypeDto } from "../dtos/set-motor-usage-type.dto";
@@ -203,6 +204,19 @@ export class MotorCovernoteService {
         if (!motorRequest) {
             throw new NotFoundException('Motor cover request not found!')
         }
+
+        // contact payment gateway
+
+        // Create a pending transaction
+
+        const transaction = new Transaction();
+
+        transaction.customerId = motorRequest.customerId;
+        transaction.provider = "SELCOM";
+        transaction.requestId = motorRequest.id;
+        transaction.currency = motorRequest.currency;
+        transaction.amount = motorRequest.minimumAmountIncTax;
+        await transaction.save()
 
         motorRequest.status = MotorCoverRequestStatus.WAITING_FOR_PAYMENT;
 
