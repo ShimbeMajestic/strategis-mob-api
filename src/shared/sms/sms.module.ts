@@ -4,6 +4,7 @@ import { redisConfig } from 'src/config/redis.config';
 import { smsConfig } from 'src/config/sms.config';
 import { SMS_DRIVER, SMS_QUEUE } from './constants';
 import { FastHubSms } from './services/drivers/fasthub-sms.driver';
+import { InfobipSms } from './services/drivers/infobip-sms.driver';
 import { LogSms } from './services/drivers/log-sms.driver';
 import { SmsConsumer } from './services/sms.consumer';
 import { SmsService } from './services/sms.service';
@@ -29,7 +30,7 @@ import { SmsService } from './services/sms.service';
         SmsConsumer,
         {
             provide: SMS_DRIVER,
-            useClass: smsConfig.driver === 'log' ? LogSms : FastHubSms,
+            useClass: smsConfig.driver === 'log' ? LogSms : InfobipSms,
         },
     ],
     exports: [SmsService],
