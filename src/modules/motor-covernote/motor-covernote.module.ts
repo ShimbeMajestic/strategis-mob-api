@@ -1,4 +1,7 @@
-import { NestjsQueryGraphQLModule, PagingStrategies } from '@nestjs-query/query-graphql';
+import {
+  NestjsQueryGraphQLModule,
+  PagingStrategies,
+} from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
 import { CacheModule, Module } from '@nestjs/common';
 import { CreateMotorCoverDurationDto } from './dtos/create-motor-cover-duration.dto';
@@ -25,68 +28,88 @@ import { MotorCovernoteService } from './providers/motor-covernote.service';
 import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
 
 @Module({
-    imports: [
-        CacheModule.register({
-            store: redisStore,
-            ...redisConfig.default
-        }),
-        TiraSharedModule,
-        NestjsQueryGraphQLModule.forFeature({
-
-            imports: [NestjsQueryTypeOrmModule.forFeature([MotorCoverDuration, MotorCoverType, MotorCover, MotorCoverRequest])],
-            resolvers: [
-                {
-                    DTOClass: MotorCoverDuration,
-                    EntityClass: MotorCoverDuration,
-                    CreateDTOClass: CreateMotorCoverDurationDto,
-                    UpdateDTOClass: UpdateMotorCoverDurationDto,
-                    guards: [GqlAuthGuard],
-                    create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
-                    update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
-                    delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)] },
-                },
-                {
-                    DTOClass: MotorCoverType,
-                    EntityClass: MotorCoverType,
-                    CreateDTOClass: CreateMotorCoverTypeDto,
-                    UpdateDTOClass: UpdateMotorCoverTypeDto,
-                    guards: [GqlAuthGuard],
-                    // create: { disabled: true },
-                    update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
-                    delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
-                },
-                {
-                    DTOClass: MotorCover,
-                    EntityClass: MotorCover,
-                    CreateDTOClass: CreateMotorCoverDto,
-                    UpdateDTOClass: UpdateMotorCoverDto,
-                    guards: [GqlAuthGuard],
-                    read: { pagingStrategy: PagingStrategies.NONE },
-                    create: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
-                    update: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
-                    delete: { decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)] },
-                },
-                {
-                    DTOClass: MotorCoverRequest,
-                    EntityClass: MotorCoverRequest,
-                    guards: [GqlAuthGuard],
-                    create: { disabled: true },
-                    update: { disabled: true },
-                    delete: { disabled: true },
-                }
-            ],
-        }),
-    ],
-    providers: [
-        VehicleDetailTransformer,
-        VehicleDetailService,
-        VehicleDetailResolver,
-        MotorCovernoteResolver,
-        MotorCovernoteService
-    ],
-    exports: [
-        VehicleDetailService,
-        MotorCovernoteService
-    ]
+  imports: [
+    CacheModule.register({
+      store: redisStore,
+      ...redisConfig.default,
+    }),
+    TiraSharedModule,
+    NestjsQueryGraphQLModule.forFeature({
+      imports: [
+        NestjsQueryTypeOrmModule.forFeature([
+          MotorCoverDuration,
+          MotorCoverType,
+          MotorCover,
+          MotorCoverRequest,
+        ]),
+      ],
+      resolvers: [
+        {
+          DTOClass: MotorCoverDuration,
+          EntityClass: MotorCoverDuration,
+          CreateDTOClass: CreateMotorCoverDurationDto,
+          UpdateDTOClass: UpdateMotorCoverDurationDto,
+          guards: [GqlAuthGuard],
+          read: { pagingStrategy: PagingStrategies.NONE },
+          create: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)],
+          },
+          update: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)],
+          },
+          delete: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_DURATION)],
+          },
+        },
+        {
+          DTOClass: MotorCoverType,
+          EntityClass: MotorCoverType,
+          CreateDTOClass: CreateMotorCoverTypeDto,
+          UpdateDTOClass: UpdateMotorCoverTypeDto,
+          guards: [GqlAuthGuard],
+          // create: { disabled: true },
+          update: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)],
+          },
+          delete: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)],
+          },
+        },
+        {
+          DTOClass: MotorCover,
+          EntityClass: MotorCover,
+          CreateDTOClass: CreateMotorCoverDto,
+          UpdateDTOClass: UpdateMotorCoverDto,
+          guards: [GqlAuthGuard],
+          read: { pagingStrategy: PagingStrategies.NONE },
+          create: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)],
+          },
+          update: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)],
+          },
+          delete: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)],
+          },
+        },
+        {
+          DTOClass: MotorCoverRequest,
+          EntityClass: MotorCoverRequest,
+          guards: [GqlAuthGuard],
+          create: { disabled: true },
+          update: { disabled: true },
+          delete: { disabled: true },
+        },
+      ],
+    }),
+  ],
+  providers: [
+    VehicleDetailTransformer,
+    VehicleDetailService,
+    VehicleDetailResolver,
+    MotorCovernoteResolver,
+    MotorCovernoteService,
+  ],
+  exports: [VehicleDetailService, MotorCovernoteService],
 })
-export class MotorCovernoteModule { }
+export class MotorCovernoteModule {}
