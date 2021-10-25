@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Customer } from "src/modules/customer/models/customer.model";
 import { Transaction } from "src/modules/transactions/models/transaction.model";
+import { AwsHelper } from "src/shared/helpers/aws.helper";
 import { GetVehicleDetailsDto } from "../dtos/get-vehicle-details.response";
 import { PayMotorCoverDto } from "../dtos/pay-motor-cover.dto";
 import { SetMotorUsageTypeDto } from "../dtos/set-motor-usage-type.dto";
@@ -14,6 +15,7 @@ import { MotorCoverType } from "../models/motor-cover-type.model";
 import { MotorCoverRequest } from "../models/mover-cover-req.model";
 import { VehicleDetails } from "../models/vehicle-details.model";
 import { VehicleDetailService } from "./vehicle-detail.service";
+const crypto = require('crypto')
 
 @Injectable()
 export class MotorCovernoteService {
@@ -227,5 +229,15 @@ export class MotorCovernoteService {
             message: "Successfully initiated",
             data: motorRequest
         }
+    }
+
+    getUploadPhotoUrl(key: string) {
+        const id = crypto.randomBytes(16).toString("hex");
+        const randomFileName = `${id}_${key}`;
+        const result = AwsHelper.genereatePresignedPostUrl(`uploads/${randomFileName}`);
+
+        console.log(result)
+
+        return true;
     }
 }
