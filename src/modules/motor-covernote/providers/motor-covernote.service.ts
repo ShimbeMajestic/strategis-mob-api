@@ -278,10 +278,6 @@ export class MotorCovernoteService {
     motorCoverRequest.vehicleDetails.value = value;
     await motorCoverRequest.vehicleDetails.save();
 
-    return {
-      success: true,
-      message: 'Successfully set value for the vehicle',
-      data: motorCoverRequest,
-    };
+    return motorCoverRequest;
   }
 }
