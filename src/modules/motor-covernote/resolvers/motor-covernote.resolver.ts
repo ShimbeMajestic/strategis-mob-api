@@ -71,7 +71,7 @@ export class MotorCovernoteResolver {
     return this.motorCovernoteService.payForMotorCover(input);
   }
 
-  @Mutation(() => PaymentResult)
+  @Mutation(() => MotorCoverRequest)
   @UseGuards(UserTypeGuard)
   @AllowUserType(UserTypeEnum.CUSTOMER)
   setMotorVehicleValue(@Args('input') input: SetVehicleValueDto) {
