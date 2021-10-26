@@ -262,7 +262,7 @@ export class MotorCovernoteService {
 
     const motorCoverRequest = await MotorCoverRequest.findOne({
       where: { id: requestId },
-      select: ['vehicleDetails'],
+      relations: ['vehicleDetails'],
     });
 
     if (!motorCoverRequest) {
