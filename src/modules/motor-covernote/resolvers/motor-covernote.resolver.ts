@@ -11,6 +11,7 @@ import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { PaymentResult } from '../dtos/payment-result.dto';
 import { SetMotorUsageTypeDto } from '../dtos/set-motor-usage-type.dto';
 import { SetMotorCoverDurationDto } from '../dtos/set-motorcover-duration.dto';
+import { SetVehicleImagesDto } from '../dtos/set-vehicle-images.dto';
 import { SetVehicleValueDto } from '../dtos/set-vehicle-value.dto';
 import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
@@ -76,5 +77,12 @@ export class MotorCovernoteResolver {
   @AllowUserType(UserTypeEnum.CUSTOMER)
   setMotorVehicleValue(@Args('input') input: SetVehicleValueDto) {
     return this.motorCovernoteService.setVehicleValue(input);
+  }
+
+  @Mutation(() => MotorCoverRequest)
+  @UseGuards(UserTypeGuard)
+  @AllowUserType(UserTypeEnum.CUSTOMER)
+  setMotorVehicleImageUrls(@Args('input') input: SetVehicleImagesDto) {
+    return this.motorCovernoteService.setVehicleImages(input);
   }
 }

@@ -15,6 +15,7 @@ import { UserModule } from './modules/user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { MotorCovernoteModule } from './modules/motor-covernote/motor-covernote.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
         return new GraphQLError(error.message['message']);
       },
     }),
-
+    FileModule,
     DatabaseModule,
     UserModule,
     AuthModule,
@@ -43,4 +44,4 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
     TransactionsModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

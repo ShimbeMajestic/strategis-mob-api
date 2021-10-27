@@ -9,6 +9,7 @@ import { GetVehicleDetailsDto } from '../dtos/get-vehicle-details.response';
 import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { SetMotorUsageTypeDto } from '../dtos/set-motor-usage-type.dto';
 import { SetMotorCoverDurationDto } from '../dtos/set-motorcover-duration.dto';
+import { SetVehicleImagesDto } from '../dtos/set-vehicle-images.dto';
 import { SetVehicleValueDto } from '../dtos/set-vehicle-value.dto';
 import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
@@ -276,6 +277,44 @@ export class MotorCovernoteService {
     }
 
     motorCoverRequest.vehicleDetails.value = value;
+    await motorCoverRequest.vehicleDetails.save();
+
+    return motorCoverRequest;
+  }
+
+  async setVehicleImages(input: SetVehicleImagesDto) {
+    const {
+      frontViewImageUrl,
+      bonnetViewImageUrl,
+      backViewImageUrl,
+      rightSideViewImageUrl,
+      leftSideViewImageUrl,
+      requestId,
+    } = input;
+
+    const motorCoverRequest = await MotorCoverRequest.findOne({
+      where: { id: requestId },
+      relations: ['vehicleDetails'],
+    });
+
+    if (!motorCoverRequest) {
+      throw new NotFoundException('Motor cover request id not found!');
+    }
+
+    if (!motorCoverRequest.vehicleDetails) {
+      throw new NotFoundException(
+        'Motor cover request does not contain any vehicle set!',
+      );
+    }
+
+    motorCoverRequest.vehicleDetails.bonnetViewImageUrl = bonnetViewImageUrl;
+    motorCoverRequest.vehicleDetails.frontViewImageUrl = frontViewImageUrl;
+    motorCoverRequest.vehicleDetails.backViewImageUrl = backViewImageUrl;
+    motorCoverRequest.vehicleDetails.rightSideViewImageUrl =
+      rightSideViewImageUrl;
+    motorCoverRequest.vehicleDetails.leftSideViewImageUrl =
+      leftSideViewImageUrl;
+
     await motorCoverRequest.vehicleDetails.save();
 
     return motorCoverRequest;
