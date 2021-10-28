@@ -27,9 +27,14 @@ export class FilesController {
   //     return this.filesService.uploadFile(file, options.isThumbnail);
   // }
 
+  @Get('get-signed-post-url/:key')
+  async getPresignedUrl(@Param('key') key: string) {
+    return this.filesService.generatePresignedPostUrl(key);
+  }
+
   @Get('get-signed-url/:key')
   async getSignedUrl(@Param('key') key: string) {
-    return this.filesService.generatePresignedPostUrl(key);
+    return this.filesService.generatePresignedUrl(key);
   }
 
   // @Get('/:id')
