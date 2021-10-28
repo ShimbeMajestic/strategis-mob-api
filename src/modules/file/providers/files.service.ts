@@ -96,10 +96,16 @@ export class FilesService {
   }
 
   async generatePresignedUrl(key: string) {
-    return FilesService.s3.getSignedUrlPromise('getObject', {
+    const link = await FilesService.s3.getSignedUrlPromise('getObject', {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: key,
     });
+
+    return {
+      success: true,
+      message: 'Generated link',
+      url: link,
+    };
   }
 
   async generatePresignedPostUrl(fileName: string) {
