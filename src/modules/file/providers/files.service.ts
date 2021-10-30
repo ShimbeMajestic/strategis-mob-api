@@ -96,11 +96,9 @@ export class FilesService {
   }
 
   async generatePresignedUrl(fileName: string) {
-    const key = `${uuid()}_${fileName}`;
-
     const link = await FilesService.s3.getSignedUrlPromise('getObject', {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: key,
+      Key: fileName,
     });
 
     return {
