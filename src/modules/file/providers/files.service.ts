@@ -96,15 +96,22 @@ export class FilesService {
   }
 
   async generatePresignedUrl(fileName: string) {
+    const fileType = fileName.split('.')[1];
+
     const link = await FilesService.s3.getSignedUrlPromise('putObject', {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: fileName,
+      Key: `strategis/vehicle-images/${fileName}`,
+      ContentType: 'image/' + fileType,
+      ACL: 'public-read',
     });
 
     return {
       success: true,
-      message: 'Generated link',
-      url: link,
+      message: 'Successfully generated upload & download links',
+      data: {
+        uploadLink: link,
+        downloadLink: `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/strategis/vehicle-images/${fileName}`,
+      },
     };
   }
 
