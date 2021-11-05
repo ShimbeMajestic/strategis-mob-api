@@ -91,7 +91,7 @@ export class TransactionService {
 
   transformPayload(data: any) {
     return {
-      VendorID: data.vendor,
+      vendor: data.vendor,
       amount: data.amount,
       buyer_email: data.buyerEmail,
       buyer_name: data.buyerName,
