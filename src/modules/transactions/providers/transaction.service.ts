@@ -67,7 +67,7 @@ export class TransactionService {
     const authorization =
       `SELCOM ` + Buffer.from(selcomConfig.selcomApiKey).toString('base64');
 
-    const timestamp = moment().format('YYYY-MM-DDThh:mmZD');
+    const timestamp = moment().format();
     const digestMethod = 'HS256';
     const digest = createHmac('SHA256', selcomConfig.selcomApiSecret)
       .update(
