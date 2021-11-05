@@ -16,6 +16,7 @@ import { SharedModule } from './shared/shared.module';
 import { MotorCovernoteModule } from './modules/motor-covernote/motor-covernote.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { FileModule } from './modules/file/file.module';
+import { TravelCoverModule } from './modules/travel-cover/travel-cover.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { FileModule } from './modules/file/file.module';
     ScheduleModule.forRoot(),
     MotorCovernoteModule,
     TransactionsModule,
+    TravelCoverModule,
   ],
 })
 export class AppModule {}

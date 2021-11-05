@@ -101,11 +101,19 @@ export class MotorCovernoteService {
   async getTotalAmountToBePaid(requestId: number): Promise<MotorCoverRequest> {
     const motorRequest = await MotorCoverRequest.findOne({
       where: { id: requestId },
-      relations: ['vehicleDetails'],
+      relations: ['vehicleDetails', 'motorCover', 'motorCoverDuration'],
     });
 
     if (!motorRequest) {
       throw new NotFoundException('Motor cover request not found!');
+    }
+
+    // For Comprehensive
+
+    if (
+      motorRequest.motorCover.name === 'Comprehensive' &&
+      motorRequest.usageType === MotorUsageType.PRIVATE
+    ) {
     }
 
     if (motorRequest.usageType == MotorUsageType.PRIVATE) {
@@ -129,6 +137,7 @@ export class MotorCovernoteService {
         motorRequest.productCode = foundCover.productCode;
         motorRequest.riskCode = foundCover.riskCode;
         motorRequest.productName = foundCover.productName;
+
         motorRequest.riskName = foundCover.riskName;
 
         await motorRequest.save();
@@ -162,6 +171,8 @@ export class MotorCovernoteService {
 
     return motorRequest;
   }
+
+  async getComprehensiveAmount() {}
 
   async setMotorVehicleDetails(input: CreateVehicleDetailDto) {
     const {
