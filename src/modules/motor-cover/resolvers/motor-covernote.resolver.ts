@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver, Query, Int, ID } from '@nestjs/graphql';
 import { CurrentUser } from 'src/modules/auth/auth-user.decorator';
+import { GqlAuthGuard } from 'src/modules/auth/auth.guard';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { AllowUserType } from 'src/modules/permission/decorators/user-type.decorator';
 import { UserTypeEnum } from 'src/modules/permission/enums/user-type.enum';
@@ -10,13 +11,15 @@ import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { PaymentResult } from '../dtos/payment-result.dto';
 import { SetMotorUsageTypeDto } from '../dtos/set-motor-usage-type.dto';
 import { SetMotorCoverDurationDto } from '../dtos/set-motorcover-duration.dto';
+import { SetVehicleImagesDto } from '../dtos/set-vehicle-images.dto';
+import { SetVehicleValueDto } from '../dtos/set-vehicle-value.dto';
 import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
 import { MotorCoverRequest } from '../models/mover-cover-req.model';
 import { MotorCovernoteService } from '../providers/motor-covernote.service';
 
 @Resolver(() => MotorCoverRequest)
-// @UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard)
 export class MotorCovernoteResolver {
   constructor(private motorCovernoteService: MotorCovernoteService) {}
 
@@ -69,8 +72,17 @@ export class MotorCovernoteResolver {
     return this.motorCovernoteService.payForMotorCover(input);
   }
 
-  @Query(() => Boolean)
-  getUploadPhotoUrl(@Args('key') key: string) {
-    return this.motorCovernoteService.getUploadPhotoUrl(key);
+  @Mutation(() => MotorCoverRequest)
+  @UseGuards(UserTypeGuard)
+  @AllowUserType(UserTypeEnum.CUSTOMER)
+  setMotorVehicleValue(@Args('input') input: SetVehicleValueDto) {
+    return this.motorCovernoteService.setVehicleValue(input);
+  }
+
+  @Mutation(() => MotorCoverRequest)
+  @UseGuards(UserTypeGuard)
+  @AllowUserType(UserTypeEnum.CUSTOMER)
+  setMotorVehicleImageUrls(@Args('input') input: SetVehicleImagesDto) {
+    return this.motorCovernoteService.setVehicleImages(input);
   }
 }

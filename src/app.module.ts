@@ -13,8 +13,10 @@ import { ListsModule } from './modules/lists/lists.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { UserModule } from './modules/user/user.module';
 import { SharedModule } from './shared/shared.module';
-import { MotorCovernoteModule } from './modules/motor-covernote/motor-covernote.module';
+import { MotorCovernoteModule } from './modules/motor-cover/motor-covernote.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { FileModule } from './modules/file/file.module';
+import { TravelCoverModule } from './modules/travel-cover/travel-cover.module';
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
         return new GraphQLError(error.message['message']);
       },
     }),
-
+    FileModule,
     DatabaseModule,
     UserModule,
     AuthModule,
@@ -41,6 +43,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
     ScheduleModule.forRoot(),
     MotorCovernoteModule,
     TransactionsModule,
+    TravelCoverModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}
