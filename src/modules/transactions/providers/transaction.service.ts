@@ -51,6 +51,8 @@ export class TransactionService {
     transaction.travelCoverRequestId = travelCoverRequestId;
     transaction.operatorReferenceId = result.data.reference;
     transaction.provider = 'SELCOM';
+    await transaction.save();
+
     return {
       success: true,
       transaction,
