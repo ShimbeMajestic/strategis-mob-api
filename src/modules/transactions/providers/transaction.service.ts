@@ -33,6 +33,8 @@ export class TransactionService {
 
     const result = await this.initiateSelcomTransaction(selcomData);
 
+    this.logger.log(result);
+
     if (!result.success) {
       return {
         success: false,
@@ -53,6 +55,9 @@ export class TransactionService {
       success: true,
       transaction,
       message: 'success',
+      redirectUrl: Buffer.from(
+        result.data.data[0].payment_gateway_url,
+      ).toString('ascii'),
     };
   }
 
@@ -81,6 +86,10 @@ export class TransactionService {
       ).toString('base64'),
     });
     const headers = this.getHeaders(payload);
+
+    this.logger.log(payload);
+
+    this.logger.log(headers);
 
     try {
       const result = await this.httpService

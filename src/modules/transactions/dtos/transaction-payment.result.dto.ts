@@ -11,4 +11,7 @@ export class TransactionPaymentResultDto {
 
   @Field()
   message: string;
+
+  @Field({ nullable: true })
+  redirectUrl?: string;
 }
