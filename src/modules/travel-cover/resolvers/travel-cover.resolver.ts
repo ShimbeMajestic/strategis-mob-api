@@ -1,11 +1,13 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/modules/auth/auth-user.decorator';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { AllowUserType } from 'src/modules/permission/decorators/user-type.decorator';
 import { UserTypeEnum } from 'src/modules/permission/enums/user-type.enum';
 import { UserTypeGuard } from 'src/modules/permission/guards/user-type.guard';
+import { PayForTravelCoverDto } from '../dtos/pay-travel-cover.dto';
 import { SetTravelPlanDto } from '../dtos/set-travel-plan.dto';
+import { TravelCoverRequest } from '../models/travel-cover-request.model';
 import { TravelPlan } from '../models/travel-plan.model';
 import { TravelCoverService } from '../providers/travel-cover.service';
 
@@ -13,7 +15,7 @@ import { TravelCoverService } from '../providers/travel-cover.service';
 export class TravelCoverResolver {
   constructor(private travelCoverService: TravelCoverService) {}
 
-  @Query(() => [TravelPlan])
+  @Mutation(() => TravelCoverRequest)
   @UseGuards(UserTypeGuard)
   @AllowUserType(UserTypeEnum.CUSTOMER)
   setTravelPlan(
@@ -22,4 +24,12 @@ export class TravelCoverResolver {
   ) {
     return this.travelCoverService.setTravelPlan(input, customer);
   }
+
+  @Mutation(() => TravelCoverRequest)
+  @UseGuards(UserTypeGuard)
+  @AllowUserType(UserTypeEnum.CUSTOMER)
+  payForTravelCover(
+    @Args('input') input: PayForTravelCoverDto,
+    @CurrentUser() customer: Customer,
+  ) {}
 }

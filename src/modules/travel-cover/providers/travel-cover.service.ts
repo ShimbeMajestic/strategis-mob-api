@@ -24,4 +24,6 @@ export class TravelCoverService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async payForCover() {}
 }
