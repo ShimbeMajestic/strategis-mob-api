@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/auth.guard';
 import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
+import { TransactionsModule } from '../transactions/transactions.module';
 import { CreateTravelPlanDto } from './dtos/create-travel-plan.dto';
 import { UpdateTravelPlanDto } from './dtos/update-travel-plan.dto';
 import { TravelCoverRequest } from './models/travel-cover-request.model';
@@ -23,6 +24,7 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
           TravelDestination,
           TravelEntity,
         ]),
+        TransactionsModule,
       ],
       resolvers: [
         {

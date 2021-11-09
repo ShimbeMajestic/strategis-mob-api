@@ -253,7 +253,7 @@ export class MotorCovernoteService {
 
     transaction.customerId = motorRequest.customerId;
     transaction.provider = 'SELCOM';
-    transaction.requestId = motorRequest.id;
+    transaction.motorCoverRequestId = motorRequest.id;
     transaction.currency = motorRequest.currency;
     transaction.amount = motorRequest.minimumAmountIncTax;
     await transaction.save();

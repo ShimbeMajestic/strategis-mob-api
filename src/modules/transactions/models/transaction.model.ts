@@ -2,6 +2,7 @@ import { FilterableField, Relation } from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { MotorCoverRequest } from 'src/modules/motor-cover/models/mover-cover-req.model';
+import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover-request.model';
 import {
   BaseEntity,
   Column,
@@ -16,7 +17,8 @@ import { TransactionStatusEnum } from '../enums/transaction.enum';
 
 @Entity()
 @ObjectType()
-@Relation('cover', () => MotorCoverRequest, { nullable: true })
+@Relation('motorCoverRequest', () => MotorCoverRequest, { nullable: true })
+@Relation('travelCoverRequest', () => TravelCoverRequest, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
 export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -24,7 +26,21 @@ export class Transaction extends BaseEntity {
   id: number;
 
   @ManyToOne(() => MotorCoverRequest)
-  request: MotorCoverRequest;
+  motorCoverRequest: MotorCoverRequest;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  motorCoverRequestId: number;
+
+  @ManyToOne(
+    () => TravelCoverRequest,
+    (travelCoverRequest) => travelCoverRequest.transactions,
+  )
+  travelCoverRequest: TravelCoverRequest;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  travelCoverRequestId: number;
 
   @Field()
   @Column()
@@ -32,10 +48,6 @@ export class Transaction extends BaseEntity {
 
   @ManyToOne(() => Customer, (customer) => customer.transactions)
   customer: Customer;
-
-  @Column()
-  @Field()
-  requestId: number;
 
   @Column()
   @Field()
@@ -55,7 +67,9 @@ export class Transaction extends BaseEntity {
   status: TransactionStatusEnum;
 
   @FilterableField()
-  @Column()
+  @Column({
+    default: 'SELCOM',
+  })
   provider: string;
 
   @FilterableField({ nullable: true })

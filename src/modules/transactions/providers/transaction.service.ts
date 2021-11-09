@@ -1,15 +1,60 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { Hmac, createHmac } from 'crypto';
+import { Hmac, createHmac, randomUUID } from 'crypto';
 import * as moment from 'moment';
 import { selcomConfig } from 'src/config/selcom.config';
+import { Customer } from 'src/modules/customer/models/customer.model';
+import { TravelPlan } from 'src/modules/travel-cover/models/travel-plan.model';
 import { InitiateSelcomTransactionDto } from '../dtos/initiate-selcom-transaction.dto';
+import { TransactionPaymentResultDto } from '../dtos/transaction-payment.result.dto';
+import { Transaction } from '../models/transaction.model';
 
 @Injectable()
 export class TransactionService {
   private logger: Logger = new Logger();
 
   constructor(private httpService: HttpService) {}
+
+  async payForTravelCover(
+    travelCoverRequestId: number,
+    plan: TravelPlan,
+    customer: Customer,
+    email: string,
+  ): Promise<TransactionPaymentResultDto> {
+    const selcomData = new InitiateSelcomTransactionDto();
+
+    selcomData.amount = plan.price;
+    selcomData.buyerEmail = email;
+    selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
+    selcomData.buyerPhone = customer.phone;
+    selcomData.currency = plan.currency;
+    selcomData.noOfItems = 1;
+    selcomData.orderId = randomUUID();
+
+    const result = await this.initiateSelcomTransaction(selcomData);
+
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.message,
+        transaction: null,
+      };
+    }
+
+    const transaction = new Transaction();
+
+    transaction.amount = plan.price;
+    transaction.currency = plan.currency;
+    transaction.customerId = customer.id;
+    transaction.travelCoverRequestId = travelCoverRequestId;
+    transaction.operatorReferenceId = result.data.reference;
+    transaction.provider = 'SELCOM';
+    return {
+      success: true,
+      transaction,
+      message: 'success',
+    };
+  }
 
   async initiateSelcomTransaction(data: InitiateSelcomTransactionDto) {
     const {
@@ -36,8 +81,7 @@ export class TransactionService {
       ).toString('base64'),
     });
     const headers = this.getHeaders(payload);
-    console.log(payload);
-    console.log(headers);
+
     try {
       const result = await this.httpService
         .post(
@@ -53,7 +97,11 @@ export class TransactionService {
         )
         .toPromise();
 
-      return result.data;
+      return {
+        success: true,
+        message: 'Successfully inititated selcom transaction',
+        data: result.data,
+      };
     } catch (error) {
       return {
         success: false,
