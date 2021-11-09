@@ -59,6 +59,7 @@ export class TransactionService {
       message: 'success',
       redirectUrl: Buffer.from(
         result.data.data[0].payment_gateway_url,
+        'base64',
       ).toString('ascii'),
     };
   }
