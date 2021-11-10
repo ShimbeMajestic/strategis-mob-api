@@ -26,7 +26,7 @@ export class TransactionService {
     selcomData.amount = plan.price;
     selcomData.buyerEmail = email;
     selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
-    selcomData.buyerPhone = customer.phone;
+    selcomData.buyerPhone = customer.phone.substring(1);
     selcomData.currency = plan.currency;
     selcomData.noOfItems = 1;
     selcomData.orderId = randomUUID();
