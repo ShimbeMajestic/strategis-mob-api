@@ -26,6 +26,7 @@ import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
 import { MotorCoverRequest } from './models/mover-cover-req.model';
 import { MotorCovernoteService } from './providers/motor-covernote.service';
 import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
           MotorCover,
           MotorCoverRequest,
         ]),
+        TransactionsModule,
       ],
       resolvers: [
         {

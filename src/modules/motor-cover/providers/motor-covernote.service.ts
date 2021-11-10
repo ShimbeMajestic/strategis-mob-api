@@ -4,7 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Customer } from 'src/modules/customer/models/customer.model';
+import { TransactionPaymentResultDto } from 'src/modules/transactions/dtos/transaction-payment.result.dto';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
+import { TransactionService } from 'src/modules/transactions/providers/transaction.service';
 import { GetVehicleDetailsDto } from '../dtos/get-vehicle-details.response';
 import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { SetMotorUsageTypeDto } from '../dtos/set-motor-usage-type.dto';
@@ -23,7 +25,10 @@ import { VehicleDetailService } from './vehicle-detail.service';
 
 @Injectable()
 export class MotorCovernoteService {
-  constructor(private readonly vehicleDetailService: VehicleDetailService) {}
+  constructor(
+    private readonly vehicleDetailService: VehicleDetailService,
+    private transactionService: TransactionService,
+  ) {}
 
   async setMotorCoverAndDuration(
     input: SetMotorCoverDurationDto,
@@ -236,8 +241,11 @@ export class MotorCovernoteService {
     return motorRequest;
   }
 
-  async payForMotorCover(input: PayMotorCoverDto) {
-    const { requestId } = input;
+  async payForMotorCover(
+    input: PayMotorCoverDto,
+    customer: Customer,
+  ): Promise<TransactionPaymentResultDto> {
+    const { requestId, email } = input;
 
     const motorRequest = await MotorCoverRequest.findOne({ id: requestId });
 
@@ -245,28 +253,11 @@ export class MotorCovernoteService {
       throw new NotFoundException('Motor cover request not found!');
     }
 
-    // contact payment gateway
-
-    // Create a pending transaction
-
-    const transaction = new Transaction();
-
-    transaction.customerId = motorRequest.customerId;
-    transaction.provider = 'SELCOM';
-    transaction.motorCoverRequestId = motorRequest.id;
-    transaction.currency = motorRequest.currency;
-    transaction.amount = motorRequest.minimumAmountIncTax;
-    await transaction.save();
-
-    motorRequest.status = MotorCoverRequestStatus.WAITING_FOR_PAYMENT;
-
-    await motorRequest.save();
-
-    return {
-      success: true,
-      message: 'Successfully initiated',
-      data: motorRequest,
-    };
+    return this.transactionService.payForMotorCover(
+      motorRequest,
+      customer,
+      email,
+    );
   }
 
   async setVehicleValue(input: SetVehicleValueDto) {

@@ -1,9 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { Hmac, createHmac, randomUUID } from 'crypto';
+import { createHmac, randomUUID } from 'crypto';
 import * as moment from 'moment';
 import { selcomConfig } from 'src/config/selcom.config';
 import { Customer } from 'src/modules/customer/models/customer.model';
+import { MotorCoverRequest } from 'src/modules/motor-cover/models/mover-cover-req.model';
 import { TravelPlan } from 'src/modules/travel-cover/models/travel-plan.model';
 import { InitiateSelcomTransactionDto } from '../dtos/initiate-selcom-transaction.dto';
 import { TransactionPaymentResultDto } from '../dtos/transaction-payment.result.dto';
@@ -49,6 +50,54 @@ export class TransactionService {
     transaction.currency = plan.currency;
     transaction.customerId = customer.id;
     transaction.travelCoverRequestId = travelCoverRequestId;
+    transaction.operatorReferenceId = result.data.reference;
+    transaction.provider = 'SELCOM';
+    await transaction.save();
+
+    return {
+      success: true,
+      transaction,
+      message: 'success',
+      redirectUrl: Buffer.from(
+        result.data.data[0].payment_gateway_url,
+        'base64url',
+      ).toString('ascii'),
+    };
+  }
+
+  async payForMotorCover(
+    motorCoverRequest: MotorCoverRequest,
+    customer: Customer,
+    email: string,
+  ): Promise<TransactionPaymentResultDto> {
+    const selcomData = new InitiateSelcomTransactionDto();
+
+    selcomData.amount = motorCoverRequest.minimumAmountIncTax;
+    selcomData.buyerEmail = email;
+    selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
+    selcomData.buyerPhone = customer.phone.substring(1);
+    selcomData.currency = motorCoverRequest.currency;
+    selcomData.noOfItems = 1;
+    selcomData.orderId = randomUUID();
+
+    const result = await this.initiateSelcomTransaction(selcomData);
+
+    this.logger.log(result);
+
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.message,
+        transaction: null,
+      };
+    }
+
+    const transaction = new Transaction();
+
+    transaction.amount = motorCoverRequest.minimumAmountIncTax;
+    transaction.currency = motorCoverRequest.currency;
+    transaction.customerId = customer.id;
+    transaction.motorCoverRequestId = motorCoverRequest.id;
     transaction.operatorReferenceId = result.data.reference;
     transaction.provider = 'SELCOM';
     await transaction.save();

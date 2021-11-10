@@ -68,8 +68,11 @@ export class MotorCovernoteResolver {
   @Mutation(() => PaymentResult)
   @UseGuards(UserTypeGuard)
   @AllowUserType(UserTypeEnum.CUSTOMER)
-  payForCover(@Args('input') input: PayMotorCoverDto) {
-    return this.motorCovernoteService.payForMotorCover(input);
+  payForCover(
+    @Args('input') input: PayMotorCoverDto,
+    @CurrentUser() customer: Customer,
+  ) {
+    return this.motorCovernoteService.payForMotorCover(input, customer);
   }
 
   @Mutation(() => MotorCoverRequest)

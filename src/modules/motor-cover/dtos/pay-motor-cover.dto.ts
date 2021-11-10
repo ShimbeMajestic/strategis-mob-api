@@ -1,11 +1,10 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class PayMotorCoverDto {
+  @Field()
+  email: string;
 
-    @Field()
-    channel: string;
-
-    @Field()
-    requestId: number;
+  @Field()
+  requestId: number;
 }
