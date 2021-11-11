@@ -5,10 +5,7 @@ import {
   Relation,
 } from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
-import {
-  AuthenticatedUser,
-  UserContext,
-} from 'src/modules/auth/models/authenticated-user.interface';
+import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import {

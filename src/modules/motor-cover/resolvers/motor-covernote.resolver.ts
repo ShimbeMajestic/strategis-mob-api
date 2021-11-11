@@ -6,6 +6,7 @@ import { Customer } from 'src/modules/customer/models/customer.model';
 import { AllowUserType } from 'src/modules/permission/decorators/user-type.decorator';
 import { UserTypeEnum } from 'src/modules/permission/enums/user-type.enum';
 import { UserTypeGuard } from 'src/modules/permission/guards/user-type.guard';
+import { TransactionPaymentResultDto } from 'src/modules/transactions/dtos/transaction-payment.result.dto';
 import { GetVehicleDetailsDto } from '../dtos/get-vehicle-details.response';
 import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { PaymentResult } from '../dtos/payment-result.dto';
@@ -65,7 +66,7 @@ export class MotorCovernoteResolver {
     return this.motorCovernoteService.setMotorVehicleDetails(input);
   }
 
-  @Mutation(() => PaymentResult)
+  @Mutation(() => TransactionPaymentResultDto)
   @UseGuards(UserTypeGuard)
   @AllowUserType(UserTypeEnum.CUSTOMER)
   payForCover(
