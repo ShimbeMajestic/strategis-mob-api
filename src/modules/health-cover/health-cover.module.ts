@@ -9,7 +9,7 @@ import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
 import { CreateHospitalDto } from './dto/create-hospitals.dto';
 import { UpdateHospitalDto } from './dto/update-hospitals.dto';
-import { Hospital } from './models/hospitals.model';
+import { Hospital } from './models/hospital.model';
 
 @Module({
   imports: [
