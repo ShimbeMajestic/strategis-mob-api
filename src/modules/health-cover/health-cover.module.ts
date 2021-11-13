@@ -1,4 +1,7 @@
-import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
+import {
+  NestjsQueryGraphQLModule,
+  PagingStrategies,
+} from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
 import { Module } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/auth.guard';
@@ -19,6 +22,7 @@ import { Hospital } from './models/hospitals.model';
           CreateDTOClass: CreateHospitalDto,
           UpdateDTOClass: UpdateHospitalDto,
           guards: [GqlAuthGuard],
+          read: { pagingStrategy: PagingStrategies.NONE },
           create: {
             decorators: [UsePermission(PermissionEnum.MANAGE_HOSPITALS)],
           },
