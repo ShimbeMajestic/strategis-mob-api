@@ -21,6 +21,8 @@ import { Notification } from './models/notification.model';
           CreateDTOClass: CreateNotificationDto,
           guards: [GqlAuthGuard],
           read: { pagingStrategy: PagingStrategies.NONE },
+          update: { disabled: true },
+          create: { disabled: true },
         },
       ],
     }),
