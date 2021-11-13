@@ -16,6 +16,7 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
 
 @Module({
   imports: [
+    TransactionsModule,
     NestjsQueryGraphQLModule.forFeature({
       imports: [
         NestjsQueryTypeOrmModule.forFeature([
@@ -24,7 +25,6 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
           TravelDestination,
           TravelEntity,
         ]),
-        TransactionsModule,
       ],
       resolvers: [
         {

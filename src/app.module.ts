@@ -17,6 +17,7 @@ import { MotorCovernoteModule } from './modules/motor-cover/motor-covernote.modu
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { FileModule } from './modules/file/file.module';
 import { TravelCoverModule } from './modules/travel-cover/travel-cover.module';
+import { HealthCoverModule } from './modules/health-cover/health-cover.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { TravelCoverModule } from './modules/travel-cover/travel-cover.module';
     MotorCovernoteModule,
     TransactionsModule,
     TravelCoverModule,
+    HealthCoverModule,
   ],
 })
 export class AppModule {}
