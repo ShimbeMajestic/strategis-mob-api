@@ -6,16 +6,16 @@ import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
 import { CreateHospitalDto } from './dto/create-hospitals.dto';
 import { UpdateHospitalDto } from './dto/update-hospitals.dto';
-import { Hospitals } from './models/hospitals.model';
+import { Hospital } from './models/hospitals.model';
 
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Hospitals])],
+      imports: [NestjsQueryTypeOrmModule.forFeature([Hospital])],
       resolvers: [
         {
-          DTOClass: Hospitals,
-          EntityClass: Hospitals,
+          DTOClass: Hospital,
+          EntityClass: Hospital,
           CreateDTOClass: CreateHospitalDto,
           UpdateDTOClass: UpdateHospitalDto,
           guards: [GqlAuthGuard],
