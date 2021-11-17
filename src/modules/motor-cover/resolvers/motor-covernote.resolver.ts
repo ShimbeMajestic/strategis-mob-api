@@ -16,7 +16,7 @@ import { SetVehicleImagesDto } from '../dtos/set-vehicle-images.dto';
 import { SetVehicleValueDto } from '../dtos/set-vehicle-value.dto';
 import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
-import { MotorCoverRequest } from '../models/mover-cover-req.model';
+import { MotorCoverRequest } from '../models/mover-cover-request.model';
 import { MotorCovernoteService } from '../providers/motor-covernote.service';
 
 @Resolver(() => MotorCoverRequest)

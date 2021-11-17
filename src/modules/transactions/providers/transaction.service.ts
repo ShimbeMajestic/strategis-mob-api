@@ -4,7 +4,7 @@ import { createHmac, randomUUID } from 'crypto';
 import * as moment from 'moment';
 import { selcomConfig } from 'src/config/selcom.config';
 import { Customer } from 'src/modules/customer/models/customer.model';
-import { MotorCoverRequest } from 'src/modules/motor-cover/models/mover-cover-req.model';
+import { MotorCoverRequest } from 'src/modules/motor-cover/models/mover-cover-request.model';
 import { TravelPlan } from 'src/modules/travel-cover/models/travel-plan.model';
 import { InitiateSelcomTransactionDto } from '../dtos/initiate-selcom-transaction.dto';
 import { TransactionPaymentResultDto } from '../dtos/transaction-payment.result.dto';

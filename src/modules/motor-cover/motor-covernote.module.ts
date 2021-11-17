@@ -23,7 +23,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { MotorCover } from './models/motor-cover.model';
 import { CreateMotorCoverDto } from './dtos/create-motor-cover.dto';
 import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
-import { MotorCoverRequest } from './models/mover-cover-req.model';
+import { MotorCoverRequest } from './models/mover-cover-request.model';
 import { MotorCovernoteService } from './providers/motor-covernote.service';
 import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
 import { TransactionsModule } from '../transactions/transactions.module';

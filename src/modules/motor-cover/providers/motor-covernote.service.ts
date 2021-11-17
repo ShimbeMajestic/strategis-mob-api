@@ -19,7 +19,7 @@ import { MotorCategory } from '../enums/motor-category.enum';
 import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { MotorUsage, MotorUsageType } from '../enums/motor-usage.enum';
 import { MotorCoverType } from '../models/motor-cover-type.model';
-import { MotorCoverRequest } from '../models/mover-cover-req.model';
+import { MotorCoverRequest } from '../models/mover-cover-request.model';
 import { VehicleDetails } from '../models/vehicle-details.model';
 import { VehicleDetailService } from './vehicle-detail.service';
 

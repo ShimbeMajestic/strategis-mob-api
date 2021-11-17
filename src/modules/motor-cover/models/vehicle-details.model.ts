@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { MotorCategory } from '../enums/motor-category.enum';
-import { MotorCoverRequest } from './mover-cover-req.model';
+import { MotorCoverRequest } from './mover-cover-request.model';
 
 @Entity()
 @ObjectType()
