@@ -1,10 +1,12 @@
 import {
+  Authorize,
   FilterableField,
   OffsetConnection,
   PagingStrategies,
   Relation,
 } from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
+import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { TransactionStatusEnum } from 'src/modules/transactions/enums/transaction.enum';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
@@ -32,6 +34,11 @@ import { TravelPlan } from './travel-plan.model';
   pagingStrategy: PagingStrategies.NONE,
 })
 @Relation('customer', () => Customer)
+@Authorize({
+  authorize: (context: UserContext) => ({
+    customerId: { eq: context.req.user.id },
+  }),
+})
 export class TravelCoverRequest extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)

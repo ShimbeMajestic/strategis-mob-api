@@ -1,7 +1,12 @@
-import { FilterableField, Relation } from '@nestjs-query/query-graphql';
+import {
+  Authorize,
+  FilterableField,
+  Relation,
+} from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
+import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { Customer } from 'src/modules/customer/models/customer.model';
-import { MotorCoverRequest } from 'src/modules/motor-cover/models/mover-cover-req.model';
+import { MotorCoverRequest } from 'src/modules/motor-cover/models/mover-cover-request.model';
 import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover-request.model';
 import {
   BaseEntity,
@@ -20,6 +25,11 @@ import { TransactionStatusEnum } from '../enums/transaction.enum';
 @Relation('motorCoverRequest', () => MotorCoverRequest, { nullable: true })
 @Relation('travelCoverRequest', () => TravelCoverRequest, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
+@Authorize({
+  authorize: (context: UserContext) => ({
+    customerId: { eq: context.req.user.id },
+  }),
+})
 export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
