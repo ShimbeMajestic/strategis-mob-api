@@ -27,6 +27,7 @@ import { MotorCoverRequest } from './models/mover-cover-request.model';
 import { MotorCovernoteService } from './providers/motor-covernote.service';
 import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
 import { TransactionsModule } from '../transactions/transactions.module';
+import { MotorPolicy } from './models/motor-policy.model';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { TransactionsModule } from '../transactions/transactions.module';
           MotorCoverType,
           MotorCover,
           MotorCoverRequest,
+          MotorPolicy,
         ]),
         TransactionsModule,
       ],
@@ -97,6 +99,14 @@ import { TransactionsModule } from '../transactions/transactions.module';
         {
           DTOClass: MotorCoverRequest,
           EntityClass: MotorCoverRequest,
+          guards: [GqlAuthGuard],
+          create: { disabled: true },
+          update: { disabled: true },
+          delete: { disabled: true },
+        },
+        {
+          DTOClass: MotorPolicy,
+          EntityClass: MotorPolicy,
           guards: [GqlAuthGuard],
           create: { disabled: true },
           update: { disabled: true },

@@ -20,6 +20,7 @@ import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.in
 import { IdType } from '../enum/id-type.enum';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover-request.model';
+import { MotorPolicy } from 'src/modules/motor-cover/models/motor-policy.model';
 
 @ObjectType()
 @KeySet(['id'])
@@ -29,6 +30,11 @@ import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover
   disableRemove: true,
 })
 @OffsetConnection('transactions', () => Transaction, {
+  nullable: true,
+  disableUpdate: true,
+  disableRemove: true,
+})
+@OffsetConnection('policies', () => MotorPolicy, {
   nullable: true,
   disableUpdate: true,
   disableRemove: true,
@@ -92,6 +98,9 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
     (travelCoverRequest) => travelCoverRequest.customer,
   )
   travelPlanRequests: TravelCoverRequest[];
+
+  @OneToMany(() => MotorPolicy, (motorPolicy) => motorPolicy.customer)
+  policies: MotorPolicy;
 
   get fullName(): string {
     const names = [this.firstName, this.lastName];

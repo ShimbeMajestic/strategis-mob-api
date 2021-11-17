@@ -19,6 +19,7 @@ import { FileModule } from './modules/file/file.module';
 import { TravelCoverModule } from './modules/travel-cover/travel-cover.module';
 import { HealthCoverModule } from './modules/health-cover/health-cover.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { ClaimModule } from './modules/claim/claim.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { NotificationModule } from './modules/notification/notification.module';
     TravelCoverModule,
     HealthCoverModule,
     NotificationModule,
+    ClaimModule,
   ],
 })
 export class AppModule {}
