@@ -2,6 +2,7 @@ import {
   Authorize,
   FilterableField,
   OffsetConnection,
+  PagingStrategies,
   Relation,
 } from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
@@ -36,7 +37,10 @@ import { VehicleDetails } from './vehicle-details.model';
 @Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
-@OffsetConnection('transactions', () => Transaction, { nullable: true })
+@OffsetConnection('transactions', () => Transaction, {
+  nullable: true,
+  pagingStrategy: PagingStrategies.NONE,
+})
 export class MotorCoverRequest extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)

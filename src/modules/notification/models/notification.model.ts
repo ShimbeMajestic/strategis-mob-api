@@ -15,6 +15,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { NotificationType } from '../enums/notification-type.enum';
 
 @Entity()
 @ObjectType()
@@ -39,6 +40,18 @@ export class Notification {
   @Column()
   @Field()
   customerId: number;
+
+  @Column({ enum: NotificationType, default: NotificationType.INFO })
+  @Field()
+  notificationType: NotificationType;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  travelCoverRequestId: number;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  motorCoverRequestId: number;
 
   @Field()
   @Column()

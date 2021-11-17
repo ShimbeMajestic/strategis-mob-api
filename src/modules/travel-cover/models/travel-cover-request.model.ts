@@ -1,6 +1,7 @@
 import {
   FilterableField,
   OffsetConnection,
+  PagingStrategies,
   Relation,
 } from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
@@ -28,7 +29,9 @@ import { TravelPlan } from './travel-plan.model';
   nullable: true,
   disableUpdate: true,
   disableRemove: true,
+  pagingStrategy: PagingStrategies.NONE,
 })
+@Relation('customer', () => Customer)
 export class TravelCoverRequest extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
