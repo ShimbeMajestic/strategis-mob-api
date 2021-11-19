@@ -1,6 +1,7 @@
 import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
 import { Module } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/auth.guard';
 import { CreateClaimDto } from './dtos/create-claim.dto';
 import { Claim } from './models/claim.model';
 import { ClaimResolver } from './resolvers/claim.resolver';
@@ -11,6 +12,7 @@ import { ClaimResolver } from './resolvers/claim.resolver';
       imports: [NestjsQueryTypeOrmModule.forFeature([Claim])],
       resolvers: [
         {
+          guards: [GqlAuthGuard],
           DTOClass: Claim,
           EntityClass: Claim,
           CreateDTOClass: CreateClaimDto,
