@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Customer } from 'src/modules/customer/models/customer.model';
@@ -25,6 +26,8 @@ import { VehicleDetailService } from './vehicle-detail.service';
 
 @Injectable()
 export class MotorCovernoteService {
+  private logger: Logger = new Logger(MotorCovernoteService.name);
+
   constructor(
     private readonly vehicleDetailService: VehicleDetailService,
     private transactionService: TransactionService,
@@ -106,72 +109,59 @@ export class MotorCovernoteService {
   async getTotalAmountToBePaid(requestId: number): Promise<MotorCoverRequest> {
     const motorRequest = await MotorCoverRequest.findOne({
       where: { id: requestId },
-      relations: ['vehicleDetails', 'motorCover', 'motorCoverDuration'],
+      relations: [
+        'vehicleDetails',
+        'motorCover',
+        'motorCoverDuration',
+        'motorCover.types',
+      ],
     });
 
     if (!motorRequest) {
       throw new NotFoundException('Motor cover request not found!');
     }
 
-    // For Comprehensive
+    if (motorRequest.usageType === MotorUsageType.PRIVATE) {
+      const foundCover = motorRequest.motorCover.types.find(
+        (cover) =>
+          cover.usage === 1 &&
+          cover.category === motorRequest.vehicleDetails.MotorCategory,
+      );
 
-    if (
-      motorRequest.motorCover.name === 'Comprehensive' &&
-      motorRequest.usageType === MotorUsageType.PRIVATE
-    ) {
-    }
+      if (!foundCover) {
+        throw new BadRequestException('No cover fits the description!');
+      }
 
-    if (motorRequest.usageType == MotorUsageType.PRIVATE) {
-      if (
-        motorRequest.vehicleDetails.MotorCategory == MotorCategory.MOTOR_VEHICLE
-      ) {
-        const foundCover = await MotorCoverType.findOne({
-          where: {
-            usage: MotorUsage.PRIVATE,
-            category: MotorCategory.MOTOR_VEHICLE,
-          },
-        });
+      // Find out if cover is comprehensive or third part fire and theft
+      if (foundCover.rate > 0) {
+        // Calculate short period if available
+        const rate = this.getPremiumRate(
+          motorRequest.motorCoverDuration.duration,
+          foundCover.rate / 100,
+        );
 
-        if (!foundCover) {
-          throw new Error('Could not find appropiate cover for motor!');
-        }
+        const minimumAmount = rate * motorRequest.vehicleDetails.value;
 
+        motorRequest.minimumAmount =
+          minimumAmount < foundCover.minimumAmount
+            ? foundCover.minimumAmount
+            : minimumAmount;
+
+        motorRequest.minimumAmountIncTax =
+          motorRequest.minimumAmount * 0.18 + motorRequest.minimumAmount;
+      } else {
         motorRequest.minimumAmount = foundCover.minimumAmount;
         motorRequest.minimumAmountIncTax =
           foundCover.minimumAmount * 0.18 + foundCover.minimumAmount;
-        motorRequest.productCode = foundCover.productCode;
-        motorRequest.riskCode = foundCover.riskCode;
-        motorRequest.productName = foundCover.productName;
-
-        motorRequest.riskName = foundCover.riskName;
-
-        await motorRequest.save();
       }
 
-      if (
-        motorRequest.vehicleDetails.MotorCategory == MotorCategory.MOTOR_CYCLE
-      ) {
-        const foundCover = await MotorCoverType.findOne({
-          where: {
-            usage: MotorUsage.PRIVATE,
-            category: MotorCategory.MOTOR_VEHICLE,
-          },
-        });
+      motorRequest.productCode = foundCover.productCode;
+      motorRequest.riskCode = foundCover.riskCode;
+      motorRequest.productName = foundCover.productName;
 
-        if (!foundCover) {
-          throw new Error('Could not find appropiate cover for motor!');
-        }
+      motorRequest.riskName = foundCover.riskName;
 
-        motorRequest.minimumAmount = foundCover.minimumAmount;
-        motorRequest.minimumAmountIncTax =
-          foundCover.minimumAmount * 0.18 + foundCover.minimumAmount;
-        motorRequest.productCode = foundCover.productCode;
-        motorRequest.riskCode = foundCover.riskCode;
-        motorRequest.productName = foundCover.productName;
-        motorRequest.riskName = foundCover.riskName;
-
-        await motorRequest.save();
-      }
+      await motorRequest.save();
     }
 
     return motorRequest;
@@ -321,4 +311,25 @@ export class MotorCovernoteService {
 
     return motorCoverRequest;
   }
+
+  private getPremiumRate = (duration: number, premiumRate: number) => {
+    let shortPeriodRate = 1;
+    if (duration >= 270) {
+      shortPeriodRate = 1;
+    } else if (duration >= 180) {
+      shortPeriodRate = 0.85;
+    } else if (duration >= 90) {
+      shortPeriodRate = 0.7;
+    } else if (duration >= 30) {
+      shortPeriodRate = 0.4;
+    } else {
+      shortPeriodRate = 0.2;
+    }
+
+    this.logger.log(
+      `Premium duration: ${duration} days, PremiumRate: ${premiumRate}, Short Period Rate: ${shortPeriodRate}`,
+    );
+
+    return premiumRate === null ? null : premiumRate / shortPeriodRate;
+  };
 }
