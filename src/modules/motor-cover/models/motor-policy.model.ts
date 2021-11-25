@@ -38,6 +38,18 @@ export class MotorPolicy extends BaseEntity {
   @Field()
   policyNumber: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  coverNoteNumber: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  coverStartDate: Date;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  coverEndDate: Date;
+
   @OneToOne(() => MotorCoverRequest)
   @JoinColumn()
   motorCoverRequest: MotorCoverRequest;
