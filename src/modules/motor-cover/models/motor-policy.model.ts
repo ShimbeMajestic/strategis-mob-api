@@ -12,6 +12,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -38,6 +39,7 @@ export class MotorPolicy extends BaseEntity {
   policyNumber: string;
 
   @OneToOne(() => MotorCoverRequest)
+  @JoinColumn()
   motorCoverRequest: MotorCoverRequest;
 
   @Column()
