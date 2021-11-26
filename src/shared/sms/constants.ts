@@ -1,4 +1,3 @@
-
-export const SMS_QUEUE = 'SMS_QUEUE';
-export const SMS_JOB = 'SMS_JOB';
-export const SMS_DRIVER = 'SMS_DRIVER';
+export const SMS_QUEUE = 'STRATEGIS_SMS_QUEUE';
+export const SMS_JOB = 'STRATEGIS_SMS_JOB';
+export const SMS_DRIVER = 'STRATEGIS_SMS_DRIVER';

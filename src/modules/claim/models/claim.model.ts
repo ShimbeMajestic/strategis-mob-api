@@ -17,6 +17,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ClaimEnum } from '../enums/claim.enum';
 
 @Entity()
 @ObjectType()
@@ -45,6 +46,14 @@ export class Claim extends BaseEntity {
 
   @ManyToOne(() => Customer)
   customer: Customer;
+
+  @Column({
+    default: ClaimEnum.PENDING,
+    enum: ClaimEnum,
+    enumName: 'ClaimEnum',
+  })
+  @Field()
+  status: ClaimEnum;
 
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()
