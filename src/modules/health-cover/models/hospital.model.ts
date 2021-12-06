@@ -27,6 +27,14 @@ export class Hospital extends BaseEntity {
   @Field()
   address: string;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  website: string;
+
   @Field(() => Location, {
     nullable: true,
     description: 'Location with longitude and latitude',
