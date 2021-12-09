@@ -134,7 +134,7 @@ export class TransactionService {
       noOfItems,
       orderId,
       webhook: Buffer.from(
-        'https://strategies-api.codeblock.co.tz/transactions/callback',
+        `${selcomConfig.selcomCallbackUrl}/transactions/callback`,
       ).toString('base64'),
     });
     const headers = this.getHeaders(payload);
