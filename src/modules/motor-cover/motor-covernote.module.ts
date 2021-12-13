@@ -28,7 +28,6 @@ import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { MotorPolicy } from './models/motor-policy.model';
 import { HttpModule } from '@nestjs/axios';
-import { MotorCoverConsumer } from './providers/motor-cover.consumer';
 
 @Module({
   imports: [
@@ -123,7 +122,6 @@ import { MotorCoverConsumer } from './providers/motor-cover.consumer';
     VehicleDetailResolver,
     MotorCovernoteResolver,
     MotorCovernoteService,
-    MotorCoverConsumer,
   ],
   exports: [VehicleDetailService, MotorCovernoteService],
 })

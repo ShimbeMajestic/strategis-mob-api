@@ -4,10 +4,10 @@ import { MOTOR_COVER_JOB, MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
 import * as generateUniqueId from 'generate-unique-id';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { Job } from 'bull';
-import { MotorCoverRequest } from '../models/motor-cover-request.model';
+import { MotorCoverRequest } from '../../motor-cover/models/motor-cover-request.model';
 import { NotFoundException } from '@nestjs/common';
 import { TransactionStatusEnum } from 'src/modules/transactions/enums/transaction.enum';
-import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
+import { MotorCoverRequestStatus } from '../../motor-cover/enums/motor-cover-req-status.enum';
 import { HttpService } from '@nestjs/axios';
 import { appConfig } from 'src/config/app.config';
 
