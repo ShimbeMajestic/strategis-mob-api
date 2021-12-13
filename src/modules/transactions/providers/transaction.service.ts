@@ -29,8 +29,6 @@ export class TransactionService {
     private httpService: HttpService,
     @InjectQueue(TRANSACTION_CALLBACK_QUEUE)
     private readonly transactionCallbackQueue: Queue,
-    @InjectQueue(MOTOR_COVER_QUEUE)
-    private readonly motorCoverQueue: Queue,
   ) {}
 
   async payForTravelCover(
@@ -253,36 +251,5 @@ export class TransactionService {
       success: true,
       message: 'Success',
     };
-  }
-
-  @Process(TRANSACTION_CALLBACK_JOB)
-  async processCallbackQueue(job: Job<CallbackDataDto>) {
-    const data = Object.assign(new CallbackDataDto(), job.data);
-
-    this.logger.verbose(
-      `Processing Transaction callback job ID:${job.id}, ${JSON.stringify(
-        data,
-      )}`,
-    );
-
-    const { transid, result, reference, payment_status } = data;
-
-    const transaction = await Transaction.findOne({ reference: transid });
-
-    if (result === 'SUCCESS' && payment_status === 'COMPLETED') {
-      transaction.status = TransactionStatusEnum.SUCCESS;
-      transaction.operatorReferenceId = reference;
-    }
-
-    if (result === 'FAIL') {
-      transaction.status = TransactionStatusEnum.FAILED;
-      transaction.operatorReferenceId = reference;
-    }
-
-    await transaction.save();
-
-    // Process cover
-
-    await this.motorCoverQueue.add(transaction);
   }
 }

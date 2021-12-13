@@ -11,7 +11,6 @@ import { UpdateMotorCoverTypeDto } from './dtos/update-cover-type.dto';
 import { MotorCoverDuration } from './models/motor-cover-duration.model';
 import { MotorCoverType } from './models/motor-cover-type.model';
 import { GqlAuthGuard } from '../auth/auth.guard';
-import { SortDirection } from '@nestjs-query/core';
 import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
 import { redisConfig } from 'src/config/redis.config';
@@ -29,8 +28,7 @@ import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { MotorPolicy } from './models/motor-policy.model';
 import { HttpModule } from '@nestjs/axios';
-import { BullModule } from '@nestjs/bull';
-import { MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
+import { MotorCoverConsumer } from './providers/motor-cover.consumer';
 
 @Module({
   imports: [
@@ -125,6 +123,7 @@ import { MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
     VehicleDetailResolver,
     MotorCovernoteResolver,
     MotorCovernoteService,
+    MotorCoverConsumer,
   ],
   exports: [VehicleDetailService, MotorCovernoteService],
 })

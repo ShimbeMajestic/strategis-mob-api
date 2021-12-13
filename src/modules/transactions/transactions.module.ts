@@ -12,6 +12,7 @@ import { GqlAuthGuard } from '../auth/auth.guard';
 import { MotorCovernoteModule } from '../motor-cover/motor-covernote.module';
 import { TransactionController } from './controllers/transaction.controller';
 import { Transaction } from './models/transaction.model';
+import { TransactionConsumer } from './providers/transaction.consumer';
 import { TransactionService } from './providers/transaction.service';
 
 @Module({
@@ -56,7 +57,7 @@ import { TransactionService } from './providers/transaction.service';
     }),
   ],
   controllers: [TransactionController],
-  providers: [TransactionService],
+  providers: [TransactionService, TransactionConsumer],
   exports: [TransactionService],
 })
 export class TransactionsModule {}
