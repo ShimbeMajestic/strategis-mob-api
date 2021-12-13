@@ -38,10 +38,6 @@ import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
       defaultJobOptions: {
         lifo: true,
         attempts: 15,
-        backoff: {
-          type: 'exponential',
-          delay: 5000,
-        },
       },
     }),
     BullModule.registerQueue({
@@ -50,10 +46,6 @@ import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
       defaultJobOptions: {
         lifo: true,
         attempts: 15,
-        backoff: {
-          type: 'exponential',
-          delay: 5000,
-        },
       },
     }),
   ],
