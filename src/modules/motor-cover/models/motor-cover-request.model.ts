@@ -23,6 +23,7 @@ import {
 import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { MotorUsageType } from '../enums/motor-usage.enum';
 import { MotorCoverDuration } from './motor-cover-duration.model';
+import { MotorCoverType } from './motor-cover-type.model';
 import { MotorCover } from './motor-cover.model';
 import { VehicleDetails } from './vehicle-details.model';
 
@@ -34,6 +35,7 @@ import { VehicleDetails } from './vehicle-details.model';
   }),
 })
 @Relation('motorCover', () => MotorCover, { nullable: true })
+@Relation('motorCoverType', () => MotorCoverType, { nullable: true })
 @Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
@@ -48,6 +50,13 @@ export class MotorCoverRequest extends BaseEntity {
 
   @ManyToOne(() => MotorCover)
   motorCover: MotorCover;
+
+  @ManyToOne(() => MotorCoverType)
+  coverType: MotorCoverType;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  motorCoverTypeId: number;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
@@ -116,6 +125,10 @@ export class MotorCoverRequest extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   usageType: MotorUsageType;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  requestId: string;
 
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()

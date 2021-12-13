@@ -61,6 +61,7 @@
     "dataloader": "^2.0.0",
     "express-basic-auth": "^1.2.0",
     "firebase-admin": "^9.11.1",
+    "generate-unique-id": "^2.0.1",
     "graphql": "^15.5.2",
     "graphql-subscriptions": "^1.2.1",
     "moment": "^2.29.1",

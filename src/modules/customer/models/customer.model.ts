@@ -130,4 +130,12 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
   @Field({ nullable: true })
   @Column({ nullable: true })
   token: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  gender: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  district: string;
 }

@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { MotorCategory } from '../enums/motor-category.enum';
-import { MotorCoverRequest } from './mover-cover-request.model';
+import { MotorCoverRequest } from './motor-cover-request.model';
 
 @Entity()
 @ObjectType()
@@ -102,6 +102,10 @@ export class VehicleDetails extends BaseEntity {
   @Field()
   @Column()
   OwnerCategory?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  OwnerAddress?: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })

@@ -1,4 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { CallbackDataDto } from '../dtos/callback-data.dto';
 import { InitiateSelcomTransactionDto } from '../dtos/initiate-selcom-transaction.dto';
 import { TransactionService } from '../providers/transaction.service';
 
@@ -12,7 +13,7 @@ export class TransactionController {
   }
 
   @Post('callback')
-  callback(@Body() data: any) {
-    this.transactionService.callback(data);
+  callback(@Body() data: CallbackDataDto) {
+    return this.transactionService.callback(data);
   }
 }

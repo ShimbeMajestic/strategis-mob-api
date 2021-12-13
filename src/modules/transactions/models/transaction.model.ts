@@ -6,7 +6,7 @@ import {
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { Customer } from 'src/modules/customer/models/customer.model';
-import { MotorCoverRequest } from 'src/modules/motor-cover/models/mover-cover-request.model';
+import { MotorCoverRequest } from 'src/modules/motor-cover/models/motor-cover-request.model';
 import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover-request.model';
 import {
   BaseEntity,
@@ -90,6 +90,10 @@ export class Transaction extends BaseEntity {
   @FilterableField({ nullable: true })
   @Column({ nullable: true })
   operatorReferenceId: string;
+
+  @FilterableField({ nullable: true })
+  @Column({ nullable: true })
+  reference: string;
 
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()

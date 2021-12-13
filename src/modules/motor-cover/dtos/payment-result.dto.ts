@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { MotorCoverRequest } from '../models/mover-cover-request.model';
+import { MotorCoverRequest } from '../models/motor-cover-request.model';
 
 @ObjectType()
 export class PaymentResult {

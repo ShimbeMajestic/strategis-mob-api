@@ -23,14 +23,18 @@ import * as redisStore from 'cache-manager-redis-store';
 import { MotorCover } from './models/motor-cover.model';
 import { CreateMotorCoverDto } from './dtos/create-motor-cover.dto';
 import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
-import { MotorCoverRequest } from './models/mover-cover-request.model';
+import { MotorCoverRequest } from './models/motor-cover-request.model';
 import { MotorCovernoteService } from './providers/motor-covernote.service';
 import { MotorCovernoteResolver } from './resolvers/motor-covernote.resolver';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { MotorPolicy } from './models/motor-policy.model';
+import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bull';
+import { MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
 
 @Module({
   imports: [
+    HttpModule,
     CacheModule.register({
       store: redisStore,
       ...redisConfig.default,

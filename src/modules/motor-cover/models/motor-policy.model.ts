@@ -18,7 +18,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MotorCoverRequest } from './mover-cover-request.model';
+import { MotorCoverRequest } from './motor-cover-request.model';
 
 @ObjectType()
 @Entity()
