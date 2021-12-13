@@ -169,6 +169,7 @@ export class MotorCovernoteService {
       motorRequest.productName = foundCover.productName;
 
       motorRequest.riskName = foundCover.riskName;
+      motorRequest.coverType = foundCover;
 
       await motorRequest.save();
     }
