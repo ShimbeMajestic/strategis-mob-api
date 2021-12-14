@@ -32,7 +32,7 @@ export class MotorCoverConsumer {
         where: { id: motorCoverRequestId },
         relations: [
           'motorCover',
-          'motorCoverType',
+          'coverType',
           'motorCoverDuration',
           'vehicleDetails',
           'customer',
