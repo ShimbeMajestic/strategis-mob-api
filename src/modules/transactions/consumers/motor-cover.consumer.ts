@@ -85,6 +85,8 @@ export class MotorCoverConsumer {
         length: 14,
         useLetters: false,
       }), // comeback to this
+      policyNumber:
+        'SITL-POL-' + +generateUniqueId({ length: 7, useLetters: false }),
       covernoteDescription: request.coverType.riskName,
       operativeClause: request.motorCover.name,
       currencyCode: request.currency,
