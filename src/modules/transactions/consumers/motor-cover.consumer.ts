@@ -19,6 +19,12 @@ export class MotorCoverConsumer {
 
   @Process(MOTOR_COVER_JOB)
   async processMotorCoverRequest(job: Job<Transaction>) {
+    this.logger.verbose(
+      `Processing motor cover request job ID: ${
+        job.id
+      }, Payload : ${JSON.stringify(job.data)}`,
+    );
+
     const data = Object.assign(new Transaction(), job.data);
 
     const { status, motorCoverRequestId, reference } = data;
