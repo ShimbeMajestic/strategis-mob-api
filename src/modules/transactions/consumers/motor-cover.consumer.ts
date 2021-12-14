@@ -25,45 +25,48 @@ export class MotorCoverConsumer {
       }, Payload : ${JSON.stringify(job.data)}`,
     );
 
-    const data = Object.assign(new Transaction(), job.data);
+    try {
+      const { status, motorCoverRequestId, reference } = job.data;
 
-    const { status, motorCoverRequestId, reference } = data;
+      const coverRequest = await MotorCoverRequest.findOne({
+        where: { id: motorCoverRequestId },
+        relations: [
+          'motorCover',
+          'motorCoverType',
+          'motorCoverDuration',
+          'vehicleDetails',
+          'customer',
+        ],
+      });
 
-    const coverRequest = await MotorCoverRequest.findOne({
-      where: { id: motorCoverRequestId },
-      relations: [
-        'motorCover',
-        'motorCoverType',
-        'motorCoverDuration',
-        'vehicleDetails',
-        'customer',
-      ],
-    });
+      if (!coverRequest) {
+        throw new NotFoundException('Motor cover request not found!');
+      }
 
-    if (!coverRequest) {
-      throw new NotFoundException('Motor cover request not found!');
-    }
+      if (status === TransactionStatusEnum.FAILED) {
+        coverRequest.status = MotorCoverRequestStatus.PAYMENT_FAILED;
 
-    if (status === TransactionStatusEnum.FAILED) {
-      coverRequest.status = MotorCoverRequestStatus.PAYMENT_FAILED;
+        // Notify user of cover status
 
-      // Notify user of cover status
+        await coverRequest.save();
+      }
 
-      await coverRequest.save();
-    }
+      if (status === TransactionStatusEnum.SUCCESS) {
+        coverRequest.status = MotorCoverRequestStatus.PAID;
+        coverRequest.requestId = reference;
+        await coverRequest.save();
 
-    if (status === TransactionStatusEnum.SUCCESS) {
-      coverRequest.status = MotorCoverRequestStatus.PAID;
-      coverRequest.requestId = reference;
-      await coverRequest.save();
+        const payload = this.prepareTiraRequest(coverRequest);
 
-      const payload = this.prepareTiraRequest(coverRequest);
-
-      await this.httpService
-        .post(appConfig.tiraApiUrl, payload)
-        .subscribe((response) => {
-          console.log(response);
-        });
+        await this.httpService
+          .post(appConfig.tiraApiUrl, payload)
+          .subscribe((response) => {
+            console.log(response);
+          });
+      }
+    } catch (error) {
+      console.log(error);
+      this.logger.log(error.message);
     }
   }
 
