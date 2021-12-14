@@ -36,6 +36,7 @@ export class MotorCoverConsumer {
           'motorCoverDuration',
           'vehicleDetails',
           'customer',
+          'customer.region',
         ],
       });
 
