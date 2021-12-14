@@ -5,7 +5,7 @@ import * as generateUniqueId from 'generate-unique-id';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { Job } from 'bull';
 import { MotorCoverRequest } from '../../motor-cover/models/motor-cover-request.model';
-import { NotFoundException } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { TransactionStatusEnum } from 'src/modules/transactions/enums/transaction.enum';
 import { MotorCoverRequestStatus } from '../../motor-cover/enums/motor-cover-req-status.enum';
 import { HttpService } from '@nestjs/axios';
@@ -13,6 +13,8 @@ import { appConfig } from 'src/config/app.config';
 
 @Processor(MOTOR_COVER_QUEUE)
 export class MotorCoverConsumer {
+  protected readonly logger = new Logger(MotorCoverConsumer.name);
+
   constructor(private httpService: HttpService) {}
 
   @Process(MOTOR_COVER_JOB)

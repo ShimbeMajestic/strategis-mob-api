@@ -2,6 +2,7 @@ import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
 import {
+  MOTOR_COVER_JOB,
   MOTOR_COVER_QUEUE,
   TRANSACTION_CALLBACK_JOB,
   TRANSACTION_CALLBACK_QUEUE,
@@ -12,7 +13,7 @@ import { Transaction } from '../models/transaction.model';
 
 @Processor(TRANSACTION_CALLBACK_QUEUE)
 export class TransactionConsumer {
-  private logger: Logger;
+  protected readonly logger = new Logger(TransactionConsumer.name);
 
   constructor(
     @InjectQueue(MOTOR_COVER_QUEUE)
@@ -23,7 +24,7 @@ export class TransactionConsumer {
   async processCallbackQueue(job: Job<CallbackDataDto>) {
     const data = Object.assign(new CallbackDataDto(), job.data);
 
-    this.logger.verbose(
+    this.logger.log(
       `Processing Transaction callback job ID:${job.id}, ${JSON.stringify(
         data,
       )}`,
@@ -47,6 +48,6 @@ export class TransactionConsumer {
 
     // Add cover request to queue
 
-    await this.motorCoverQueue.add(transaction);
+    await this.motorCoverQueue.add(MOTOR_COVER_JOB, transaction);
   }
 }

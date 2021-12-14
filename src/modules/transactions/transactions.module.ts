@@ -50,7 +50,7 @@ import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
     }),
   ],
   controllers: [TransactionController],
-  providers: [TransactionService, TransactionConsumer, MotorCoverConsumer],
+  providers: [TransactionConsumer, MotorCoverConsumer, TransactionService],
   exports: [TransactionService],
 })
 export class TransactionsModule {}

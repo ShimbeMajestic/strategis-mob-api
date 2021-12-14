@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { createHmac, randomUUID } from 'crypto';
+import { createHmac } from 'crypto';
 import * as moment from 'moment';
 import { selcomConfig } from 'src/config/selcom.config';
 import { Customer } from 'src/modules/customer/models/customer.model';
@@ -11,15 +11,12 @@ import { InitiateSelcomTransactionDto } from '../dtos/initiate-selcom-transactio
 import { TransactionPaymentResultDto } from '../dtos/transaction-payment.result.dto';
 import { Transaction } from '../models/transaction.model';
 import * as generateUniqueId from 'generate-unique-id';
-import { TransactionStatusEnum } from '../enums/transaction.enum';
-import { InjectQueue, Process } from '@nestjs/bull';
+import { InjectQueue } from '@nestjs/bull';
 import {
-  MOTOR_COVER_QUEUE,
   TRANSACTION_CALLBACK_JOB,
   TRANSACTION_CALLBACK_QUEUE,
 } from 'src/shared/sms/constants';
-import { Job, Queue } from 'bull';
-import { MotorCovernoteService } from 'src/modules/motor-cover/providers/motor-covernote.service';
+import { Queue } from 'bull';
 
 @Injectable()
 export class TransactionService {
