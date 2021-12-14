@@ -1,5 +1,5 @@
 import { Process, Processor } from '@nestjs/bull';
-import moment from 'moment';
+import * as moment from 'moment';
 import { MOTOR_COVER_JOB, MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
 import * as generateUniqueId from 'generate-unique-id';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
