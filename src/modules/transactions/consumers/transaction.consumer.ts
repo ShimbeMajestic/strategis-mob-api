@@ -3,6 +3,7 @@ import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
 import {
   MOTOR_COVER_QUEUE,
+  TRANSACTION_CALLBACK_JOB,
   TRANSACTION_CALLBACK_QUEUE,
 } from 'src/shared/sms/constants';
 import { CallbackDataDto } from '../dtos/callback-data.dto';
@@ -18,7 +19,7 @@ export class TransactionConsumer {
     private readonly motorCoverQueue: Queue,
   ) {}
 
-  @Process(TRANSACTION_CALLBACK_QUEUE)
+  @Process(TRANSACTION_CALLBACK_JOB)
   async processCallbackQueue(job: Job<CallbackDataDto>) {
     const data = Object.assign(new CallbackDataDto(), job.data);
 
