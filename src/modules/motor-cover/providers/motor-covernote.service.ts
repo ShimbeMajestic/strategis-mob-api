@@ -145,12 +145,14 @@ export class MotorCovernoteService {
             ? foundCover.minimumAmount
             : minimumAmount;
 
-        motorRequest.minimumAmountIncTax =
-          motorRequest.minimumAmount * 0.18 + motorRequest.minimumAmount;
+        motorRequest.minimumAmountIncTax = Math.round(
+          motorRequest.minimumAmount * 0.18 + motorRequest.minimumAmount,
+        );
       } else {
         motorRequest.minimumAmount = foundCover.minimumAmount;
-        motorRequest.minimumAmountIncTax =
-          foundCover.minimumAmount * 0.18 + foundCover.minimumAmount;
+        motorRequest.minimumAmountIncTax = Math.round(
+          foundCover.minimumAmount * 0.18 + foundCover.minimumAmount,
+        );
       }
 
       motorRequest.productCode = foundCover.productCode;

@@ -99,6 +99,8 @@ export class MotorCoverConsumer {
       premiumRate: 0.035,
       premiumExcludingDiscount: request.minimumAmountIncTax,
       premiumAfterDiscount: request.minimumAmountIncTax,
+      premiumExcludingTaxEquivalent:
+        request.minimumAmountIncTax - request.minimumAmount,
       taxCode: 'VAT-MAINLAND',
       taxRate: 0.18,
       taxAmount: request.minimumAmountIncTax - request.minimumAmount,
