@@ -140,10 +140,12 @@ export class MotorCovernoteService {
 
         const minimumAmount = rate * motorRequest.vehicleDetails.value;
 
-        motorRequest.minimumAmount =
+        const calculateMinimumAmount =
           minimumAmount < foundCover.minimumAmount
             ? foundCover.minimumAmount
             : minimumAmount;
+
+        motorRequest.minimumAmount = Math.round(calculateMinimumAmount);
 
         motorRequest.minimumAmountIncTax = Math.round(
           motorRequest.minimumAmount * 0.18 + motorRequest.minimumAmount,
