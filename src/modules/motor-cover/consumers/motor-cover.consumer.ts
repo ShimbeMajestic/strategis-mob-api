@@ -114,7 +114,7 @@ export class MotorCoverConsumer {
       policyHolderType: 1,
       policyHolderIdNumber: request.customer.identityNumber,
       policyHolderIdType: 1,
-      gender: request.customer.gender,
+      gender: request.customer.gender.toUpperCase().substring(0, 1),
       countryCode: 'TZA',
       region: request.customer.region.name,
       district: request.customer.district,
