@@ -12,6 +12,7 @@ import { HttpService } from '@nestjs/axios';
 import { appConfig } from 'src/config/app.config';
 import { OwnerCategory } from '../enums/motor-owner-category.enum';
 import { MotorUsage } from '../enums/motor-usage.enum';
+import { PaymentModeEnum } from '../enums/payment-mode.enum';
 
 @Processor(MOTOR_COVER_QUEUE)
 export class MotorCoverConsumer {
@@ -101,10 +102,10 @@ export class MotorCoverConsumer {
       sumInsured: request.vehicleDetails.value,
       sumInsucredEquivalent: request.vehicleDetails.value,
       premiumRate: request.coverType.rate / 100,
-      premiumExcludingDiscount: request.minimumAmountIncTax,
-      premiumAfterDiscount: request.minimumAmountIncTax,
-      premiumExcludingTaxEquivalent:
-        request.minimumAmountIncTax - request.minimumAmount,
+      premiumExcludingDiscount: request.minimumAmount,
+      premiumAfterDiscount: request.minimumAmount,
+      premiumExcludingTaxEquivalent: request.minimumAmount,
+      discount: 0,
       taxCode: 'VAT-MAINLAND',
       taxRate: 0.18,
       taxAmount: request.minimumAmountIncTax - request.minimumAmount,
@@ -118,7 +119,11 @@ export class MotorCoverConsumer {
       countryCode: 'TZA',
       region: request.customer.region.name,
       district: request.customer.district,
-      policyHolderPhoneNumber: request.customer.phone,
+      policyHolderPhoneNumber: request.customer.phone.substring(
+        1,
+        request.customer.phone.length,
+      ),
+      paymentMode: PaymentModeEnum.EFT,
       street: request.customer.district,
       emailAddress: request.customer.email,
       motorCategory: request.vehicleDetails.MotorCategory,
