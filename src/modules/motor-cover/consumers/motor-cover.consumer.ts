@@ -1,7 +1,6 @@
 import { Process, Processor } from '@nestjs/bull';
 import * as moment from 'moment';
 import { MOTOR_COVER_JOB, MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
-import * as generateUniqueId from 'generate-unique-id';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { Job } from 'bull';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
@@ -58,40 +57,55 @@ export class MotorCoverConsumer {
       if (status === TransactionStatusEnum.SUCCESS) {
         coverRequest.status = MotorCoverRequestStatus.PAID;
         coverRequest.requestId = reference;
-        await coverRequest.save();
 
         const payload = this.prepareTiraRequest(coverRequest);
 
-        await this.httpService
+        this.httpService
           .post(appConfig.tiraApiUrl, payload)
-          .subscribe((response) => {
-            console.log(response);
+          .subscribe(async (response) => {
+            if (!response.data.success) {
+              this.logger.log(
+                `Failed to initiate process of acquiring an esticker`,
+              );
+
+              coverRequest.status =
+                MotorCoverRequestStatus.STICKER_PROCESS_FAILED;
+              await coverRequest.save();
+
+              return {
+                success: true,
+              };
+
+              // Notify user, via sms & notification
+            }
+
+            this.logger.log(
+              `Successfully initiated acquiring sticker from TIRA`,
+            );
+
+            coverRequest.status = MotorCoverRequestStatus.WAIT_FOR_STICKER;
+            await coverRequest.save();
+            // Notify user, via sms & notification
           });
       }
     } catch (error) {
-      console.log(error);
-      this.logger.log(error.message);
+      this.logger.error(error.message);
     }
   }
 
   prepareTiraRequest = (request: MotorCoverRequest) => {
     return {
       requestId: request.requestId,
-      coverNoteStartDate: moment().format('YYYY-MM-DDTHH:mm:ss'),
-      coverNoteEndDate: moment()
-        .add(request.motorCoverDuration.duration, 'days')
-        .subtract(1, 'day')
-        .endOf('day')
-        .format('YYYY-MM-DDTHH:mm:ss'),
+      coverNoteStartDate: moment(request.coverNoteStartDate).format(
+        'YYYY-MM-DDTHH:mm:ss',
+      ),
+      coverNoteEndDate: moment(request.coverNoteEndDate).format(
+        'YYYY-MM-DDTHH:mm:ss',
+      ),
       coverNoteType: 1,
-      coverNoteNumber:
-        'SITL-' + generateUniqueId({ length: 7, useLetters: false }), // comeback to this
-      coverNoteReferenceNumber: generateUniqueId({
-        length: 14,
-        useLetters: false,
-      }), // comeback to this
-      policyNumber:
-        'SITL-POL-' + generateUniqueId({ length: 7, useLetters: false }),
+      coverNoteNumber: request.coverNoteNumber,
+      coverNoteReferenceNumber: request.coverNoteReferenceNumber,
+      policyNumber: request.policyNumber,
       covernoteDescription: request.coverType.riskName,
       operativeClause: request.motorCover.name,
       currencyCode: request.currency,

@@ -91,6 +91,18 @@ export class MotorCoverRequest extends BaseEntity {
   @Column({ default: MotorCoverRequestStatus.PENDING })
   status: MotorCoverRequestStatus;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  statusDescription: string;
+
+  @FilterableField(() => GraphQLISODateTime, { nullable: true })
+  @Column({ nullable: true })
+  coverNoteStartDate: Date;
+
+  @FilterableField(() => GraphQLISODateTime, { nullable: true })
+  @Column({ nullable: true })
+  coverNoteEndDate: Date;
+
   @OneToMany(() => Transaction, (transaction) => transaction.motorCoverRequest)
   transactions: Transaction[];
 
@@ -129,6 +141,18 @@ export class MotorCoverRequest extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   requestId: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  coverNoteNumber: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  coverNoteReferenceNumber: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  policyNumber: string;
 
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()

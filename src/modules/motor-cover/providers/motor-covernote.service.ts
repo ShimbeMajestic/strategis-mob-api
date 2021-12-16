@@ -19,7 +19,11 @@ import { MotorUsageType } from '../enums/motor-usage.enum';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
 import { VehicleDetails } from '../models/vehicle-details.model';
 import { VehicleDetailService } from './vehicle-detail.service';
-import { HttpService } from '@nestjs/axios';
+import { TiraCallbackDto } from '../dtos/tira-callback.dto';
+import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
+import { MotorPolicy } from '../models/motor-policy.model';
+import * as moment from 'moment';
+import * as generateUniqueId from 'generate-unique-id';
 
 @Injectable()
 export class MotorCovernoteService {
@@ -28,7 +32,6 @@ export class MotorCovernoteService {
   constructor(
     private readonly vehicleDetailService: VehicleDetailService,
     private transactionService: TransactionService,
-    private httpService: HttpService,
   ) {}
 
   async setMotorCoverAndDuration(
@@ -160,8 +163,18 @@ export class MotorCovernoteService {
       motorRequest.productCode = foundCover.productCode;
       motorRequest.riskCode = foundCover.riskCode;
       motorRequest.productName = foundCover.productName;
-
-      motorRequest.riskName = foundCover.riskName;
+      motorRequest.coverNoteStartDate = moment().toDate();
+      motorRequest.coverNoteEndDate = moment()
+        .add(motorRequest.motorCoverDuration.duration, 'days')
+        .subtract(1, 'day')
+        .endOf('day')
+        .toDate();
+      motorRequest.coverNoteNumber =
+        'SITL-' + generateUniqueId({ length: 7, useLetters: false });
+      motorRequest.policyNumber =
+        'SITL-POL-' + generateUniqueId({ length: 7, useLetters: false });
+      motorRequest.coverNoteNumber =
+        'SITL-' + generateUniqueId({ length: 7, useLetters: false }); // comeback to this
       motorRequest.coverType = foundCover;
 
       await motorRequest.save();
@@ -313,6 +326,77 @@ export class MotorCovernoteService {
     await motorCoverRequest.vehicleDetails.save();
 
     return motorCoverRequest;
+  }
+
+  async handleCallbackFromTira(input: TiraCallbackDto) {
+    const {
+      RequestId,
+      StickerNumber,
+      ResponseStatusDesc,
+      ResponseStatusCode,
+      CoverNoteReferenceNumber,
+    } = input;
+
+    try {
+      const status = [
+        'TIRA001', // success NEW, RENEW or ENDORSEMENT
+        'TIRA214', // success CANCELLATION
+      ].includes(ResponseStatusCode)
+        ? MotorCoverRequestStatus.SUCCESS
+        : MotorCoverRequestStatus.STICKER_PROCESS_FAILED;
+
+      const request = await MotorCoverRequest.findOne({
+        where: {
+          requestId: RequestId,
+        },
+        select: ['customer'],
+      });
+
+      if (!request) {
+        return {
+          success: false,
+          message: 'Request ID not found!',
+        };
+      }
+
+      request.status = MotorCoverRequestStatus.SUCCESS;
+      request.statusDescription = ResponseStatusDesc;
+
+      await request.save();
+
+      if (status === MotorCoverRequestStatus.SUCCESS) {
+        const policy = new MotorPolicy();
+
+        policy.customerId = request.customerId;
+        policy.coverNoteStartDate = request.coverNoteStartDate;
+        policy.coverNoteEndDate = request.coverNoteEndDate;
+        policy.motorCoverRequestId = request.id;
+        policy.eSticker = StickerNumber;
+        policy.coverNoteReferenceNumber = CoverNoteReferenceNumber;
+
+        await policy.save();
+
+        // Notify user via sms & push notification
+      } else {
+        // Notify user via sms & push notification
+      }
+
+      return {
+        success: true,
+        message: 'Successfully handled callback',
+      };
+    } catch (error) {
+      this.logger.error(error.message);
+
+      return {
+        success: false,
+        message: 'Failed to handle callback',
+        data: {
+          description: error.message,
+          stack: error.stack,
+        },
+      };
+    }
   }
 
   private getPremiumRate = (duration: number, premiumRate: number) => {
