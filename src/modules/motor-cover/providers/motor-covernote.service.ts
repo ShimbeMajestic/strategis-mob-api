@@ -349,7 +349,7 @@ export class MotorCovernoteService {
         where: {
           requestId: RequestId,
         },
-        select: ['customer'],
+        relations: ['customer'],
       });
 
       if (!request) {
