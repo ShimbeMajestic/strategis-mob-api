@@ -107,8 +107,8 @@ export class VehicleDetails extends BaseEntity {
   @Column({ nullable: true })
   OwnerAddress?: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Field()
+  @Column({ default: 0 })
   value: number;
 
   @Field({ nullable: true })

@@ -9,12 +9,10 @@ import {
   TRANSACTION_CALLBACK_QUEUE,
 } from 'src/shared/sms/constants';
 import { GqlAuthGuard } from '../auth/auth.guard';
-import { MotorCovernoteModule } from '../motor-cover/motor-covernote.module';
 import { TransactionController } from './controllers/transaction.controller';
 import { Transaction } from './models/transaction.model';
 import { TransactionConsumer } from './consumers/transaction.consumer';
 import { TransactionService } from './providers/transaction.service';
-import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
 
 @Module({
   imports: [
@@ -50,7 +48,7 @@ import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
     }),
   ],
   controllers: [TransactionController],
-  providers: [TransactionConsumer, MotorCoverConsumer, TransactionService],
+  providers: [TransactionConsumer, TransactionService],
   exports: [TransactionService],
 })
 export class TransactionsModule {}

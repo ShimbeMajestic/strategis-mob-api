@@ -4,12 +4,14 @@ import { MOTOR_COVER_JOB, MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
 import * as generateUniqueId from 'generate-unique-id';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { Job } from 'bull';
-import { MotorCoverRequest } from '../../motor-cover/models/motor-cover-request.model';
+import { MotorCoverRequest } from '../models/motor-cover-request.model';
 import { Logger, NotFoundException } from '@nestjs/common';
 import { TransactionStatusEnum } from 'src/modules/transactions/enums/transaction.enum';
-import { MotorCoverRequestStatus } from '../../motor-cover/enums/motor-cover-req-status.enum';
+import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { HttpService } from '@nestjs/axios';
 import { appConfig } from 'src/config/app.config';
+import { OwnerCategory } from '../enums/motor-owner-category.enum';
+import { MotorUsage } from '../enums/motor-usage.enum';
 
 @Processor(MOTOR_COVER_QUEUE)
 export class MotorCoverConsumer {
@@ -77,6 +79,8 @@ export class MotorCoverConsumer {
       coverNoteStartDate: moment().format('YYYY-MM-DDTHH:mm:ss'),
       coverNoteEndDate: moment()
         .add(request.motorCoverDuration.duration, 'days')
+        .subtract(1, 'day')
+        .endOf('day')
         .format('YYYY-MM-DDTHH:mm:ss'),
       coverNoteType: 1,
       coverNoteNumber:
@@ -86,7 +90,7 @@ export class MotorCoverConsumer {
         useLetters: false,
       }), // comeback to this
       policyNumber:
-        'SITL-POL-' + +generateUniqueId({ length: 7, useLetters: false }),
+        'SITL-POL-' + generateUniqueId({ length: 7, useLetters: false }),
       covernoteDescription: request.coverType.riskName,
       operativeClause: request.motorCover.name,
       currencyCode: request.currency,
@@ -96,7 +100,7 @@ export class MotorCoverConsumer {
       riskCode: request.coverType.riskCode,
       sumInsured: request.vehicleDetails.value,
       sumInsucredEquivalent: request.vehicleDetails.value,
-      premiumRate: 0.035,
+      premiumRate: request.coverType.rate / 100,
       premiumExcludingDiscount: request.minimumAmountIncTax,
       premiumAfterDiscount: request.minimumAmountIncTax,
       premiumExcludingTaxEquivalent:
@@ -131,9 +135,17 @@ export class MotorCoverConsumer {
       yearOfManufacture: request.vehicleDetails.YearOfManufacture,
       tareWeight: request.vehicleDetails.TareWeight,
       grossWeight: request.vehicleDetails.GrossWeight,
-      motorUsage: request.vehicleDetails.MotorUsage,
+      commissionPaid: 0,
+      commissionRate: 0,
+      motorUsage:
+        request.vehicleDetails.MotorUsage === 'Private or Normal'
+          ? MotorUsage.PRIVATE
+          : MotorUsage.COMMERCIAL,
       ownerName: request.vehicleDetails.OwnerName,
-      ownerCategory: request.vehicleDetails.OwnerCategory,
+      ownerCategory:
+        request.vehicleDetails.OwnerCategory === 'Sole Proprietor'
+          ? OwnerCategory.SOLE_PROPRIETOR
+          : OwnerCategory.CORPORATE,
       ownerAddress: request.vehicleDetails.OwnerAddress,
       sittingCapacity: request.vehicleDetails.SittingCapacity,
       callbackUrl: appConfig.appCallbackUrl + '/motor-cover/callback',
