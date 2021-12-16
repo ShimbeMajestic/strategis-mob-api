@@ -73,7 +73,7 @@ export class MotorCoverConsumer {
               await coverRequest.save();
 
               return {
-                success: true,
+                success: false,
               };
 
               // Notify user, via sms & notification
@@ -85,6 +85,10 @@ export class MotorCoverConsumer {
 
             coverRequest.status = MotorCoverRequestStatus.WAIT_FOR_STICKER;
             await coverRequest.save();
+
+            return {
+              success: true,
+            };
             // Notify user, via sms & notification
           });
       }
