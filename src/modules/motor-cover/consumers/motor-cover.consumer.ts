@@ -137,6 +137,7 @@ export class MotorCoverConsumer {
       grossWeight: request.vehicleDetails.GrossWeight,
       commissionPaid: 0,
       commissionRate: 0,
+      isFleet: 'N',
       motorUsage:
         request.vehicleDetails.MotorUsage === 'Private or Normal'
           ? MotorUsage.PRIVATE
