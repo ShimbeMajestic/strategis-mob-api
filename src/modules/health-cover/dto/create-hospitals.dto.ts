@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Location } from '../models/location.model';
 
 @InputType()
@@ -15,4 +15,16 @@ export class CreateHospitalDto {
   @Field()
   @IsNotEmpty()
   location: Location;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  email: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  phone: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  website: string;
 }
