@@ -13,10 +13,12 @@ import { TransactionController } from './controllers/transaction.controller';
 import { Transaction } from './models/transaction.model';
 import { TransactionConsumer } from './consumers/transaction.consumer';
 import { TransactionService } from './providers/transaction.service';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
   imports: [
     HttpModule,
+    SharedModule,
     NestjsQueryGraphQLModule.forFeature({
       imports: [NestjsQueryTypeOrmModule.forFeature([Transaction])],
       resolvers: [
