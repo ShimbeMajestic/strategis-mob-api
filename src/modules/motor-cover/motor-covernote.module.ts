@@ -30,10 +30,12 @@ import { MotorPolicy } from './models/motor-policy.model';
 import { HttpModule } from '@nestjs/axios';
 import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
 import { MotorCoverController } from './controllers/motor-cover.controller';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
   imports: [
     HttpModule,
+    SharedModule,
     CacheModule.register({
       store: redisStore,
       ...redisConfig.default,

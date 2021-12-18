@@ -24,6 +24,7 @@ import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { MotorPolicy } from '../models/motor-policy.model';
 import * as moment from 'moment';
 import * as generateUniqueId from 'generate-unique-id';
+import { NotificationService } from 'src/shared/notification/services/notification.service';
 
 @Injectable()
 export class MotorCovernoteService {
@@ -32,6 +33,7 @@ export class MotorCovernoteService {
   constructor(
     private readonly vehicleDetailService: VehicleDetailService,
     private transactionService: TransactionService,
+    private notificationService: NotificationService,
   ) {}
 
   async setMotorCoverAndDuration(
@@ -384,8 +386,19 @@ export class MotorCovernoteService {
         await policy.save();
 
         // Notify user via sms & push notification
+
+        await this.notificationService.sendNotificationToDevice({
+          title: 'Successfully Proccessed e-Sticker',
+          body: `Successfully recieved e-Sticker from TIRA. Sticker number ${policy.eSticker}.\nCovernote reference number: ${policy.coverNoteReferenceNumber}.\nStart Date: ${policy.coverNoteStartDate}.\nEnd Date: ${policy.coverNoteEndDate}`,
+          token: request.customer.token,
+        });
       } else {
         // Notify user via sms & push notification
+        await this.notificationService.sendNotificationToDevice({
+          title: 'Failed to Obtain e-Sticker',
+          body: `Failed to obtain e-Sticker for vehicle ${request.vehicleDetails.RegistrationNumber}`,
+          token: request.customer.token,
+        });
       }
 
       return {
