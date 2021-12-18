@@ -148,15 +148,22 @@ export class MotorCovernoteService {
             ? foundCover.minimumAmount
             : minimumAmount;
 
-        motorRequest.minimumAmount = Math.round(calculateMinimumAmount);
+        motorRequest.minimumAmount = parseFloat(
+          calculateMinimumAmount.toFixed(2),
+        );
 
-        motorRequest.minimumAmountIncTax = Math.round(
-          motorRequest.minimumAmount * 0.18 + motorRequest.minimumAmount,
+        motorRequest.minimumAmountIncTax = parseFloat(
+          (
+            motorRequest.minimumAmount * 0.18 +
+            motorRequest.minimumAmount
+          ).toFixed(2),
         );
       } else {
         motorRequest.minimumAmount = foundCover.minimumAmount;
-        motorRequest.minimumAmountIncTax = Math.round(
-          foundCover.minimumAmount * 0.18 + foundCover.minimumAmount,
+        motorRequest.minimumAmountIncTax = parseFloat(
+          (foundCover.minimumAmount * 0.18 + foundCover.minimumAmount).toFixed(
+            2,
+          ),
         );
       }
 
