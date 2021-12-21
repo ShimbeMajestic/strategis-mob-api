@@ -31,7 +31,7 @@ export class MotorCoverType extends BaseEntity {
   productName: string;
 
   @Column()
-  @Field()
+  @FilterableField()
   usage: MotorUsageType;
 
   @Column({ unique: true })
@@ -57,7 +57,7 @@ export class MotorCoverType extends BaseEntity {
   @ManyToOne(() => MotorCover, (cover) => cover.types)
   motorCover: MotorCover;
 
-  @Field({ nullable: true })
+  @FilterableField({ nullable: true })
   @Column({ nullable: true })
   motorCoverId: number;
 
