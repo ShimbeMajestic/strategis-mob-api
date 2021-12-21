@@ -61,7 +61,7 @@ export class MotorCoverType extends BaseEntity {
   @Column({ nullable: true })
   motorCoverId: number;
 
-  @Field()
+  @FilterableField()
   @Column({
     enum: VehicleTypeEnum,
     enumName: 'VehicleTypeEnum',
