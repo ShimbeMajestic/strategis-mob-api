@@ -10,8 +10,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MotorCategory } from '../enums/motor-category.enum';
-import { MotorUsage } from '../enums/motor-usage.enum';
+import { MotorUsageType } from '../enums/motor-usage.enum';
+import { VehicleTypeEnum } from '../enums/vehicle-type.enum';
 import { MotorCover } from './motor-cover.model';
 
 @ObjectType()
@@ -30,13 +30,9 @@ export class MotorCoverType extends BaseEntity {
   @Field()
   productName: string;
 
-  @Column({ nullable: true })
+  @Column()
   @Field()
-  usage: MotorUsage;
-
-  @Column({ nullable: true })
-  @Field()
-  category: MotorCategory;
+  usage: MotorUsageType;
 
   @Column({ unique: true })
   @Field()
@@ -46,7 +42,7 @@ export class MotorCoverType extends BaseEntity {
   @Field()
   riskName: string;
 
-  @Column()
+  @Column({ default: 0.0, type: 'numeric' })
   @Field()
   rate: number;
 
@@ -57,6 +53,25 @@ export class MotorCoverType extends BaseEntity {
   @Column()
   @Field()
   minimumAmount: number;
+
+  @ManyToOne(() => MotorCover, (cover) => cover.types)
+  motorCover: MotorCover;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  motorCoverId: number;
+
+  @Field()
+  @Column({
+    enum: VehicleTypeEnum,
+    enumName: 'VehicleTypeEnum',
+    default: VehicleTypeEnum.FOUR_WHEELER,
+  })
+  vehicleType: VehicleTypeEnum;
+
+  @Field()
+  @Column({ default: 0 })
+  addOnAmount: number;
 
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()
@@ -69,11 +84,4 @@ export class MotorCoverType extends BaseEntity {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @DeleteDateColumn()
   deletedAt: Date;
-
-  @ManyToOne(() => MotorCover, (cover) => cover.types)
-  motorCover: MotorCover;
-
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  motorCoverId: number;
 }

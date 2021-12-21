@@ -25,6 +25,7 @@ import { MotorPolicy } from '../models/motor-policy.model';
 import * as moment from 'moment';
 import * as generateUniqueId from 'generate-unique-id';
 import { NotificationService } from 'src/shared/notification/services/notification.service';
+import { SetMotorCoverType } from '../dtos/set-motorcover-type.dto';
 
 @Injectable()
 export class MotorCovernoteService {
@@ -117,6 +118,7 @@ export class MotorCovernoteService {
         'motorCover',
         'motorCoverDuration',
         'motorCover.types',
+        'motorCoverType',
       ],
     });
 
@@ -125,29 +127,28 @@ export class MotorCovernoteService {
     }
 
     if (motorRequest.usageType === MotorUsageType.PRIVATE) {
-      const foundCover = motorRequest.motorCover.types.find(
-        (cover) =>
-          cover.usage === 1 &&
-          cover.category === motorRequest.vehicleDetails.MotorCategory,
+      const coverType = motorRequest.motorCover.types.find(
+        (cover) => cover.usage === MotorUsageType.PRIVATE,
+        // cover.category === motorRequest.vehicleDetails.MotorCategory,
       );
 
-      if (!foundCover) {
+      if (!coverType) {
         throw new BadRequestException('No cover fits the description!');
       }
 
       // Find out if cover is comprehensive or third part fire and theft
-      if (foundCover.rate > 0) {
+      if (coverType.rate > 0) {
         // Calculate short period if available
         const rate = this.getPremiumRate(
           motorRequest.motorCoverDuration.duration,
-          foundCover.rate / 100,
+          coverType.rate / 100,
         );
 
         const minimumAmount = rate * motorRequest.vehicleDetails.value;
 
         const calculateMinimumAmount =
-          minimumAmount < foundCover.minimumAmount
-            ? foundCover.minimumAmount
+          minimumAmount < coverType.minimumAmount
+            ? coverType.minimumAmount
             : minimumAmount;
 
         motorRequest.minimumAmount = parseFloat(
@@ -161,17 +162,15 @@ export class MotorCovernoteService {
           ).toFixed(2),
         );
       } else {
-        motorRequest.minimumAmount = foundCover.minimumAmount;
+        motorRequest.minimumAmount = coverType.minimumAmount;
         motorRequest.minimumAmountIncTax = parseFloat(
-          (foundCover.minimumAmount * 0.18 + foundCover.minimumAmount).toFixed(
-            2,
-          ),
+          (coverType.minimumAmount * 0.18 + coverType.minimumAmount).toFixed(2),
         );
       }
 
-      motorRequest.productCode = foundCover.productCode;
-      motorRequest.riskCode = foundCover.riskCode;
-      motorRequest.productName = foundCover.productName;
+      motorRequest.productCode = coverType.productCode;
+      motorRequest.riskCode = coverType.riskCode;
+      motorRequest.productName = coverType.productName;
       motorRequest.coverNoteStartDate = moment().toDate();
       motorRequest.coverNoteEndDate = moment()
         .add(motorRequest.motorCoverDuration.duration, 'days')
@@ -184,7 +183,7 @@ export class MotorCovernoteService {
         'SITL-POL-' + generateUniqueId({ length: 7, useLetters: false });
       motorRequest.coverNoteNumber =
         'SITL-' + generateUniqueId({ length: 7, useLetters: false }); // comeback to this
-      motorRequest.coverType = foundCover;
+      motorRequest.coverType = coverType;
 
       await motorRequest.save();
     }
@@ -417,6 +416,25 @@ export class MotorCovernoteService {
         },
       };
     }
+  }
+
+  async setMotorCoverType(input: SetMotorCoverType) {
+    const { coverTypedId, requestId } = input;
+    const foundRequest = await MotorCoverRequest.findOne({
+      where: {
+        requestId,
+      },
+    });
+
+    if (!foundRequest) {
+      throw new NotFoundException('Motor cover request not found!');
+    }
+
+    foundRequest.motorCoverTypeId = coverTypedId;
+
+    await foundRequest.save();
+
+    return foundRequest;
   }
 
   private getPremiumRate = (duration: number, premiumRate: number) => {

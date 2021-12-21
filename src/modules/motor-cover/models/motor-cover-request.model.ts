@@ -85,6 +85,10 @@ export class MotorCoverRequest extends BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
+  vehicleType: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   motorCoverDurationId: number;
 
   @Field()
