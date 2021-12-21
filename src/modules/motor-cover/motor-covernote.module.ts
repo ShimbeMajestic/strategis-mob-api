@@ -76,6 +76,7 @@ import { SharedModule } from 'src/shared/shared.module';
           CreateDTOClass: CreateMotorCoverTypeDto,
           UpdateDTOClass: UpdateMotorCoverTypeDto,
           guards: [GqlAuthGuard],
+          read: { pagingStrategy: PagingStrategies.NONE },
           // create: { disabled: true },
           update: {
             decorators: [UsePermission(PermissionEnum.MANAGE_COVER_TYPES)],
