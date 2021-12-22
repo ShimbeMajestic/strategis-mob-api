@@ -113,80 +113,85 @@ export class MotorCovernoteService {
   async getTotalAmountToBePaid(requestId: number): Promise<MotorCoverRequest> {
     const motorRequest = await MotorCoverRequest.findOne({
       where: { id: requestId },
-      relations: [
-        'vehicleDetails',
-        'motorCover',
-        'motorCoverDuration',
-        'motorCover.types',
-        'motorCoverType',
-      ],
+      relations: ['vehicleDetails', 'motorCoverDuration', 'coverType', ''],
     });
 
     if (!motorRequest) {
       throw new NotFoundException('Motor cover request not found!');
     }
 
-    if (motorRequest.usageType === MotorUsageType.PRIVATE) {
-      const coverType = motorRequest.motorCover.types.find(
-        (cover) => cover.usage === MotorUsageType.PRIVATE,
-        // cover.category === motorRequest.vehicleDetails.MotorCategory,
+    if (motorRequest.coverType.rate > 0) {
+      // Calculate short period if available
+      const rate = this.getPremiumRate(
+        motorRequest.motorCoverDuration.duration,
+        motorRequest.coverType.rate / 100,
       );
 
-      if (!coverType) {
-        throw new BadRequestException('No cover fits the description!');
+      const minimumAmount =
+        rate * motorRequest.vehicleDetails.value +
+        motorRequest.coverType.addOnAmount;
+
+      let calculateMinimumAmount =
+        minimumAmount < motorRequest.coverType.minimumAmount
+          ? motorRequest.coverType.minimumAmount
+          : minimumAmount;
+
+      if (
+        motorRequest.coverType.usage === MotorUsageType.COMMERCIAL_PASSENGER
+      ) {
+        calculateMinimumAmount +=
+          motorRequest.coverType.perSeatAmount *
+          motorRequest.vehicleDetails.SittingCapacity;
       }
 
-      // Find out if cover is comprehensive or third part fire and theft
-      if (coverType.rate > 0) {
-        // Calculate short period if available
-        const rate = this.getPremiumRate(
-          motorRequest.motorCoverDuration.duration,
-          coverType.rate / 100,
-        );
+      motorRequest.minimumAmount = parseFloat(
+        calculateMinimumAmount.toFixed(2),
+      );
 
-        const minimumAmount = rate * motorRequest.vehicleDetails.value;
+      motorRequest.minimumAmountIncTax = parseFloat(
+        (
+          motorRequest.minimumAmount * 0.18 +
+          motorRequest.minimumAmount
+        ).toFixed(2),
+      );
+    } else {
+      motorRequest.minimumAmount =
+        motorRequest.coverType.minimumAmount +
+        motorRequest.coverType.addOnAmount;
 
-        const calculateMinimumAmount =
-          minimumAmount < coverType.minimumAmount
-            ? coverType.minimumAmount
-            : minimumAmount;
-
-        motorRequest.minimumAmount = parseFloat(
-          calculateMinimumAmount.toFixed(2),
-        );
-
-        motorRequest.minimumAmountIncTax = parseFloat(
-          (
-            motorRequest.minimumAmount * 0.18 +
-            motorRequest.minimumAmount
-          ).toFixed(2),
-        );
-      } else {
-        motorRequest.minimumAmount = coverType.minimumAmount;
-        motorRequest.minimumAmountIncTax = parseFloat(
-          (coverType.minimumAmount * 0.18 + coverType.minimumAmount).toFixed(2),
-        );
+      if (
+        motorRequest.coverType.usage === MotorUsageType.COMMERCIAL_PASSENGER
+      ) {
+        motorRequest.minimumAmount +=
+          motorRequest.coverType.perSeatAmount *
+          motorRequest.vehicleDetails.SittingCapacity;
       }
 
-      motorRequest.productCode = coverType.productCode;
-      motorRequest.riskCode = coverType.riskCode;
-      motorRequest.productName = coverType.productName;
-      motorRequest.coverNoteStartDate = moment().toDate();
-      motorRequest.coverNoteEndDate = moment()
-        .add(motorRequest.motorCoverDuration.duration, 'days')
-        .subtract(1, 'day')
-        .endOf('day')
-        .toDate();
-      motorRequest.coverNoteNumber =
-        'SITL-' + generateUniqueId({ length: 7, useLetters: false });
-      motorRequest.policyNumber =
-        'SITL-POL-' + generateUniqueId({ length: 7, useLetters: false });
-      motorRequest.coverNoteNumber =
-        'SITL-' + generateUniqueId({ length: 7, useLetters: false }); // comeback to this
-      motorRequest.coverType = coverType;
-
-      await motorRequest.save();
+      motorRequest.minimumAmountIncTax = parseFloat(
+        (
+          motorRequest.minimumAmount * 0.18 +
+          motorRequest.minimumAmount
+        ).toFixed(2),
+      );
     }
+
+    motorRequest.productCode = motorRequest.coverType.productCode;
+    motorRequest.riskCode = motorRequest.coverType.riskCode;
+    motorRequest.productName = motorRequest.coverType.productName;
+    motorRequest.coverNoteStartDate = moment().toDate();
+    motorRequest.coverNoteEndDate = moment()
+      .add(motorRequest.motorCoverDuration.duration, 'days')
+      .subtract(1, 'day')
+      .endOf('day')
+      .toDate();
+    motorRequest.coverNoteNumber =
+      'SITL-' + generateUniqueId({ length: 7, useLetters: false });
+    motorRequest.policyNumber =
+      'SITL-POL-' + generateUniqueId({ length: 7, useLetters: false });
+    motorRequest.coverNoteNumber =
+      'SITL-' + generateUniqueId({ length: 7, useLetters: false }); // comeback to this
+
+    await motorRequest.save();
 
     return motorRequest;
   }
