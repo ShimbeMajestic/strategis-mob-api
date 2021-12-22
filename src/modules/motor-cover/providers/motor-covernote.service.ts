@@ -429,7 +429,7 @@ export class MotorCovernoteService {
     const { coverTypedId, requestId } = input;
     const foundRequest = await MotorCoverRequest.findOne({
       where: {
-        requestId,
+        id: requestId,
       },
     });
 
