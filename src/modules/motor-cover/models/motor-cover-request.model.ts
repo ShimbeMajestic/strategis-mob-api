@@ -35,7 +35,7 @@ import { VehicleDetails } from './vehicle-details.model';
   }),
 })
 @Relation('motorCover', () => MotorCover, { nullable: true })
-@Relation('coverType', () => MotorCoverType, { nullable: true })
+@Relation('motorCoverType', () => MotorCoverType, { nullable: true })
 @Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
@@ -52,7 +52,7 @@ export class MotorCoverRequest extends BaseEntity {
   motorCover: MotorCover;
 
   @ManyToOne(() => MotorCoverType)
-  coverType: MotorCoverType;
+  motorCoverType: MotorCoverType;
 
   @Field({ nullable: true })
   @Column({ nullable: true })

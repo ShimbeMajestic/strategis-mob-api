@@ -113,34 +113,35 @@ export class MotorCovernoteService {
   async getTotalAmountToBePaid(requestId: number): Promise<MotorCoverRequest> {
     const motorRequest = await MotorCoverRequest.findOne({
       where: { id: requestId },
-      relations: ['vehicleDetails', 'motorCoverDuration', 'coverType', ''],
+      relations: ['vehicleDetails', 'motorCoverDuration', 'motorCoverType'],
     });
 
     if (!motorRequest) {
       throw new NotFoundException('Motor cover request not found!');
     }
 
-    if (motorRequest.coverType.rate > 0) {
+    if (motorRequest.motorCoverType.rate > 0) {
       // Calculate short period if available
       const rate = this.getPremiumRate(
         motorRequest.motorCoverDuration.duration,
-        motorRequest.coverType.rate / 100,
+        motorRequest.motorCoverType.rate / 100,
       );
 
       const minimumAmount =
         rate * motorRequest.vehicleDetails.value +
-        motorRequest.coverType.addOnAmount;
+        motorRequest.motorCoverType.addOnAmount;
 
       let calculateMinimumAmount =
-        minimumAmount < motorRequest.coverType.minimumAmount
-          ? motorRequest.coverType.minimumAmount
+        minimumAmount < motorRequest.motorCoverType.minimumAmount
+          ? motorRequest.motorCoverType.minimumAmount
           : minimumAmount;
 
       if (
-        motorRequest.coverType.usage === MotorUsageType.COMMERCIAL_PASSENGER
+        motorRequest.motorCoverType.usage ===
+        MotorUsageType.COMMERCIAL_PASSENGER
       ) {
         calculateMinimumAmount +=
-          motorRequest.coverType.perSeatAmount *
+          motorRequest.motorCoverType.perSeatAmount *
           motorRequest.vehicleDetails.SittingCapacity;
       }
 
@@ -156,14 +157,15 @@ export class MotorCovernoteService {
       );
     } else {
       motorRequest.minimumAmount =
-        motorRequest.coverType.minimumAmount +
-        motorRequest.coverType.addOnAmount;
+        motorRequest.motorCoverType.minimumAmount +
+        motorRequest.motorCoverType.addOnAmount;
 
       if (
-        motorRequest.coverType.usage === MotorUsageType.COMMERCIAL_PASSENGER
+        motorRequest.motorCoverType.usage ===
+        MotorUsageType.COMMERCIAL_PASSENGER
       ) {
         motorRequest.minimumAmount +=
-          motorRequest.coverType.perSeatAmount *
+          motorRequest.motorCoverType.perSeatAmount *
           motorRequest.vehicleDetails.SittingCapacity;
       }
 
@@ -175,9 +177,9 @@ export class MotorCovernoteService {
       );
     }
 
-    motorRequest.productCode = motorRequest.coverType.productCode;
-    motorRequest.riskCode = motorRequest.coverType.riskCode;
-    motorRequest.productName = motorRequest.coverType.productName;
+    motorRequest.productCode = motorRequest.motorCoverType.productCode;
+    motorRequest.riskCode = motorRequest.motorCoverType.riskCode;
+    motorRequest.productName = motorRequest.motorCoverType.productName;
     motorRequest.coverNoteStartDate = moment().toDate();
     motorRequest.coverNoteEndDate = moment()
       .add(motorRequest.motorCoverDuration.duration, 'days')
