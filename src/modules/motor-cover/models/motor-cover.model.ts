@@ -31,11 +31,11 @@ export class MotorCover {
   @Field(() => ID)
   id: number;
 
-  @Field()
+  @FilterableField()
   @Column()
   name: string;
 
-  @Field()
+  @FilterableField()
   @Column()
   description: string;
 

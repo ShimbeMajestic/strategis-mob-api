@@ -27,7 +27,7 @@ export class MotorCoverType extends BaseEntity {
   productCode: string;
 
   @Column()
-  @Field()
+  @FilterableField()
   productName: string;
 
   @Column()
@@ -39,7 +39,7 @@ export class MotorCoverType extends BaseEntity {
   riskCode: string;
 
   @Column()
-  @Field()
+  @FilterableField()
   riskName: string;
 
   @Column({ default: 0.0, type: 'numeric' })
