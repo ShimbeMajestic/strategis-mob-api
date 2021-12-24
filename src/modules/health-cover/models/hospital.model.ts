@@ -20,23 +20,23 @@ export class Hospital extends BaseEntity {
   id: number;
 
   @Column()
-  @Field()
+  @FilterableField()
   name: string;
 
   @Column()
-  @Field()
+  @FilterableField()
   address: string;
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
+  @FilterableField({ nullable: true })
   email: string;
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
+  @FilterableField({ nullable: true })
   website: string;
 
   @Column({ nullable: true })
-  @Field({ nullable: true })
+  @FilterableField({ nullable: true })
   phone: string;
 
   @Field(() => Location, {
