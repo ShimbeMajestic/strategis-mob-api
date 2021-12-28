@@ -17,7 +17,7 @@ export class TravelEntity {
   id: number;
 
   @Column()
-  @Field()
+  @FilterableField()
   name: string;
 
   @FilterableField(() => GraphQLISODateTime)

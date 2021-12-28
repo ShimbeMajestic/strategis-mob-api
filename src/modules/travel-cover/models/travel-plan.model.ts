@@ -27,11 +27,11 @@ export class TravelPlan extends BaseEntity {
   id: number;
 
   @Column()
-  @Field()
+  @FilterableField()
   title: string;
 
   @Column()
-  @Field()
+  @FilterableField()
   duration: number;
 
   @ManyToOne(() => TravelEntity)
@@ -49,11 +49,11 @@ export class TravelPlan extends BaseEntity {
   destinationId: number;
 
   @Column()
-  @Field()
+  @FilterableField()
   price: number;
 
   @Column()
-  @Field()
+  @FilterableField()
   currency: string;
 
   @FilterableField({ nullable: true })
