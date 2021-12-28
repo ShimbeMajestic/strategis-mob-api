@@ -1,4 +1,8 @@
-import { FilterableField, Relation } from '@nestjs-query/query-graphql';
+import {
+  FilterableField,
+  FilterableRelation,
+  Relation,
+} from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import {
   BaseEntity,
@@ -15,8 +19,8 @@ import { TravelEntity } from './travel-entity.model';
 
 @Entity()
 @ObjectType()
-@Relation('travelEntity', () => TravelEntity)
-@Relation('destination', () => TravelDestination)
+@FilterableRelation('travelEntity', () => TravelEntity)
+@FilterableRelation('destination', () => TravelDestination)
 export class TravelPlan extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
@@ -34,14 +38,14 @@ export class TravelPlan extends BaseEntity {
   travelEntity: TravelEntity;
 
   @Column()
-  @Field()
+  @FilterableField()
   travelEntityId: number;
 
   @ManyToOne(() => TravelDestination)
   destination: TravelDestination;
 
   @Column()
-  @Field()
+  @FilterableField()
   destinationId: number;
 
   @Column()
@@ -52,7 +56,7 @@ export class TravelPlan extends BaseEntity {
   @Field()
   currency: string;
 
-  @Field({ nullable: true })
+  @FilterableField({ nullable: true })
   @Column({ nullable: true })
   package: string;
 
