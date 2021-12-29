@@ -19,7 +19,7 @@ import { MotorCover } from './motor-cover.model';
 @Relation('motorCover', () => MotorCover, { nullable: true })
 export class MotorCoverType extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @Column()

@@ -28,7 +28,7 @@ import { MotorCoverType } from './motor-cover-type.model';
 })
 export class MotorCover {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @FilterableField()

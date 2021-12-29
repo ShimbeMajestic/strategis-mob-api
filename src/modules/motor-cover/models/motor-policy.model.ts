@@ -30,7 +30,7 @@ import { MotorCoverRequest } from './motor-cover-request.model';
 })
 @Relation('customer', () => Customer)
 export class MotorPolicy extends BaseEntity {
-  @Field(() => ID)
+  @FilterableField(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 

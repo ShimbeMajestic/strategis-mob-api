@@ -30,7 +30,7 @@ import { ClaimEnum } from '../enums/claim.enum';
 })
 export class Claim extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @Column()

@@ -23,7 +23,7 @@ import { TravelEntity } from './travel-entity.model';
 @FilterableRelation('destination', () => TravelDestination)
 export class TravelPlan extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @Column()

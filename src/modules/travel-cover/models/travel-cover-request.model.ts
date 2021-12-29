@@ -41,7 +41,7 @@ import { TravelPlan } from './travel-plan.model';
 })
 export class TravelCoverRequest extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @ManyToOne(() => TravelPlan)

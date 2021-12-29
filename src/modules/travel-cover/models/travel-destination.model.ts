@@ -13,7 +13,7 @@ import {
 @ObjectType()
 export class TravelDestination {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @Column()

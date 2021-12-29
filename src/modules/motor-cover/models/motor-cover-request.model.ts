@@ -45,7 +45,7 @@ import { VehicleDetails } from './vehicle-details.model';
 })
 export class MotorCoverRequest extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @ManyToOne(() => MotorCover)

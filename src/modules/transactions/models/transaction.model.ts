@@ -32,7 +32,7 @@ import { TransactionStatusEnum } from '../enums/transaction.enum';
 })
 export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @ManyToOne(() => MotorCoverRequest)
@@ -60,7 +60,7 @@ export class Transaction extends BaseEntity {
   customer: Customer;
 
   @Column()
-  @Field()
+  @FilterableField()
   amount: number;
 
   @Column({

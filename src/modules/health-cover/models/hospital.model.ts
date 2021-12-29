@@ -15,7 +15,7 @@ import { Location } from './location.model';
 @Entity()
 @ObjectType()
 export class Hospital extends BaseEntity {
-  @Field(() => ID)
+  @FilterableField(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 

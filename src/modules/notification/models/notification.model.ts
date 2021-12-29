@@ -27,7 +27,7 @@ import { NotificationType } from '../enums/notification-type.enum';
 @Relation('customer', () => Customer, { nullable: true })
 export class Notification {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @Field()

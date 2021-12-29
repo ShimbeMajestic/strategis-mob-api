@@ -13,7 +13,7 @@ import {
 @ObjectType()
 export class TravelEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @Column()

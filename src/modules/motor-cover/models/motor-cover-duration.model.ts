@@ -19,7 +19,7 @@ import { MotorCover } from './motor-cover.model';
 })
 export class MotorCoverDuration extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
+  @FilterableField(() => ID)
   id: number;
 
   @Column()
