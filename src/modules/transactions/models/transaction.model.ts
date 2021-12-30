@@ -74,7 +74,7 @@ export class Transaction extends BaseEntity {
     enumName: 'TransactionStatusEnum',
     default: TransactionStatusEnum.PENDING,
   })
-  @Field()
+  @FilterableField()
   status: TransactionStatusEnum;
 
   @FilterableField()
