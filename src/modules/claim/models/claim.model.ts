@@ -17,17 +17,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ClaimAuthorizer } from '../authorizers/claim.authorizer';
 import { ClaimEnum } from '../enums/claim.enum';
 
 @Entity()
 @ObjectType()
 @Relation('policy', () => MotorPolicy)
 @Relation('customer', () => Customer)
-@Authorize({
-  authorize: (context: UserContext) => ({
-    customerId: { eq: context.req.user.id },
-  }),
-})
+@Authorize(ClaimAuthorizer)
 export class Claim extends BaseEntity {
   @PrimaryGeneratedColumn()
   @FilterableField(() => ID)

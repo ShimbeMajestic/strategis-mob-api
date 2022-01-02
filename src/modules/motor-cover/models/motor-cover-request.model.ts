@@ -20,6 +20,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { MotorCoverRequestAuthorizer } from '../authorizers/motor-cover-request.authorizer';
 import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { MotorUsageType } from '../enums/motor-usage.enum';
 import { MotorCoverDuration } from './motor-cover-duration.model';
@@ -29,11 +30,7 @@ import { VehicleDetails } from './vehicle-details.model';
 
 @Entity()
 @ObjectType()
-@Authorize({
-  authorize: (context: UserContext) => ({
-    customerId: { eq: context.req.user.id },
-  }),
-})
+@Authorize(MotorCoverRequestAuthorizer)
 @Relation('motorCover', () => MotorCover, { nullable: true })
 @Relation('motorCoverType', () => MotorCoverType, { nullable: true })
 @Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })

@@ -21,6 +21,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TravelCoverRequestAuthorizer } from '../authorizers/travel-cover-request.authorizer';
 import { TravelStatusEnum } from '../enums/travel-status.enum';
 import { TravelPlan } from './travel-plan.model';
 
@@ -34,11 +35,7 @@ import { TravelPlan } from './travel-plan.model';
   pagingStrategy: PagingStrategies.NONE,
 })
 @Relation('customer', () => Customer)
-@Authorize({
-  authorize: (context: UserContext) => ({
-    customerId: { eq: context.req.user.id },
-  }),
-})
+@Authorize(TravelCoverRequestAuthorizer)
 export class TravelCoverRequest extends BaseEntity {
   @PrimaryGeneratedColumn()
   @FilterableField(() => ID)
