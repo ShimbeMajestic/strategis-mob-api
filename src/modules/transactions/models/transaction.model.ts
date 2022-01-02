@@ -18,6 +18,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TransactionAuthorizer } from '../authorizers/transaction.authorizer';
 import { TransactionStatusEnum } from '../enums/transaction.enum';
 
 @Entity()
@@ -25,11 +26,7 @@ import { TransactionStatusEnum } from '../enums/transaction.enum';
 @Relation('motorCoverRequest', () => MotorCoverRequest, { nullable: true })
 @Relation('travelCoverRequest', () => TravelCoverRequest, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
-@Authorize({
-  authorize: (context: UserContext) => ({
-    customerId: { eq: context.req.user.id },
-  }),
-})
+@Authorize(TransactionAuthorizer)
 export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn()
   @FilterableField(() => ID)

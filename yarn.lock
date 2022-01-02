@@ -889,21 +889,21 @@
     handlebars "^4.7.6"
     pug "^3.0.1"
 
-"@nestjs-query/core@0.28.1", "@nestjs-query/core@^0.28.1":
-  version "0.28.1"
-  resolved "https://registry.yarnpkg.com/@nestjs-query/core/-/core-0.28.1.tgz#a1421eb76bfb5dabd2b8771f80ddcd549e36efb1"
-  integrity sha512-016Fdd6FKUcOYG5hPiFmAoTI9shesDT6h67I9kwxZGCMxORmi85hjDLEsDH04ZXk2JBLZsfVMmHq7SdHkAcpWQ==
+"@nestjs-query/core@0.30.0", "@nestjs-query/core@^0.30.1":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/@nestjs-query/core/-/core-0.30.0.tgz#2f86835a7b4d61e3a1c2f8b7ee7329a1041488ff"
+  integrity sha512-q2ykkGmC220LYkud6AGy8udyXspPSTVKHxAMwXMO/AsKEZkyT/kTEJdRoBPJqIs20Tdx8azDbEk4UCpb0l4Buw==
   dependencies:
     lodash.merge "^4.6.2"
     reflect-metadata "^0.1.13"
     tslib "^2.1.0"
 
-"@nestjs-query/query-graphql@^0.28.1":
-  version "0.28.1"
-  resolved "https://registry.yarnpkg.com/@nestjs-query/query-graphql/-/query-graphql-0.28.1.tgz#8ad1c6225370d68c1dc616ffb08ae6be487d0c6a"
-  integrity sha512-1sBPr5ibClmpV0ValkXaEURMDvdYNxEkAEf6A1rr23vrCQYml46PFuttgcVPOfWOFoWsAaVe0vdg1cbbu4Lg8A==
+"@nestjs-query/query-graphql@^0.30.1":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/@nestjs-query/query-graphql/-/query-graphql-0.30.0.tgz#9d22f6cfb13b77f3b56a64f9d00480cc36908bbd"
+  integrity sha512-nxy//6SOcsThr+1fE1wdfGm4SgiBzDWtxR1Uhbr7BefeEnqTqptbOn+W3wgayxg2bi89rcbCgn/gC7Mcum4BNw==
   dependencies:
-    "@nestjs-query/core" "0.28.1"
+    "@nestjs-query/core" "0.30.0"
     graphql-fields "^2.0.3"
     lodash.omit "^4.5.0"
     lower-case-first "^2.0.1"
@@ -911,14 +911,15 @@
     tslib "^2.1.0"
     upper-case-first "^2.0.1"
 
-"@nestjs-query/query-typeorm@^0.28.1":
-  version "0.28.1"
-  resolved "https://registry.yarnpkg.com/@nestjs-query/query-typeorm/-/query-typeorm-0.28.1.tgz#8c0b479b07f17b9482cb49f341e4fcea6e9dc9d2"
-  integrity sha512-ulfpepS/0NhmQeFnInekzOIBKwwWgwvnZsCR4c59kw0uH913yRW4Abp93nRtnNgnmCHxJQvZdaPYBGVNKlDy3Q==
+"@nestjs-query/query-typeorm@^0.30.1":
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/@nestjs-query/query-typeorm/-/query-typeorm-0.30.0.tgz#1707e87e6e209fa3c6c881674563e90ee663cf18"
+  integrity sha512-D+bczx26ingz1Qq3/3Vj1asZUGNL7mPv4GD6QKtTyCCznQ5QOmurGr+TsdjcrIgm1PMZBXKNEG70n7KwZ6t9lg==
   dependencies:
-    "@nestjs-query/core" "0.28.1"
+    "@nestjs-query/core" "0.30.0"
     camel-case "^4.1.2"
     lodash.filter "^4.6.0"
+    lodash.merge "^4.6.2"
     lodash.omit "^4.5.0"
     tslib "^2.1.0"
     uuid "^8.3.2"
