@@ -88,7 +88,7 @@ export class MotorCoverRequest extends BaseEntity {
   @Column({ nullable: true })
   motorCoverDurationId: number;
 
-  @Field()
+  @FilterableField()
   @Column({ default: MotorCoverRequestStatus.PENDING })
   status: MotorCoverRequestStatus;
 

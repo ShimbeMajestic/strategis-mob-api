@@ -24,6 +24,9 @@ import { CustomerService } from '../providers/customer.service';
 @Resolver(() => Customer)
 export class CustomerResolver extends CRUDResolver(Customer, {
   read: { decorators: [UsePermission(PermissionEnum.VIEW_CUSTOMERS)] },
+  enableAggregate: true,
+  enableTotalCount: true,
+  enableSubscriptions: true,
 }) {
   constructor(readonly service: CustomerService) {
     super(service);
