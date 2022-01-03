@@ -8,9 +8,6 @@ export enum PermissionEnum {
   VIEW_SETTINGS = 'view settings',
   MANAGE_SETTINGS = 'manage settings',
 
-  VIEW_PRODUCTS = 'view products',
-  MANAGE_PRODUCTS = 'manage products',
-
   VIEW_ROLES = 'view roles',
   MANAGE_ROLES = 'manage roles',
 
