@@ -15,7 +15,7 @@ async function bootstrap() {
   const port = configService.getPort();
   const logger = new Logger('bootstrap');
 
-  app.enableCors(corsConfig);
+  // app.enableCors(corsConfig);
   app.useGlobalFilters(new GqlBadRequestHandler());
   app.useGlobalPipes(new ValidationPipe());
 
