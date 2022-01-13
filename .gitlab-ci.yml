@@ -1,0 +1,44 @@
+image: node:latest
+
+stages:
+  - build
+  - deploy
+
+build_dev:
+  stage: build
+  variables:
+    NODE_ENV: "development"
+
+  script:
+    - yarn config set no-progress
+    - yarn install --frozen-lockfile --prefer-offline
+    - yarn build
+
+  only: [develop]
+
+  tags:
+    - docker
+
+  cache:
+    key: ${CI_PROJECT_ID}
+    paths:
+      - .npm/
+      - node_modules/
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+
+deploy_dev:
+  stage: deploy
+  # type: deploy
+  script:
+    - yarn
+    - rm -r /home/app/apps/staging-strategis/dist/
+    - rm -r /home/app/apps/staging-strategis/node_modules/
+    - cp -r ./dist/ /home/app/apps/staging-strategis/dist/
+    - cp -r ./node_modules/ /home/app/apps/staging-strategis/node_modules/
+    - pm2 restart STAGING_MOBAPI
+  only: ["develop"]
+  tags:
+    - node-staging

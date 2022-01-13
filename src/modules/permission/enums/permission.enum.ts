@@ -25,4 +25,6 @@ export enum PermissionEnum {
   MANAGE_HOSPITALS = 'manage hospitals',
 
   MANAGE_HEALTH_COVER_ENQUIRIES = 'manage health cover enquiries',
+
+  MANAGE_HEALTH_PLANS = 'manage health plans',
 }

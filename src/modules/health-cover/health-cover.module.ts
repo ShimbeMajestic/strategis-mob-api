@@ -12,12 +12,17 @@ import { CreateHospitalDto } from './dto/create-hospitals.dto';
 import { UpdateHospitalDto } from './dto/update-hospitals.dto';
 import { HealthCoverEnquiry } from './models/enquiry.model';
 import { Hospital } from './models/hospital.model';
+import { HealthPlan } from './models/plan.model';
 
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
       imports: [
-        NestjsQueryTypeOrmModule.forFeature([Hospital, HealthCoverEnquiry]),
+        NestjsQueryTypeOrmModule.forFeature([
+          Hospital,
+          HealthCoverEnquiry,
+          HealthPlan,
+        ]),
       ],
       resolvers: [
         {
@@ -56,6 +61,20 @@ import { Hospital } from './models/hospital.model';
             decorators: [
               UsePermission(PermissionEnum.MANAGE_HEALTH_COVER_ENQUIRIES),
             ],
+          },
+        },
+        {
+          DTOClass: HealthPlan,
+          EntityClass: HealthPlan,
+          guards: [GqlAuthGuard],
+          create: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS)],
+          },
+          update: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS)],
+          },
+          delete: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS)],
           },
         },
       ],
