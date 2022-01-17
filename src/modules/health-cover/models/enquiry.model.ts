@@ -1,4 +1,8 @@
-import { FilterableField, Relation } from '@nestjs-query/query-graphql';
+import {
+  Authorize,
+  FilterableField,
+  Relation,
+} from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import {
@@ -11,10 +15,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { HealthCoverEnquiryAuthorizer } from '../authorizers/enquiry.authorizer';
 import { HealthPlan } from './plan.model';
 
 @ObjectType()
 @Entity()
+@Authorize(HealthCoverEnquiryAuthorizer)
 @Relation('customer', () => Customer, { nullable: true })
 @Relation('healthPlan', () => HealthPlan, { nullable: true })
 export class HealthCoverEnquiry extends BaseEntity {
