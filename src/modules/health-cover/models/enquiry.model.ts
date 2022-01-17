@@ -11,10 +11,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { HealthPlan } from './plan.model';
 
 @ObjectType()
 @Entity()
 @Relation('customer', () => Customer, { nullable: true })
+@Relation('healthPlan', () => HealthPlan, { nullable: true })
 export class HealthCoverEnquiry extends BaseEntity {
   @FilterableField(() => ID)
   @PrimaryGeneratedColumn()
@@ -26,6 +28,9 @@ export class HealthCoverEnquiry extends BaseEntity {
 
   @ManyToOne(() => Customer, { nullable: true })
   customer: Customer;
+
+  @ManyToOne(() => HealthPlan, { nullable: true })
+  healthPlan: HealthPlan;
 
   @Column()
   @FilterableField()
@@ -54,6 +59,10 @@ export class HealthCoverEnquiry extends BaseEntity {
   @Column()
   @FilterableField()
   email: string;
+
+  @Column({ nullable: true })
+  @FilterableField({ nullable: true })
+  healthPlanId: number;
 
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()

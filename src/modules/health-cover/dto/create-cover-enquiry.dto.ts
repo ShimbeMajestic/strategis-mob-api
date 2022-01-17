@@ -25,4 +25,7 @@ export class CreateHealthCoverEnquiryDto {
 
   @Field()
   email: string;
+
+  @Field()
+  healthPlanId: number;
 }
