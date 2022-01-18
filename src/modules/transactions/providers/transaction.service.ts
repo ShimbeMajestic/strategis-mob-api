@@ -150,9 +150,11 @@ export class TransactionService {
       orderId,
     } = data;
 
+    console.log(data);
+
     const payload = this.transformPayload({
       vendor: selcomConfig.selcomVendor,
-      amount,
+      amount: 1000,
       buyerEmail,
       buyerName,
       buyerPhone,
