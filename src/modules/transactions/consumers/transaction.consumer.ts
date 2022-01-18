@@ -33,10 +33,10 @@ export class TransactionConsumer {
       )}`,
     );
 
-    const { transid, result, reference, payment_status } = data;
+    const { transid, result, reference, payment_status, order_id } = data;
 
     const transaction = await Transaction.findOne({
-      where: { reference: transid },
+      where: { reference: order_id },
       relations: [
         'customer',
         'motorCoverRequest',
@@ -84,10 +84,10 @@ export class TransactionConsumer {
       )}`,
     );
 
-    const { transid, result, reference, payment_status } = data;
+    const { transid, result, reference, payment_status, order_id } = data;
 
     const transaction = await Transaction.findOne({
-      where: { reference: transid },
+      where: { reference: order_id },
       relations: ['customer', 'travelCoverRequest', 'travelCoverRequest.plan'],
     });
 
