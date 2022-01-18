@@ -12,8 +12,13 @@ export class TransactionController {
     return this.transactionService.initiateSelcomTransaction(data);
   }
 
-  @Post('callback')
-  callback(@Body() data: CallbackDataDto) {
-    return this.transactionService.callback(data);
+  @Post('motor/callback')
+  motorCallback(@Body() data: CallbackDataDto) {
+    return this.transactionService.motorTransactionCallback(data);
+  }
+
+  @Post('travel/callback')
+  travelCallback(@Body() data: CallbackDataDto) {
+    return this.transactionService.travelTransactionCallback(data);
   }
 }

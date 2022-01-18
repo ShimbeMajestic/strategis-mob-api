@@ -5,7 +5,8 @@ import { NotificationService } from 'src/shared/notification/services/notificati
 import {
   MOTOR_COVER_JOB,
   MOTOR_COVER_QUEUE,
-  TRANSACTION_CALLBACK_JOB,
+  TRAVEL_TRANSACTION_CALLBACK_JOB,
+  MOTOR_TRANSACTION_CALLBACK_JOB,
   TRANSACTION_CALLBACK_QUEUE,
 } from 'src/shared/sms/constants';
 import { CallbackDataDto } from '../dtos/callback-data.dto';
@@ -22,8 +23,8 @@ export class TransactionConsumer {
     private notificationService: NotificationService,
   ) {}
 
-  @Process(TRANSACTION_CALLBACK_JOB)
-  async processCallbackQueue(job: Job<CallbackDataDto>) {
+  @Process(MOTOR_TRANSACTION_CALLBACK_JOB)
+  async processMotorCallbackQueue(job: Job<CallbackDataDto>) {
     const data = Object.assign(new CallbackDataDto(), job.data);
 
     this.logger.log(
@@ -71,5 +72,49 @@ export class TransactionConsumer {
     // Add cover request to queue
 
     await this.motorCoverQueue.add(MOTOR_COVER_JOB, transaction);
+  }
+
+  @Process(TRAVEL_TRANSACTION_CALLBACK_JOB)
+  async processTravelCallbackQueue(job: Job<CallbackDataDto>) {
+    const data = Object.assign(new CallbackDataDto(), job.data);
+
+    this.logger.log(
+      `Processing Transaction callback job ID:${job.id}, ${JSON.stringify(
+        data,
+      )}`,
+    );
+
+    const { transid, result, reference, payment_status } = data;
+
+    const transaction = await Transaction.findOne({
+      where: { reference: transid },
+      relations: ['customer', 'travelCoverRequest', 'travelCoverRequest.plan'],
+    });
+
+    if (result === 'SUCCESS' && payment_status === 'COMPLETED') {
+      transaction.status = TransactionStatusEnum.SUCCESS;
+      transaction.operatorReferenceId = reference;
+
+      await this.notificationService.sendNotificationToDevice({
+        title: 'Payment Successful',
+        body: `Successfully paid ${transaction.currency}.${transaction.amount} for Travel Cover plan ${transaction.travelCoverRequest.plan.title} with duration of ${transaction.travelCoverRequest.plan.duration} days.`,
+        token: transaction.customer.token,
+      });
+    }
+
+    if (result === 'FAIL') {
+      transaction.status = TransactionStatusEnum.FAILED;
+      transaction.operatorReferenceId = reference;
+
+      await this.notificationService.sendNotificationToDevice({
+        title: 'Payment Failed',
+        body: `Payment Failed for Travel Cover plan ${transaction.travelCoverRequest.plan.title} with Request ID: ${transaction.reference}.`,
+        token: transaction.customer.token,
+      });
+    }
+
+    await transaction.save();
+
+    //TODO: Add travel request to queue for processing
   }
 }

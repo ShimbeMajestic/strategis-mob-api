@@ -13,7 +13,8 @@ import { Transaction } from '../models/transaction.model';
 import * as generateUniqueId from 'generate-unique-id';
 import { InjectQueue } from '@nestjs/bull';
 import {
-  TRANSACTION_CALLBACK_JOB,
+  MOTOR_TRANSACTION_CALLBACK_JOB,
+  TRAVEL_TRANSACTION_CALLBACK_JOB,
   TRANSACTION_CALLBACK_QUEUE,
 } from 'src/shared/sms/constants';
 import { Queue } from 'bull';
@@ -47,7 +48,7 @@ export class TransactionService {
     selcomData.noOfItems = 1;
     selcomData.orderId = reference;
 
-    const result = await this.initiateSelcomTransaction(selcomData);
+    const result = await this.initiateSelcomTransaction(selcomData, 'travel');
 
     this.logger.log(result);
 
@@ -100,7 +101,7 @@ export class TransactionService {
     selcomData.noOfItems = 1;
     selcomData.orderId = reference;
 
-    const result = await this.initiateSelcomTransaction(selcomData);
+    const result = await this.initiateSelcomTransaction(selcomData, 'motor');
 
     this.logger.log(result);
 
@@ -135,7 +136,10 @@ export class TransactionService {
     };
   }
 
-  async initiateSelcomTransaction(data: InitiateSelcomTransactionDto) {
+  async initiateSelcomTransaction(
+    data: InitiateSelcomTransactionDto,
+    type?: string,
+  ) {
     const {
       amount,
       buyerEmail,
@@ -156,7 +160,9 @@ export class TransactionService {
       noOfItems,
       orderId,
       webhook: Buffer.from(
-        `${selcomConfig.selcomCallbackUrl}/transactions/callback`,
+        type === 'motor'
+          ? `${selcomConfig.selcomCallbackUrl}/transactions/motor/callback`
+          : `${selcomConfig.selcomCallbackUrl}/transactions/travel/callback`,
       ).toString('base64'),
     });
     const headers = this.getHeaders(payload);
@@ -234,11 +240,27 @@ export class TransactionService {
     };
   }
 
-  async callback(data: CallbackDataDto) {
+  async motorTransactionCallback(data: CallbackDataDto) {
     this.logger.log(`Add callback to queue, Payload: ${JSON.stringify(data)}`);
 
     const job = await this.transactionCallbackQueue.add(
-      TRANSACTION_CALLBACK_JOB,
+      MOTOR_TRANSACTION_CALLBACK_JOB,
+      data,
+    );
+
+    this.logger.verbose(`Transaction callback jobId ${job.id}`);
+
+    return {
+      success: true,
+      message: 'Success',
+    };
+  }
+
+  async travelTransactionCallback(data: CallbackDataDto) {
+    this.logger.log(`Add callback to queue, Payload: ${JSON.stringify(data)}`);
+
+    const job = await this.transactionCallbackQueue.add(
+      TRAVEL_TRANSACTION_CALLBACK_JOB,
       data,
     );
 
