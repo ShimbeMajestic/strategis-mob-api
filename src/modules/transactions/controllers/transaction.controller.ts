@@ -14,11 +14,19 @@ export class TransactionController {
 
   @Post('motor/callback')
   motorCallback(@Body() data: CallbackDataDto) {
+    console.log(data);
     return this.transactionService.motorTransactionCallback(data);
   }
 
   @Post('travel/callback')
   travelCallback(@Body() data: CallbackDataDto) {
+    console.log(data);
+    return this.transactionService.travelTransactionCallback(data);
+  }
+
+  @Post('callback')
+  callback(@Body() data: CallbackDataDto) {
+    console.log(data);
     return this.transactionService.travelTransactionCallback(data);
   }
 }
