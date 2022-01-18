@@ -16,6 +16,7 @@ import { appConfig } from 'src/config/app.config';
 import { OwnerCategory } from '../enums/motor-owner-category.enum';
 import { MotorUsage } from '../enums/motor-usage.enum';
 import { PaymentModeEnum } from '../enums/payment-mode.enum';
+import { IdType } from 'aws-sdk/clients/workdocs';
 
 @Processor(MOTOR_COVER_QUEUE)
 export class MotorCoverConsumer {
@@ -138,7 +139,7 @@ export class MotorCoverConsumer {
       policyHolderBirthDate: request.customer.dob,
       policyHolderType: 1,
       policyHolderIdNumber: request.customer.identityNumber,
-      policyHolderIdType: 1,
+      policyHolderIdType: this.getIdTypeToTira(request.customer.identityType),
       gender: request.customer.gender.toUpperCase().substring(0, 1),
       countryCode: 'TZA',
       region: request.customer.region.name,
@@ -181,6 +182,22 @@ export class MotorCoverConsumer {
       callbackUrl: appConfig.appCallbackUrl + '/motor-cover/callback',
     };
   };
+
+  getIdTypeToTira(idType: IdType) {
+    switch (idType) {
+      case 'NIN':
+        return 1;
+      case 'VOTERS_REG_NUM':
+        return 2;
+      case 'PASSPORT_NUM':
+        return 3;
+      case 'TIN_NUM':
+        return 6;
+
+      default:
+        return 1;
+    }
+  }
 
   @Process(PREMIA_CALLBACK_JOB)
   async processPremiaCallback(job: Job<MotorCoverRequest>) {

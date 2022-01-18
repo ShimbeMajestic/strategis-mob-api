@@ -25,6 +25,7 @@ import { MotorPolicy } from '../models/motor-policy.model';
 import * as moment from 'moment';
 import * as generateUniqueId from 'generate-unique-id';
 import { NotificationService } from 'src/shared/notification/services/notification.service';
+import { SmsService } from 'src/shared/sms/services/sms.service';
 import { SetMotorCoverType } from '../dtos/set-motorcover-type.dto';
 import { InjectQueue } from '@nestjs/bull';
 import {
@@ -43,6 +44,7 @@ export class MotorCovernoteService {
     private notificationService: NotificationService,
     @InjectQueue(MOTOR_COVER_QUEUE)
     private readonly motorCoverQueue: Queue,
+    private readonly smsService: SmsService,
   ) {}
 
   async setMotorCoverAndDuration(
@@ -407,6 +409,11 @@ export class MotorCovernoteService {
           token: request.customer.token,
         });
 
+        this.smsService.sendSms({
+          message: `Successfully recieved e-Sticker from TIRA. Sticker number ${policy.eSticker}.\nCovernote reference number: ${policy.coverNoteReferenceNumber}.\nStart Date: ${policy.coverNoteStartDate}.\nEnd Date: ${policy.coverNoteEndDate}`,
+          to: request.customer.phone,
+        });
+
         // Process callback to premia
 
         await this.motorCoverQueue.add(PREMIA_CALLBACK_JOB, request, {
@@ -416,8 +423,13 @@ export class MotorCovernoteService {
         // Notify user via sms & push notification
         await this.notificationService.sendNotificationToDevice({
           title: 'Failed to Obtain e-Sticker',
-          body: `Failed to obtain e-Sticker for vehicle ${request.vehicleDetails.RegistrationNumber}`,
+          body: `Failed to obtain e-Sticker for vehicle ${request.vehicleDetails.RegistrationNumber}. Reason: ${ResponseStatusDesc}`,
           token: request.customer.token,
+        });
+
+        this.smsService.sendSms({
+          message: `Failed to obtain e-Sticker for vehicle ${request.vehicleDetails.RegistrationNumber}. Reason: ${ResponseStatusDesc}`,
+          to: request.customer.phone,
         });
       }
 
