@@ -26,6 +26,12 @@ import * as moment from 'moment';
 import * as generateUniqueId from 'generate-unique-id';
 import { NotificationService } from 'src/shared/notification/services/notification.service';
 import { SetMotorCoverType } from '../dtos/set-motorcover-type.dto';
+import { InjectQueue } from '@nestjs/bull';
+import {
+  MOTOR_COVER_QUEUE,
+  PREMIA_CALLBACK_JOB,
+} from 'src/shared/sms/constants';
+import { Queue } from 'bull';
 
 @Injectable()
 export class MotorCovernoteService {
@@ -35,6 +41,8 @@ export class MotorCovernoteService {
     private readonly vehicleDetailService: VehicleDetailService,
     private transactionService: TransactionService,
     private notificationService: NotificationService,
+    @InjectQueue(MOTOR_COVER_QUEUE)
+    private readonly motorCoverQueue: Queue,
   ) {}
 
   async setMotorCoverAndDuration(
@@ -364,7 +372,7 @@ export class MotorCovernoteService {
         where: {
           requestId: RequestId,
         },
-        relations: ['customer'],
+        relations: ['customer', 'vehicleDetails'],
       });
 
       if (!request) {
@@ -397,6 +405,12 @@ export class MotorCovernoteService {
           title: 'Successfully Proccessed e-Sticker',
           body: `Successfully recieved e-Sticker from TIRA. Sticker number ${policy.eSticker}.\nCovernote reference number: ${policy.coverNoteReferenceNumber}.\nStart Date: ${policy.coverNoteStartDate}.\nEnd Date: ${policy.coverNoteEndDate}`,
           token: request.customer.token,
+        });
+
+        // Process callback to premia
+
+        await this.motorCoverQueue.add(PREMIA_CALLBACK_JOB, request, {
+          attempts: 15,
         });
       } else {
         // Notify user via sms & push notification

@@ -1,6 +1,10 @@
 import { Process, Processor } from '@nestjs/bull';
 import * as moment from 'moment';
-import { MOTOR_COVER_JOB, MOTOR_COVER_QUEUE } from 'src/shared/sms/constants';
+import {
+  MOTOR_COVER_JOB,
+  MOTOR_COVER_QUEUE,
+  PREMIA_CALLBACK_JOB,
+} from 'src/shared/sms/constants';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { Job } from 'bull';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
@@ -177,4 +181,18 @@ export class MotorCoverConsumer {
       callbackUrl: appConfig.appCallbackUrl + '/motor-cover/callback',
     };
   };
+
+  @Process(PREMIA_CALLBACK_JOB)
+  async processPremiaCallback(job: Job<MotorCoverRequest>) {
+    this.logger.verbose(
+      `Processing motor cover request job ID: ${
+        job.id
+      }, Payload : ${JSON.stringify(job.data)}`,
+    );
+
+    try {
+    } catch (error) {
+      this.logger.error(error.message);
+    }
+  }
 }

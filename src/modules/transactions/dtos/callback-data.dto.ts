@@ -10,4 +10,6 @@ export class CallbackDataDto {
   resultcode: string;
 
   payment_status: string;
+
+  channel: string;
 }

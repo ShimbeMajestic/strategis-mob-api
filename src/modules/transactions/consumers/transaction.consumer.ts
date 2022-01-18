@@ -33,7 +33,8 @@ export class TransactionConsumer {
       )}`,
     );
 
-    const { transid, result, reference, payment_status, order_id } = data;
+    const { transid, result, reference, payment_status, order_id, channel } =
+      data;
 
     const transaction = await Transaction.findOne({
       where: { reference: order_id },
@@ -48,6 +49,7 @@ export class TransactionConsumer {
     if (result === 'SUCCESS' && payment_status === 'COMPLETED') {
       transaction.status = TransactionStatusEnum.SUCCESS;
       transaction.operatorReferenceId = reference;
+      transaction.operator = channel;
 
       await this.notificationService.sendNotificationToDevice({
         title: 'Payment Successful',
@@ -59,6 +61,7 @@ export class TransactionConsumer {
     if (result === 'FAIL') {
       transaction.status = TransactionStatusEnum.FAILED;
       transaction.operatorReferenceId = reference;
+      transaction.operator = channel;
 
       await this.notificationService.sendNotificationToDevice({
         title: 'Payment Failed',
@@ -84,7 +87,8 @@ export class TransactionConsumer {
       )}`,
     );
 
-    const { transid, result, reference, payment_status, order_id } = data;
+    const { transid, result, reference, payment_status, order_id, channel } =
+      data;
 
     const transaction = await Transaction.findOne({
       where: { reference: order_id },
@@ -94,6 +98,7 @@ export class TransactionConsumer {
     if (result === 'SUCCESS' && payment_status === 'COMPLETED') {
       transaction.status = TransactionStatusEnum.SUCCESS;
       transaction.operatorReferenceId = reference;
+      transaction.operator = channel;
 
       await this.notificationService.sendNotificationToDevice({
         title: 'Payment Successful',
@@ -105,6 +110,7 @@ export class TransactionConsumer {
     if (result === 'FAIL') {
       transaction.status = TransactionStatusEnum.FAILED;
       transaction.operatorReferenceId = reference;
+      transaction.operator = channel;
 
       await this.notificationService.sendNotificationToDevice({
         title: 'Payment Failed',
