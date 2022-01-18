@@ -54,6 +54,6 @@ import { SharedModule } from 'src/shared/shared.module';
   ],
   controllers: [TransactionController],
   providers: [TransactionConsumer, TransactionService],
-  exports: [TransactionService],
+  exports: [TransactionService, BullModule],
 })
 export class TransactionsModule {}
