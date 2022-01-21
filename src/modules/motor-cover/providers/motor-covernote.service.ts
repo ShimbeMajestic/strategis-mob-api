@@ -322,6 +322,7 @@ export class MotorCovernoteService {
       backViewImageUrl,
       rightSideViewImageUrl,
       leftSideViewImageUrl,
+      dashboardOdoImageUrl,
       requestId,
     } = input;
 
@@ -347,6 +348,8 @@ export class MotorCovernoteService {
       rightSideViewImageUrl;
     motorCoverRequest.vehicleDetails.leftSideViewImageUrl =
       leftSideViewImageUrl;
+    motorCoverRequest.vehicleDetails.dashboardOdoImageUrl =
+      dashboardOdoImageUrl;
 
     await motorCoverRequest.vehicleDetails.save();
 
