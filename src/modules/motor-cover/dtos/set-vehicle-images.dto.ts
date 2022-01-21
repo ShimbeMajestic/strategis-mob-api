@@ -26,4 +26,8 @@ export class SetVehicleImagesDto {
   @Field()
   @IsNotEmpty()
   bonnetViewImageUrl: string;
+
+  @Field()
+  @IsNotEmpty()
+  dashboardOdoImageUrl: string;
 }
