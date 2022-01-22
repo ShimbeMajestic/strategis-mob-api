@@ -39,6 +39,10 @@ export class MotorCover {
   @Column()
   description: string;
 
+  @FilterableField()
+  @Column({ default: '01' })
+  code: string;
+
   @OneToMany(
     () => MotorCoverDuration,
     (coverDuration) => coverDuration.motorCover,

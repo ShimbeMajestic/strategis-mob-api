@@ -377,7 +377,7 @@ export class MotorCovernoteService {
         where: {
           requestId: RequestId,
         },
-        relations: ['customer', 'vehicleDetails'],
+        relations: ['customer', 'vehicleDetails', 'motorCover'],
       });
 
       if (!request) {
@@ -419,9 +419,13 @@ export class MotorCovernoteService {
 
         // Process callback to premia
 
-        await this.motorCoverQueue.add(PREMIA_CALLBACK_JOB, request, {
-          attempts: 15,
-        });
+        await this.motorCoverQueue.add(
+          PREMIA_CALLBACK_JOB,
+          { request, policy },
+          {
+            attempts: 15,
+          },
+        );
       } else {
         // Notify user via sms & push notification
         await this.notificationService.sendNotificationToDevice({

@@ -54,6 +54,22 @@ export class MotorPolicy extends BaseEntity {
   @Field()
   motorCoverRequestId: number;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  premiaPolicyNumber: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  invoiceNumber: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  invoiceDate: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  traSignature: string;
+
   @Column()
   @Field()
   customerId: number;
