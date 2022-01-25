@@ -90,7 +90,7 @@ export class MotorCovernoteService {
       registrationNumber,
     );
 
-    if (result.success) {
+    if (!result.success) {
       return {
         success: false,
         message: 'Vehicle Details not found from TIRA',

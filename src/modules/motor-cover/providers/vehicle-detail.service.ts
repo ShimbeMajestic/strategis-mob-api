@@ -53,6 +53,12 @@ export class VehicleDetailService {
         )
         .toPromise();
 
+      this.logger.log(
+        `Result from checking vehicle cover status: ${JSON.stringify(
+          result.data.data,
+        )}`,
+      );
+
       if (result.status !== 200) {
         this.logger.debug(
           `Failed to check if vehicle has cover, Registration Number: ${registrationNumber}`,
@@ -64,27 +70,27 @@ export class VehicleDetailService {
         };
       }
 
-      if (result.data.code !== 1000) {
+      if (result.data.data.code !== 1000) {
         return {
           success: false,
           exists: false,
-          data: result.data,
+          data: result.data.data,
         };
       }
 
-      const { coverNoteEndDate } = result.data.data[0];
+      const { coverNoteEndDate } = result.data.data.data[0];
 
       if (moment(new Date(coverNoteEndDate)).isAfter()) {
         return {
           success: true,
           exists: true,
-          data: result.data.data[0],
+          data: result.data.data.data[0],
         };
       } else {
         return {
           success: true,
           exists: false,
-          data: result.data.data[0],
+          data: result.data.data.data[0],
         };
       }
     } catch (error) {
