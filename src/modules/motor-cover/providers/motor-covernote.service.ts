@@ -83,7 +83,12 @@ export class MotorCovernoteService {
     );
 
     if (response.success && response.exists) {
-      throw new BadRequestException('Vehicle has an exisiting active cover!');
+      return {
+        success: false,
+        activeCoverNote: true,
+        message: 'Vehicle has an exisiting active cover!',
+        data: null,
+      };
     }
 
     const result = await this.vehicleDetailService.getVehicleDetailsFromTira(
@@ -93,6 +98,7 @@ export class MotorCovernoteService {
     if (!result.success) {
       return {
         success: false,
+        activeCoverNote: false,
         message: 'Vehicle Details not found from TIRA',
         data: null,
       };
