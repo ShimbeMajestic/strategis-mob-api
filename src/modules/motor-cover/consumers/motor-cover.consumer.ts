@@ -222,6 +222,15 @@ export class MotorCoverConsumer {
     this.httpService
       .post(premiaConfig.insuredCreationUrl, insuredPayload)
       .subscribe((response) => {
+        this.logger.log(
+          `Status from Premia for Insured details Postage: ${response.statusText}`,
+        );
+
+        this.logger.log(
+          `Response from Premia for Insured details Postage: ${JSON.stringify(
+            response.data,
+          )}`,
+        );
         if (response.data.P_STATUS !== 'Success') {
           throw new InternalServerErrorException(response.data);
         }
@@ -235,6 +244,15 @@ export class MotorCoverConsumer {
         this.httpService
           .post(premiaConfig.insuredCreationUrl, policyPayload)
           .subscribe(async (result) => {
+            this.logger.log(
+              `Status from Premia regarding policy creation: ${response.statusText}`,
+            );
+
+            this.logger.log(
+              `Response from Premia regarding policy creation: ${JSON.stringify(
+                response.data,
+              )}`,
+            );
             if (result.data.P_STATUS !== 'SUCCESS') {
               throw new InternalServerErrorException(response.data);
             }
