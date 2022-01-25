@@ -393,7 +393,12 @@ export class MotorCovernoteService {
         where: {
           requestId: RequestId,
         },
-        relations: ['customer', 'vehicleDetails', 'motorCover'],
+        relations: [
+          'customer',
+          'vehicleDetails',
+          'motorCover',
+          'customer.region',
+        ],
       });
 
       if (!request) {
