@@ -72,7 +72,7 @@ export class MotorCoverConsumer {
         const payload = this.prepareTiraRequest(coverRequest);
 
         this.httpService
-          .post(appConfig.tiraApiUrl, payload)
+          .post(appConfig.tiraApiUrl + '/motor/policy/create', payload)
           .subscribe(async (response) => {
             if (!response.data.success) {
               this.logger.log(
