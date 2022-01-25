@@ -72,19 +72,19 @@ export class VehicleDetailService {
         };
       }
 
-      const { coverNoteEndDate } = result.data.data;
+      const { coverNoteEndDate } = result.data.data[0];
 
       if (moment(new Date(coverNoteEndDate)).isAfter()) {
         return {
           success: true,
           exists: true,
-          data: result.data.data,
+          data: result.data.data[0],
         };
       } else {
         return {
           success: true,
           exists: false,
-          data: result.data.data,
+          data: result.data.data[0],
         };
       }
     } catch (error) {
