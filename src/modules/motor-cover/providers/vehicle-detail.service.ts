@@ -14,7 +14,7 @@ export class VehicleDetailService {
       const result = await this.httpService
         .get(
           appConfig.tiraApiUrl +
-            `/vehicle-detail?registrationNumber=${registrationNumber}`,
+            `/vehicle-detail/?registrationNumber=${registrationNumber}`,
         )
         .toPromise();
 
