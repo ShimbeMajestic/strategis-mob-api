@@ -1,59 +1,100 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger } from "@nestjs/common";
-import { Cache } from "cache-manager";
-import { TiraClient, TiraSigner } from "src/shared/tira-shared";
-import { tiraConfig } from "../../../config/tira.config";
-import { VehicleDetailRequestDto } from "../dtos/vehicle-detail.request";
-import { VehicleDetailResponse } from "../dtos/vehicle-detail.response";
-import { VehicleDetailTransformer } from "./vehicle-detail.transformer";
+import { HttpService } from '@nestjs/axios';
+import { Injectable, Logger } from '@nestjs/common';
+import * as moment from 'moment';
+import { appConfig } from 'src/config/app.config';
 
 @Injectable()
 export class VehicleDetailService {
+  private readonly logger = new Logger('VehicleDetailService');
 
-    private readonly logger = new Logger('VehicleDetailService');
+  constructor(private httpService: HttpService) {}
 
-    constructor(
-        protected readonly transformer: VehicleDetailTransformer,
-        protected readonly tiraSigner: TiraSigner,
-        protected readonly tiraClient: TiraClient,
-        @Inject(CACHE_MANAGER) private cacheManager: Cache
-    ) { }
+  async getVehicleDetailsFromTira(registrationNumber: string) {
+    try {
+      const result = await this.httpService
+        .get(
+          appConfig.tiraApiUrl +
+            `/vehicle-detail?registrationNumber=${registrationNumber}`,
+        )
+        .toPromise();
 
-    async execute(input: VehicleDetailRequestDto): Promise<VehicleDetailResponse> {
+      this.logger.log(
+        `Result from Get vehicle details API call: ${JSON.stringify(
+          result.data,
+        )}`,
+      );
 
-        const cacheKey = input.registrationNumber
-            ? `vehicle-details:registration:${input.registrationNumber}`
-            : `vehicle-details:chassis-no:${input.chassisNumber}`;
+      if (result.status !== 200) {
+        return {
+          success: false,
+          message: 'Failed to get vehicle details!',
+        };
+      }
 
-        const result: VehicleDetailResponse = await this.cacheManager
-            .wrap(
-                cacheKey,
-                () => {
-                    return this._execute(input);
-                },
-                {
-                    ttl: (response) => {
-                        const aMonth = 60 * 60 * 24 * 7;
-                        return (response.data) ? aMonth : 1; // only cache successful requests
-                    }
-                },
-            );
+      return result.data;
+    } catch (error) {
+      this.logger.error(error.message);
 
-        return result;
+      this.logger.error(error.stack);
+
+      return {
+        success: false,
+        message: 'Failed to get vehicle details from bridge server!',
+      };
     }
+  }
 
-    protected async _execute(input: VehicleDetailRequestDto): Promise<VehicleDetailResponse> {
+  async checkIfVehicleHasCover(registrationNumber: string) {
+    try {
+      const result = await this.httpService
+        .get(
+          appConfig.tiraApiUrl +
+            `/motor/vehicle/cover?paramType=2&registrationNumber=${registrationNumber}`,
+        )
+        .toPromise();
 
-        const xmlMessage = await this.transformer.toXml(input);
+      if (result.status !== 200) {
+        this.logger.debug(
+          `Failed to check if vehicle has cover, Registration Number: ${registrationNumber}`,
+        );
+        return {
+          success: false,
+          exists: false,
+          message: 'Failed to check if vehicle has cover!',
+        };
+      }
 
-        const url = new URL(
-            tiraConfig.endpoints.vehicleDetailsUrl,
-            tiraConfig.endpoints.baseUrl
-        ).href
+      if (result.data.code !== 1000) {
+        return {
+          success: false,
+          exists: false,
+          data: result.data,
+        };
+      }
 
-        const rawResponse = await this.tiraClient.call(url, xmlMessage);
+      const { coverNoteEndDate } = result.data.data;
 
-        const response = await this.transformer.fromXml(rawResponse);
+      if (moment(new Date(coverNoteEndDate)).isAfter()) {
+        return {
+          success: true,
+          exists: true,
+          data: result.data.data,
+        };
+      } else {
+        return {
+          success: true,
+          exists: false,
+          data: result.data.data,
+        };
+      }
+    } catch (error) {
+      this.logger.error(error.message);
+      this.logger.error(error.stack);
 
-        return response;
+      return {
+        success: false,
+        message: 'Failed to check if vehicle has cover!',
+      };
     }
+  }
 }

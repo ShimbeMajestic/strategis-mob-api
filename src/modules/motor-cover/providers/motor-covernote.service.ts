@@ -68,7 +68,7 @@ export class MotorCovernoteService {
   async getVehicleDetails(
     input: VehicleDetailRequestDto,
   ): Promise<GetVehicleDetailsDto> {
-    const { motorCoverReqId } = input;
+    const { motorCoverReqId, registrationNumber } = input;
 
     const motorCoverRequest = await MotorCoverRequest.findOne({
       id: motorCoverReqId,
@@ -78,9 +78,19 @@ export class MotorCovernoteService {
       throw new BadRequestException('Invalid motor cover request id!');
     }
 
-    const result = await this.vehicleDetailService.execute(input);
+    const response = await this.vehicleDetailService.checkIfVehicleHasCover(
+      registrationNumber,
+    );
 
-    if (result.headers.ResponseStatusCode !== 'TIRA001') {
+    if (response.success && response.exists) {
+      throw new BadRequestException('Vehicle has an exisiting active cover!');
+    }
+
+    const result = await this.vehicleDetailService.getVehicleDetailsFromTira(
+      registrationNumber,
+    );
+
+    if (result.success) {
       return {
         success: false,
         message: 'Vehicle Details not found from TIRA',

@@ -15,6 +15,6 @@ export const appConfig = {
 
   appCallbackUrl: process.env.APP_CALLBACK_URL,
 
-  tiraApiUrl: process.env.TIRA_BRIDGE_API_URL,
+  tiraApiUrl: process.env.TIRA_BRIDGE_API_URL + '/motor/policy/create',
 };
 export const adminContacts = process.env.ADMIN_CONTACTS.split(',');

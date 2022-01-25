@@ -14,10 +14,7 @@ import { GqlAuthGuard } from '../auth/auth.guard';
 import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
 import { redisConfig } from 'src/config/redis.config';
-import { TiraSharedModule } from 'src/shared/tira-shared/tira-shared.module';
 import { VehicleDetailService } from './providers/vehicle-detail.service';
-import { VehicleDetailTransformer } from './providers/vehicle-detail.transformer';
-import { VehicleDetailResolver } from './resolvers/vehicle-detail.resolver';
 import * as redisStore from 'cache-manager-redis-store';
 import { MotorCover } from './models/motor-cover.model';
 import { CreateMotorCoverDto } from './dtos/create-motor-cover.dto';
@@ -40,7 +37,6 @@ import { SharedModule } from 'src/shared/shared.module';
       store: redisStore,
       ...redisConfig.default,
     }),
-    TiraSharedModule,
     NestjsQueryGraphQLModule.forFeature({
       imports: [
         NestjsQueryTypeOrmModule.forFeature([
@@ -129,9 +125,7 @@ import { SharedModule } from 'src/shared/shared.module';
   ],
   controllers: [MotorCoverController],
   providers: [
-    VehicleDetailTransformer,
     VehicleDetailService,
-    VehicleDetailResolver,
     MotorCovernoteResolver,
     MotorCovernoteService,
     MotorCoverConsumer,
