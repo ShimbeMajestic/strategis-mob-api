@@ -8,6 +8,7 @@ import { TransactionPaymentResultDto } from 'src/modules/transactions/dtos/trans
 import { TransactionService } from 'src/modules/transactions/providers/transaction.service';
 import { PayForTravelCoverDto } from '../dtos/pay-travel-cover.dto';
 import { SetTravelPlanDto } from '../dtos/set-travel-plan.dto';
+import { SetTripInformationDto } from '../dtos/set-trip-info.dto';
 import { TravelCoverRequest } from '../models/travel-cover-request.model';
 
 @Injectable()
@@ -53,5 +54,27 @@ export class TravelCoverService {
       customer,
       email,
     );
+  }
+
+  async setTravelTripInformation(
+    input: SetTripInformationDto,
+    customer: Customer,
+  ) {
+    const { departureDate, returnDate, passportNo } = input;
+    const travelRequest = await TravelCoverRequest.findOne({
+      where: {
+        id: input.requestId,
+      },
+    });
+
+    if (!travelRequest) {
+      throw new NotFoundException('Travel cover request not found!');
+    }
+
+    travelRequest.departureDate = departureDate;
+    travelRequest.returnDate = returnDate;
+    travelRequest.passportNo = passportNo;
+
+    return travelRequest.save();
   }
 }

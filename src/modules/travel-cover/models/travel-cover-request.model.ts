@@ -55,6 +55,18 @@ export class TravelCoverRequest extends BaseEntity {
   @Field()
   customerId: number;
 
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  departureDate: Date;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  returnDate: Date;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  passportNo: string;
+
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()
   createdAt: Date;

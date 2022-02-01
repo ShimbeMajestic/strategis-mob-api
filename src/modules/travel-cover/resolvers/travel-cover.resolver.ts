@@ -9,6 +9,7 @@ import { UserTypeGuard } from 'src/modules/permission/guards/user-type.guard';
 import { TransactionPaymentResultDto } from 'src/modules/transactions/dtos/transaction-payment.result.dto';
 import { PayForTravelCoverDto } from '../dtos/pay-travel-cover.dto';
 import { SetTravelPlanDto } from '../dtos/set-travel-plan.dto';
+import { SetTripInformationDto } from '../dtos/set-trip-info.dto';
 import { TravelCoverRequest } from '../models/travel-cover-request.model';
 import { TravelPlan } from '../models/travel-plan.model';
 import { TravelCoverService } from '../providers/travel-cover.service';
@@ -36,5 +37,15 @@ export class TravelCoverResolver {
     @CurrentUser() customer: Customer,
   ) {
     return this.travelCoverService.payForCover(input, customer);
+  }
+
+  @Mutation(() => TravelCoverRequest)
+  @UseGuards(UserTypeGuard)
+  @AllowUserType(UserTypeEnum.CUSTOMER)
+  setTravelTripInformation(
+    @Args('input') input: SetTripInformationDto,
+    @CurrentUser() customer: Customer,
+  ) {
+    return this.travelCoverService.setTravelTripInformation(input, customer);
   }
 }
