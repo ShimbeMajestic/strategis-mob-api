@@ -65,7 +65,7 @@ export class Claim extends BaseEntity {
   alternatePhoneNumber: string;
 
   @Field(() => [String], { nullable: true })
-  @Column('text', { array: true })
+  @Column('text', { array: true, nullable: true })
   imageUrls: string[];
 
   @FilterableField(() => GraphQLISODateTime)
