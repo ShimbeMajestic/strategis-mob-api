@@ -7,4 +7,16 @@ export class CreateClaimDto {
 
   @Field()
   policyId: number;
+
+  @Field()
+  dateOfAccident: Date;
+
+  @Field()
+  locationOfAccident: string;
+
+  @Field()
+  alternatePhoneNumber: string;
+
+  @Field(() => [String])
+  imageUrls: string[];
 }

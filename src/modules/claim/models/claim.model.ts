@@ -52,6 +52,22 @@ export class Claim extends BaseEntity {
   @Field()
   status: ClaimEnum;
 
+  @FilterableField(() => GraphQLISODateTime, { nullable: true })
+  @Column({ nullable: true })
+  dateOfAccident: Date;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  locationOfAccident: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  alternatePhoneNumber: string;
+
+  @Field(() => [String], { nullable: true })
+  @Column('text', { array: true })
+  imageUrls: string[];
+
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()
   createdAt: Date;
