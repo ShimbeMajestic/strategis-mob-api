@@ -51,11 +51,15 @@ export class MotorCovernoteService {
     input: SetMotorCoverDurationDto,
     customer: Customer,
   ): Promise<MotorCoverRequest> {
-    const { motorCoverId, motorCoverDurationId } = input;
+    const { motorCoverId, motorCoverDurationId, vehicleType } = input;
 
     const motorCoverRequest = new MotorCoverRequest();
     motorCoverRequest.motorCoverId = motorCoverId;
     motorCoverRequest.customer = customer;
+
+    if (vehicleType) {
+      motorCoverRequest.vehicleType = vehicleType;
+    }
 
     if (motorCoverDurationId)
       motorCoverRequest.motorCoverDurationId = motorCoverDurationId;
