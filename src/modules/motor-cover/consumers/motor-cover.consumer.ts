@@ -219,6 +219,8 @@ export class MotorCoverConsumer {
 
     const insuredPayload = this.prepareInsuredRequestToPremia(request);
 
+    this.logger.log(`Request to Premia 1: ${JSON.stringify(insuredPayload)}`);
+
     this.httpService
       .post(premiaConfig.insuredCreationUrl, insuredPayload)
       .subscribe((response) => {
@@ -241,6 +243,11 @@ export class MotorCoverConsumer {
           request,
           P_ASSR_CODE,
         );
+
+        this.logger.log(
+          `Request to Premia 2: ${JSON.stringify(policyPayload)}`,
+        );
+
         this.httpService
           .post(premiaConfig.insuredCreationUrl, policyPayload)
           .subscribe(async (result) => {
