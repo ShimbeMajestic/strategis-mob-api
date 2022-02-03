@@ -245,16 +245,16 @@ export class MotorCoverConsumer {
           .post(premiaConfig.insuredCreationUrl, policyPayload)
           .subscribe(async (result) => {
             this.logger.log(
-              `Status from Premia regarding policy creation: ${response.statusText}`,
+              `Status from Premia regarding policy creation: ${result.statusText}`,
             );
 
             this.logger.log(
               `Response from Premia regarding policy creation: ${JSON.stringify(
-                response.data,
+                result.data,
               )}`,
             );
             if (result.data.P_STATUS !== 'SUCCESS') {
-              throw new InternalServerErrorException(response.data);
+              throw new InternalServerErrorException(result.data);
             }
 
             const {
