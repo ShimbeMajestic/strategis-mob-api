@@ -428,13 +428,13 @@ export class MotorCoverConsumer {
         return 'PASSENGER';
 
       case MotorUsageType.PRIVATE:
-        return 'PRIVARE';
+        return 'PRIVATE';
 
       case MotorUsageType.SPECIAL_TYPE:
         return 'SPECIAL TYPE';
 
       default:
-        return 'PRIVARE';
+        return 'PRIVATE';
     }
   };
 }
