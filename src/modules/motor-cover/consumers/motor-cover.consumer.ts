@@ -253,7 +253,7 @@ export class MotorCoverConsumer {
                 result.data,
               )}`,
             );
-            if (result.data.P_STATUS !== 'SUCCESS') {
+            if (result.data.P_STATUS !== 'Success') {
               throw new InternalServerErrorException(result.data);
             }
 
