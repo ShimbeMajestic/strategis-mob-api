@@ -328,10 +328,10 @@ export class MotorCoverConsumer {
 
                 PRAI_CODE_03:
                   request.vehicleDetails.MotorUsage === 'Private or Normal'
-                    ? MotorUsage.PRIVATE
-                    : MotorUsage.COMMERCIAL,
+                    ? `00` + MotorUsage.PRIVATE
+                    : `00` + MotorUsage.COMMERCIAL,
 
-                PRAI_CODE_04: request.vehicleDetails.RegistrationNumber,
+                PRAI_CODE_04: request.vehicleDetails.Make,
 
                 PRAI_DATA_01: request.vehicleDetails.ChassisNumber,
 
@@ -367,11 +367,9 @@ export class MotorCoverConsumer {
       PGIT_POLICY: {
         POL_PROD_CODE: this.getPolicyCode(request.usageType),
 
-        POL_CUST_CODE: policyAssrCode,
+        POL_CUST_CODE: 'DC0015599',
 
         POL_ASSR_CODE: policyAssrCode,
-
-        POL_SRC_CODE: '',
 
         POL_ISSUE_DT: moment(request.updatedAt)
           .format('DD MMM YYYY')
