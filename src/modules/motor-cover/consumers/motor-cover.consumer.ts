@@ -371,6 +371,8 @@ export class MotorCoverConsumer {
 
         POL_ASSR_CODE: policyAssrCode,
 
+        POL_SRC_CODE: '',
+
         POL_ISSUE_DT: moment(request.updatedAt)
           .format('DD MMM YYYY')
           .toUpperCase(),
