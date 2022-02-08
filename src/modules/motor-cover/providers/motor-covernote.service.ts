@@ -433,12 +433,28 @@ export class MotorCovernoteService {
 
         await this.notificationService.sendNotificationToDevice({
           title: 'Successfully Proccessed e-Sticker',
-          body: `Successfully recieved e-Sticker from TIRA. Sticker number ${policy.eSticker}.\nCovernote reference number: ${policy.coverNoteReferenceNumber}.\nStart Date: ${policy.coverNoteStartDate}.\nEnd Date: ${policy.coverNoteEndDate}`,
+          body: `Successfully recieved e-Sticker from TIRA for Vehicle Registration number: ${
+            request.vehicleDetails.RegistrationNumber
+          }\nSticker number ${policy.eSticker}.\nCovernote reference number: ${
+            policy.coverNoteReferenceNumber
+          }.\nStart Date: ${moment(policy.coverNoteStartDate)
+            .format('DD MMM YYYY')
+            .toUpperCase()}.\nEnd Date: ${moment(policy.coverNoteEndDate)
+            .format('DD MMM YYYY')
+            .toUpperCase()}`,
           token: request.customer.token,
         });
 
         this.smsService.sendSms({
-          message: `Successfully recieved e-Sticker from TIRA. Sticker number ${policy.eSticker}.\nCovernote reference number: ${policy.coverNoteReferenceNumber}.\nStart Date: ${policy.coverNoteStartDate}.\nEnd Date: ${policy.coverNoteEndDate}`,
+          message: `Successfully recieved e-Sticker from TIRA for Vehicle Registration number: ${
+            request.vehicleDetails.RegistrationNumber
+          }\nSticker number ${policy.eSticker}.\nCovernote reference number: ${
+            policy.coverNoteReferenceNumber
+          }.\nStart Date: ${moment(policy.coverNoteStartDate)
+            .format('DD MMM YYYY')
+            .toUpperCase()}.\nEnd Date: ${moment(policy.coverNoteEndDate)
+            .format('DD MMM YYYY')
+            .toUpperCase()}`,
           to: request.customer.phone,
         });
 
