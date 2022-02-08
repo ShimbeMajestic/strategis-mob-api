@@ -430,7 +430,6 @@ export class MotorCovernoteService {
         await policy.save();
 
         // Notify user via sms & push notification
-
         await this.notificationService.sendNotificationToDevice({
           title: 'Successfully Proccessed e-Sticker',
           body: `Successfully recieved e-Sticker from TIRA for Vehicle Registration number: ${
