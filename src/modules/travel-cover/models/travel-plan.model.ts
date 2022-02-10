@@ -22,7 +22,7 @@ import { TravelProduct } from './travel-product.model';
 @ObjectType()
 @FilterableRelation('travelEntity', () => TravelEntity)
 @FilterableRelation('destination', () => TravelDestination)
-@FilterableRelation('travelProduct', () => TravelProduct)
+@FilterableRelation('travelProduct', () => TravelProduct, { nullable: true })
 export class TravelPlan extends BaseEntity {
   @PrimaryGeneratedColumn()
   @FilterableField(() => ID)
@@ -54,7 +54,7 @@ export class TravelPlan extends BaseEntity {
   @FilterableField()
   travelProductId: number;
 
-  @ManyToOne(() => TravelProduct)
+  @ManyToOne(() => TravelProduct, { nullable: true })
   travelProduct: TravelProduct;
 
   @Column()
