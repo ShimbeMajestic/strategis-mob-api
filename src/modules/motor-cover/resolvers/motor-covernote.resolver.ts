@@ -7,6 +7,9 @@ import { AllowUserType } from 'src/modules/permission/decorators/user-type.decor
 import { UserTypeEnum } from 'src/modules/permission/enums/user-type.enum';
 import { UserTypeGuard } from 'src/modules/permission/guards/user-type.guard';
 import { TransactionPaymentResultDto } from 'src/modules/transactions/dtos/transaction-payment.result.dto';
+import { User } from 'src/modules/user/models/user.model';
+import { ApprovalDto } from '../dtos/approval.dto';
+import { ApprovalResult } from '../dtos/approval.result';
 import { GetVehicleDetailsDto } from '../dtos/get-vehicle-details.response';
 import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { PaymentResult } from '../dtos/payment-result.dto';
@@ -96,5 +99,15 @@ export class MotorCovernoteResolver {
   @AllowUserType(UserTypeEnum.CUSTOMER)
   setMotorCoverType(@Args('input') input: SetMotorCoverType) {
     return this.motorCovernoteService.setMotorCoverType(input);
+  }
+
+  @Mutation(() => ApprovalResult)
+  @UseGuards(UserTypeGuard)
+  @AllowUserType(UserTypeEnum.ADMIN)
+  approveCoverRequest(
+    @CurrentUser() user: User,
+    @Args('input') input: ApprovalDto,
+  ) {
+    return this.motorCovernoteService.approveCoverRequest(user, input);
   }
 }

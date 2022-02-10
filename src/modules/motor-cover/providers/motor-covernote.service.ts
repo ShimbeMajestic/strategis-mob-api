@@ -33,6 +33,8 @@ import {
   PREMIA_CALLBACK_JOB,
 } from 'src/shared/sms/constants';
 import { Queue } from 'bull';
+import { User } from 'src/modules/user/models/user.model';
+import { ApprovalDto } from '../dtos/approval.dto';
 
 @Injectable()
 export class MotorCovernoteService {
@@ -515,6 +517,36 @@ export class MotorCovernoteService {
     await foundRequest.save();
 
     return foundRequest;
+  }
+
+  async approveCoverRequest(user: User, input: ApprovalDto) {
+    try {
+      const request = await MotorCoverRequest.findOne({
+        where: { id: input.requestId },
+      });
+
+      if (!request) {
+        throw new NotFoundException('Cover request not found!');
+      }
+
+      request.approved = input.approve;
+      request.approvedBy = user;
+      request.approvedAt = new Date();
+
+      await request.save();
+
+      return {
+        success: true,
+        message: 'Successfully approved cover request',
+        data: request,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+        data: null,
+      };
+    }
   }
 
   private getPremiumRate = (duration: number, premiumRate: number) => {

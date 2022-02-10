@@ -9,6 +9,7 @@ import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
+import { User } from 'src/modules/user/models/user.model';
 import {
   BaseEntity,
   Column,
@@ -36,6 +37,7 @@ import { VehicleDetails } from './vehicle-details.model';
 @Relation('motorCoverDuration', () => MotorCoverDuration, { nullable: true })
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
+@Relation('approvedBy', () => User, { nullable: true })
 @OffsetConnection('transactions', () => Transaction, {
   nullable: true,
   pagingStrategy: PagingStrategies.NONE,
@@ -154,6 +156,22 @@ export class MotorCoverRequest extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   policyNumber: string;
+
+  @Field()
+  @Column({ default: false })
+  requiresApproval: boolean;
+
+  @Field()
+  @Column({ default: true })
+  approved: boolean;
+
+  @Field({ nullable: true })
+  @ManyToOne(() => User)
+  approvedBy: User;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  approvedAt: Date;
 
   @FilterableField(() => GraphQLISODateTime)
   @CreateDateColumn()
