@@ -1,5 +1,6 @@
 import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/auth.guard';
 import { UsePermission } from '../permission/decorators/permission.decorator';
@@ -11,11 +12,13 @@ import { TravelCoverRequest } from './models/travel-cover-request.model';
 import { TravelDestination } from './models/travel-destination.model';
 import { TravelEntity } from './models/travel-entity.model';
 import { TravelPlan } from './models/travel-plan.model';
+import { MapfreService } from './providers/mapfre.service';
 import { TravelCoverService } from './providers/travel-cover.service';
 import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
 
 @Module({
   imports: [
+    HttpModule,
     TransactionsModule,
     NestjsQueryGraphQLModule.forFeature({
       imports: [
@@ -94,6 +97,6 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
       ],
     }),
   ],
-  providers: [TravelCoverService, TravelCoverResolver],
+  providers: [TravelCoverService, TravelCoverResolver, MapfreService],
 })
 export class TravelCoverModule {}

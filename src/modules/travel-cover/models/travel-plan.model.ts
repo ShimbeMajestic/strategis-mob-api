@@ -16,11 +16,13 @@ import {
 } from 'typeorm';
 import { TravelDestination } from './travel-destination.model';
 import { TravelEntity } from './travel-entity.model';
+import { TravelProduct } from './travel-product.model';
 
 @Entity()
 @ObjectType()
 @FilterableRelation('travelEntity', () => TravelEntity)
 @FilterableRelation('destination', () => TravelDestination)
+@FilterableRelation('travelProduct', () => TravelProduct)
 export class TravelPlan extends BaseEntity {
   @PrimaryGeneratedColumn()
   @FilterableField(() => ID)
@@ -47,6 +49,13 @@ export class TravelPlan extends BaseEntity {
   @Column()
   @FilterableField()
   destinationId: number;
+
+  @Column()
+  @FilterableField()
+  travelProductId: number;
+
+  @ManyToOne(() => TravelProduct)
+  travelProduct: TravelProduct;
 
   @Column()
   @FilterableField()
