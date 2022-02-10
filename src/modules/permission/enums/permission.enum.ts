@@ -21,6 +21,7 @@ export enum PermissionEnum {
   MANAGE_TRAVEL_PLANS = 'manage travel plans',
   MANAGE_TRAVEL_ENTITIES = 'manage travel entities',
   MANAGE_TRAVEL_DESTINATION = 'manage travel destinations',
+  MANAGE_TRAVEL_PRODUCT = 'manage travel products',
 
   MANAGE_HOSPITALS = 'manage hospitals',
 

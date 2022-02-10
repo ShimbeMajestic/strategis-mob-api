@@ -12,6 +12,7 @@ import { TravelCoverRequest } from './models/travel-cover-request.model';
 import { TravelDestination } from './models/travel-destination.model';
 import { TravelEntity } from './models/travel-entity.model';
 import { TravelPlan } from './models/travel-plan.model';
+import { TravelProduct } from './models/travel-product.model';
 import { MapfreService } from './providers/mapfre.service';
 import { TravelCoverService } from './providers/travel-cover.service';
 import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
@@ -27,6 +28,7 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
           TravelPlan,
           TravelDestination,
           TravelEntity,
+          TravelProduct,
         ]),
       ],
       resolvers: [
@@ -65,6 +67,20 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
             decorators: [
               UsePermission(PermissionEnum.MANAGE_TRAVEL_DESTINATION),
             ],
+          },
+        },
+        {
+          DTOClass: TravelProduct,
+          EntityClass: TravelProduct,
+          guards: [GqlAuthGuard],
+          create: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT)],
+          },
+          update: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT)],
+          },
+          delete: {
+            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT)],
           },
         },
 
