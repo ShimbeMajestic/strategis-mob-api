@@ -50,8 +50,8 @@ export class TravelPlan extends BaseEntity {
   @FilterableField()
   destinationId: number;
 
-  @Column()
-  @FilterableField()
+  @Column({ nullable: true })
+  @FilterableField({ nullable: true })
   travelProductId: number;
 
   @ManyToOne(() => TravelProduct, { nullable: true })
