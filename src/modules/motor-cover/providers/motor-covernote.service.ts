@@ -29,12 +29,14 @@ import { SmsService } from 'src/shared/sms/services/sms.service';
 import { SetMotorCoverType } from '../dtos/set-motorcover-type.dto';
 import { InjectQueue } from '@nestjs/bull';
 import {
+  MOTOR_COVER_JOB,
   MOTOR_COVER_QUEUE,
   PREMIA_CALLBACK_JOB,
 } from 'src/shared/sms/constants';
 import { Queue } from 'bull';
 import { User } from 'src/modules/user/models/user.model';
 import { ApprovalDto } from '../dtos/approval.dto';
+import { MotorCover } from '../models/motor-cover.model';
 
 @Injectable()
 export class MotorCovernoteService {
@@ -55,6 +57,12 @@ export class MotorCovernoteService {
   ): Promise<MotorCoverRequest> {
     const { motorCoverId, motorCoverDurationId, vehicleType } = input;
 
+    const motorCover = await MotorCover.findOne({
+      where: {
+        id: motorCoverId,
+      },
+    });
+
     const motorCoverRequest = new MotorCoverRequest();
     motorCoverRequest.motorCoverId = motorCoverId;
     motorCoverRequest.customer = customer;
@@ -65,6 +73,9 @@ export class MotorCovernoteService {
 
     if (motorCoverDurationId)
       motorCoverRequest.motorCoverDurationId = motorCoverDurationId;
+
+    if (motorCover && motorCover.name === 'Comprehensive')
+      motorCoverRequest.requiresApproval = true;
 
     await motorCoverRequest.save();
 
@@ -529,15 +540,23 @@ export class MotorCovernoteService {
         throw new NotFoundException('Cover request not found!');
       }
 
-      request.approved = input.approve;
-      request.approvedBy = user;
-      request.approvedAt = new Date();
+      if (request.requiresApproval) {
+        request.approved = input.approve;
+        request.approvedBy = user;
+        request.approvedAt = new Date();
 
-      await request.save();
+        await request.save();
+
+        if (request.approved && request.status == 'PAID') {
+          await this.motorCoverQueue.add(MOTOR_COVER_JOB, request);
+        }
+      }
 
       return {
         success: true,
-        message: 'Successfully approved cover request',
+        message: request.requiresApproval
+          ? 'Successfully approved cover request'
+          : 'Request does not require approval',
         data: request,
       };
     } catch (error) {

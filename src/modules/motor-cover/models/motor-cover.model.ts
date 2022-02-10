@@ -5,6 +5,7 @@ import {
 } from '@nestjs-query/query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -26,7 +27,7 @@ import { MotorCoverType } from './motor-cover-type.model';
   nullable: true,
   pagingStrategy: PagingStrategies.NONE,
 })
-export class MotorCover {
+export class MotorCover extends BaseEntity {
   @PrimaryGeneratedColumn()
   @FilterableField(() => ID)
   id: number;

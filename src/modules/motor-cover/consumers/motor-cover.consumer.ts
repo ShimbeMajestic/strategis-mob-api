@@ -31,7 +31,7 @@ export class MotorCoverConsumer {
   constructor(private httpService: HttpService) {}
 
   @Process(MOTOR_COVER_JOB)
-  async processMotorCoverRequest(job: Job<Transaction>) {
+  async processMotorCoverRequest(job: Job<MotorCoverRequest>) {
     this.logger.verbose(
       `Processing motor cover request job ID: ${
         job.id
@@ -39,10 +39,10 @@ export class MotorCoverConsumer {
     );
 
     try {
-      const { status, motorCoverRequestId, reference } = job.data;
+      const { id } = job.data;
 
       const coverRequest = await MotorCoverRequest.findOne({
-        where: { id: motorCoverRequestId },
+        where: { id },
         relations: [
           'motorCover',
           'motorCoverType',
@@ -57,52 +57,37 @@ export class MotorCoverConsumer {
         throw new NotFoundException('Motor cover request not found!');
       }
 
-      if (status === TransactionStatusEnum.FAILED) {
-        coverRequest.status = MotorCoverRequestStatus.PAYMENT_FAILED;
+      const payload = this.prepareTiraRequest(coverRequest);
 
-        // Notify user of cover status
-
-        await coverRequest.save();
-      }
-
-      if (status === TransactionStatusEnum.SUCCESS) {
-        coverRequest.status = MotorCoverRequestStatus.PAID;
-        coverRequest.requestId = reference;
-
-        const payload = this.prepareTiraRequest(coverRequest);
-
-        this.httpService
-          .post(appConfig.tiraApiUrl + '/motor/policy/create', payload)
-          .subscribe(async (response) => {
-            if (!response.data.success) {
-              this.logger.log(
-                `Failed to initiate process of acquiring an esticker`,
-              );
-
-              coverRequest.status =
-                MotorCoverRequestStatus.STICKER_PROCESS_FAILED;
-              await coverRequest.save();
-
-              return {
-                success: false,
-              };
-
-              // Notify user, via sms & notification
-            }
-
+      this.httpService
+        .post(appConfig.tiraApiUrl + '/motor/policy/create', payload)
+        .subscribe(async (response) => {
+          if (!response.data.success) {
             this.logger.log(
-              `Successfully initiated acquiring sticker from TIRA`,
+              `Failed to initiate process of acquiring an esticker`,
             );
 
-            coverRequest.status = MotorCoverRequestStatus.WAIT_FOR_STICKER;
+            coverRequest.status =
+              MotorCoverRequestStatus.STICKER_PROCESS_FAILED;
             await coverRequest.save();
 
             return {
-              success: true,
+              success: false,
             };
+
             // Notify user, via sms & notification
-          });
-      }
+          }
+
+          this.logger.log(`Successfully initiated acquiring sticker from TIRA`);
+
+          coverRequest.status = MotorCoverRequestStatus.WAIT_FOR_STICKER;
+          await coverRequest.save();
+
+          return {
+            success: true,
+          };
+          // Notify user, via sms & notification
+        });
     } catch (error) {
       this.logger.error(error.message);
     }

@@ -1,6 +1,7 @@
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
+import { MotorCoverRequestStatus } from 'src/modules/motor-cover/enums/motor-cover-req-status.enum';
 import { NotificationService } from 'src/shared/notification/services/notification.service';
 import {
   MOTOR_COVER_JOB,
@@ -51,11 +52,22 @@ export class TransactionConsumer {
       transaction.operatorReferenceId = reference;
       transaction.operator = channel;
 
+      transaction.motorCoverRequest.requestId = transaction.reference;
+      transaction.motorCoverRequest.status = MotorCoverRequestStatus.PAID;
+
+      await transaction.motorCoverRequest.save();
+      await transaction.save();
+
       await this.notificationService.sendNotificationToDevice({
         title: 'Payment Successful',
         body: `Successfully paid ${transaction.currency}.${transaction.amount} for Vehicle Registration No: ${transaction.motorCoverRequest.vehicleDetails.RegistrationNumber}. ${transaction.motorCoverRequest.motorCover.name} Motor Cover`,
         token: transaction.customer.token,
       });
+
+      await this.motorCoverQueue.add(
+        MOTOR_COVER_JOB,
+        transaction.motorCoverRequest,
+      );
     }
 
     if (result === 'FAIL') {
@@ -68,13 +80,9 @@ export class TransactionConsumer {
         body: `Payment Failed for Vehicle Registration No: ${transaction.motorCoverRequest.vehicleDetails.RegistrationNumber}. ${transaction.motorCoverRequest.motorCover.name} Motor Cover`,
         token: transaction.customer.token,
       });
+
+      await transaction.save();
     }
-
-    await transaction.save();
-
-    // Add cover request to queue
-
-    await this.motorCoverQueue.add(MOTOR_COVER_JOB, transaction);
   }
 
   @Process(TRAVEL_TRANSACTION_CALLBACK_JOB)
