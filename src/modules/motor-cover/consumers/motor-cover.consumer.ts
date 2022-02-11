@@ -192,7 +192,11 @@ export class MotorCoverConsumer {
 
   @Process(PREMIA_CALLBACK_JOB)
   async processPremiaCallback(
-    job: Job<{ request: MotorCoverRequest; policy: MotorPolicy }>,
+    job: Job<{
+      request: MotorCoverRequest;
+      policy: MotorPolicy;
+      transaction: Transaction;
+    }>,
   ) {
     this.logger.verbose(
       `Processing motor cover request job ID: ${
@@ -200,7 +204,7 @@ export class MotorCoverConsumer {
       }, Payload : ${JSON.stringify(job.data)}`,
     );
 
-    const { request, policy } = job.data;
+    const { request, policy, transaction } = job.data;
 
     const insuredPayload = this.prepareInsuredRequestToPremia(request);
 
@@ -226,7 +230,10 @@ export class MotorCoverConsumer {
 
         const policyPayload = this.preparePolicyCreationRequestToPremia(
           request,
+          policy.eSticker,
+          policy.coverNoteReferenceNumber,
           P_ASSR_CODE,
+          transaction.operatorReferenceId,
         );
 
         this.logger.log(
@@ -291,7 +298,10 @@ export class MotorCoverConsumer {
 
   preparePolicyCreationRequestToPremia = (
     request: MotorCoverRequest,
+    stickerNumber: string,
+    coverNoteReferenceNumber: string,
     policyAssrCode: string,
+    reference: string,
   ) => {
     return {
       PGIT_POL_RISK_ADDL_INFO: {
@@ -322,13 +332,13 @@ export class MotorCoverConsumer {
 
                 PRAI_NUM_09: request.vehicleDetails.SittingCapacity,
 
-                PRAI_NUM_03: request.vehicleDetails.SittingCapacity,
+                PRAI_NUM_03: coverNoteReferenceNumber,
 
                 PRAI_CODE_01: request.vehicleDetails.MotorCategory,
 
                 PRAI_NUM_01: request.vehicleDetails.YearOfManufacture,
 
-                PRAI_DATA_05: request.requestId,
+                PRAI_DATA_05: stickerNumber,
 
                 PRAI_CODE_13: request.vehicleDetails.BodyType,
 
@@ -350,6 +360,8 @@ export class MotorCoverConsumer {
       },
 
       PGIT_POLICY: {
+        POL_DIVN_CODE: '100',
+
         POL_PROD_CODE: this.getPolicyCode(request.usageType),
 
         POL_CUST_CODE: 'DC0015599',
@@ -381,6 +393,12 @@ export class MotorCoverConsumer {
         POL_TO_DT: moment(request.coverNoteEndDate)
           .format('DD MMM YYYY')
           .toUpperCase(),
+      },
+      RECEIPT: {
+        RECEIPT_MODE: 'BANK',
+        BANK_CODE: '1201009',
+        BANK_NAME: 'SELCOM',
+        RECEIPT_REF_NO: reference,
       },
     };
   };

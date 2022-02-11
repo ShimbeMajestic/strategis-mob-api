@@ -37,6 +37,7 @@ import { Queue } from 'bull';
 import { User } from 'src/modules/user/models/user.model';
 import { ApprovalDto } from '../dtos/approval.dto';
 import { MotorCover } from '../models/motor-cover.model';
+import { Transaction } from 'src/modules/transactions/models/transaction.model';
 
 @Injectable()
 export class MotorCovernoteService {
@@ -418,6 +419,10 @@ export class MotorCovernoteService {
         ],
       });
 
+      const transaction = await Transaction.findOne({
+        reference: RequestId,
+      });
+
       if (!request) {
         return {
           success: false,
@@ -474,7 +479,7 @@ export class MotorCovernoteService {
 
         await this.motorCoverQueue.add(
           PREMIA_CALLBACK_JOB,
-          { request, policy },
+          { request, policy, transaction },
           {
             attempts: 15,
           },
