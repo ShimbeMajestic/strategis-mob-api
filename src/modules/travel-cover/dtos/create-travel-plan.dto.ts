@@ -15,6 +15,9 @@ export class CreateTravelPlanDto {
   price: number;
 
   @Field()
+  priceInUSD: number;
+
+  @Field()
   currency: string;
 
   @Field({ nullable: true })

@@ -63,6 +63,10 @@ export class TravelPlan extends BaseEntity {
 
   @Column()
   @FilterableField()
+  priceInUSD: number;
+
+  @Column()
+  @FilterableField()
   currency: string;
 
   @FilterableField({ nullable: true })
