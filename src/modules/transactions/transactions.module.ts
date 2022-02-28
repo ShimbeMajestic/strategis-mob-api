@@ -7,6 +7,7 @@ import { redisConfig } from 'src/config/redis.config';
 import {
   MOTOR_COVER_QUEUE,
   TRANSACTION_CALLBACK_QUEUE,
+  TRAVEL_COVER_QUEUE,
 } from 'src/shared/sms/constants';
 import { GqlAuthGuard } from '../auth/auth.guard';
 import { TransactionController } from './controllers/transaction.controller';
@@ -45,6 +46,14 @@ import { SharedModule } from 'src/shared/shared.module';
     }),
     BullModule.registerQueue({
       name: MOTOR_COVER_QUEUE,
+      redis: redisConfig.bullQueue,
+      defaultJobOptions: {
+        lifo: true,
+        attempts: 15,
+      },
+    }),
+    BullModule.registerQueue({
+      name: TRAVEL_COVER_QUEUE,
       redis: redisConfig.bullQueue,
       defaultJobOptions: {
         lifo: true,

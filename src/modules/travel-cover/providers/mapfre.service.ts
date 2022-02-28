@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { Xml } from 'src/shared';
 import { TravelCoverRequest } from '../models/travel-cover-request.model';
 import { mapfreConfig } from '../../../config/mapfre.config';
+import { appConfig } from 'src/config/app.config';
 
 @Injectable()
 export class MapfreService {
@@ -39,6 +40,8 @@ export class MapfreService {
     const responseXml = response.data;
 
     this.logger.log('Issuing Response: ' + responseXml);
+
+    return Xml.xmlToJson(responseXml);
   }
 
   protected async getXml(order: TravelCoverRequest) {
@@ -66,8 +69,10 @@ export class MapfreService {
 
     const product = order.plan.travelProduct;
 
-    const insuredLastName = order.customer.lastName;
-    const insuredFirstNames = order.customer.firstName;
+    const insuredLastName =
+      appConfig.environment === 'STAGING' ? 'TEST' : order.customer.lastName;
+    const insuredFirstNames =
+      appConfig.environment === 'STAGING' ? 'TEST' : order.customer.firstName;
     const insuredDob = order.customer.dob;
     const insuredAge = moment(insuredDob).diff(moment(), 'years');
 

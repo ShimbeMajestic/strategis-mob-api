@@ -9,6 +9,7 @@ import {
   TRAVEL_TRANSACTION_CALLBACK_JOB,
   MOTOR_TRANSACTION_CALLBACK_JOB,
   TRANSACTION_CALLBACK_QUEUE,
+  TRAVEL_COVER_QUEUE,
 } from 'src/shared/sms/constants';
 import { CallbackDataDto } from '../dtos/callback-data.dto';
 import { TransactionStatusEnum } from '../enums/transaction.enum';
@@ -22,6 +23,8 @@ export class TransactionConsumer {
     @InjectQueue(MOTOR_COVER_QUEUE)
     private readonly motorCoverQueue: Queue,
     private notificationService: NotificationService,
+    @InjectQueue(TRAVEL_COVER_QUEUE)
+    private travelCoverQueue: Queue,
   ) {}
 
   @Process(MOTOR_TRANSACTION_CALLBACK_JOB)
@@ -129,6 +132,13 @@ export class TransactionConsumer {
 
     await transaction.save();
 
+    await this.travelCoverQueue.add(
+      'TRAVEL_COVER_REQUEST_JOB',
+      transaction.travelCoverRequest,
+      {
+        attempts: 15,
+      },
+    );
     //TODO: Add travel request to queue for processing
   }
 }

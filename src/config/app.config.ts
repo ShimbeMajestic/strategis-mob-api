@@ -14,4 +14,6 @@ export const appConfig = {
   appCallbackUrl: process.env.APP_CALLBACK_URL,
 
   tiraApiUrl: process.env.TIRA_BRIDGE_API_URL,
+
+  environment: process.env.ENVIRONMENT || 'STAGING',
 };
