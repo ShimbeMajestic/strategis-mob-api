@@ -53,8 +53,8 @@ export class Xml {
     nodeName: string,
     includeTags = true,
   ): string {
-    const strartString = '<' + nodeName + '>';
-    const endString = '</' + nodeName + '>';
+    const strartString = '&lt;' + nodeName + '&gt;';
+    const endString = '&lt;/' + nodeName + '&gt;';
 
     const startindex = xmlString.indexOf(strartString);
     const endindex = xmlString.indexOf(endString, startindex);

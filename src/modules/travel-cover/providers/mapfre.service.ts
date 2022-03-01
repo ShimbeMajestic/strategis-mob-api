@@ -34,7 +34,7 @@ export class MapfreService {
     this.logger.log('Issuing Request: ' + requestXml);
 
     const response = await this.http
-      .post('', requestXml, { headers })
+      .post(mapfreConfig.wsdlUrl, requestXml, { headers })
       .toPromise();
 
     const responseXml = response.data;
@@ -47,6 +47,9 @@ export class MapfreService {
   protected async getXml(order: TravelCoverRequest) {
     // Refetch order
     order = await TravelCoverRequest.findOne({
+      where: {
+        id: order.id,
+      },
       relations: [
         'customer',
         'plan',
@@ -58,11 +61,12 @@ export class MapfreService {
 
     const strStartDate = moment(order.departureDate).format('DD/MM/YYYY');
     const strEndDate = moment(order.returnDate).format('DD/MM/YYYY');
-    const daysDuration = moment(strStartDate).diff(strEndDate, 'days') + 1;
+    const daysDuration =
+      moment(order.returnDate).diff(moment(order.departureDate), 'days') + 1;
     // Remove MMT prefix, and remain with numeric part only
     const policyNumber = order.id;
     // $usdGrossPrice = $order->amount_usd;
-    const usdReinsurancePrice = order.plan.price; // Price needs to be in USD
+    const usdReinsurancePrice = order.plan.priceInUSD; // Price needs to be in USD
 
     const coverType = order.plan.travelEntity.name.toLowerCase();
     const region = order.plan.destination.name.toLowerCase();
@@ -74,11 +78,11 @@ export class MapfreService {
     const insuredFirstNames =
       appConfig.environment === 'STAGING' ? 'TEST' : order.customer.firstName;
     const insuredDob = order.customer.dob;
-    const insuredAge = moment(insuredDob).diff(moment(), 'years');
+    const insuredAge = moment().diff(moment(insuredDob), 'years');
 
     const xml = `<root>
    <policyData>
-    <txtSufijo>${product.productName}</txtSufijo>
+    <txtSufijo>${product.productSuffix}</txtSufijo>
     <txtFhInicio>${strStartDate}</txtFhInicio>
     <txtFhFin>${strEndDate}</txtFhFin>
     <txtNpoliza>${policyNumber}</txtNpoliza>
@@ -191,7 +195,7 @@ export class MapfreService {
     this.logger.log('Login Request: ' + requestXml);
 
     const response = await this.http
-      .post('', requestXml, { headers })
+      .post(mapfreConfig.wsdlUrl, requestXml, { headers })
       .toPromise();
 
     const responseXml = response.data;

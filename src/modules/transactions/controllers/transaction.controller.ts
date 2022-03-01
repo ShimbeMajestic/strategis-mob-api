@@ -26,7 +26,6 @@ export class TransactionController {
 
   @Post('callback')
   callback(@Body() data: CallbackDataDto) {
-    console.log(data);
     return this.transactionService.travelTransactionCallback(data);
   }
 }
