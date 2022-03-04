@@ -27,5 +27,5 @@ export class CreateTravelPlanDto {
   travelEntityId: number;
 
   @Field()
-  travelProductId: number;
+  travelProductId: string;
 }
