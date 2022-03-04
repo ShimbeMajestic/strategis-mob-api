@@ -25,4 +25,7 @@ export class CreateTravelPlanDto {
 
   @Field()
   travelEntityId: number;
+
+  @Field()
+  travelProductId: number;
 }
