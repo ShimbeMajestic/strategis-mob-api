@@ -55,7 +55,7 @@ export class VehicleDetailService {
 
       this.logger.log(
         `Result from checking vehicle cover status: ${JSON.stringify(
-          result.data.data,
+          result.data,
         )}`,
       );
 
