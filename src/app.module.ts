@@ -13,9 +13,13 @@ import { ListsModule } from './modules/lists/lists.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { UserModule } from './modules/user/user.module';
 import { SharedModule } from './shared/shared.module';
-import { MotorCovernoteModule } from './modules/motor-covernote/motor-covernote.module';
+import { MotorCovernoteModule } from './modules/motor-cover/motor-covernote.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { FileModule } from './modules/file/file.module';
+import { TravelCoverModule } from './modules/travel-cover/travel-cover.module';
+import { HealthCoverModule } from './modules/health-cover/health-cover.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { ClaimModule } from './modules/claim/claim.module';
 
 @Module({
   imports: [
@@ -42,6 +46,10 @@ import { FileModule } from './modules/file/file.module';
     ScheduleModule.forRoot(),
     MotorCovernoteModule,
     TransactionsModule,
+    TravelCoverModule,
+    HealthCoverModule,
+    NotificationModule,
+    ClaimModule,
   ],
 })
 export class AppModule {}

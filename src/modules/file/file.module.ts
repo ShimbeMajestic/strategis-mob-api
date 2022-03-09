@@ -28,17 +28,10 @@ import { FileLoader } from './dataloaders/file.loader';
                 direction: SortDirection.DESC,
               },
             ],
-            decorators: [UsePermission(PermissionEnum.VIEW_PRODUCTS)],
           },
-          create: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_PRODUCTS)],
-          },
-          update: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_PRODUCTS)],
-          },
-          delete: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_PRODUCTS)],
-          },
+          create: {},
+          update: {},
+          delete: {},
         },
       ],
     }),

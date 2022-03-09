@@ -6,47 +6,43 @@
  */
 
 export const corsConfig = {
-    credentials: true,
+  credentials: true,
 
-    origin: [
-        // staging
-        'https://codeblock.co.tz',
-        /.codeblock.co.tz$/,
+  origin: [
+    // staging
+    'https://codeblock.co.tz',
+    /.codeblock.co.tz$/,
 
-        // local development
-        'http://localhost',
-        /^(http:\/\/localhost:)/,
-    ],
+    // local development
+    'http://localhost',
+    /^(http:\/\/localhost:)/,
 
-    methods: [
-        'POST',
-        'GET',
-        'OPTIONS',
-        'PUT',
-        'PATCH',
-        'DELETE',
-    ],
+    // strategis local
+    'https://192.168.1.10:4545',
+  ],
 
-    allowedHeaders: [
-        'Content-Type',
-        'Origin',
-        'Authorization',
-        'X-Requested-With,'
-    ],
+  methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
 
-    exposedHeaders: [
-        'Cache-Control',
-        'Content-Language',
-        'Content-Type',
-        'Expires',
-        'Last-Modified',
-        'Pragma',
-        'Access-Control-Allow-Headers',
-    ],
+  allowedHeaders: [
+    'Content-Type',
+    'Origin',
+    'Authorization',
+    'X-Requested-With,',
+  ],
 
-    preflightContinue: false,
+  exposedHeaders: [
+    'Cache-Control',
+    'Content-Language',
+    'Content-Type',
+    'Expires',
+    'Last-Modified',
+    'Pragma',
+    'Access-Control-Allow-Headers',
+  ],
 
-    optionsSuccessStatus: 204,
+  preflightContinue: false,
 
-    maxAge: 60 * 60 * 24,
+  optionsSuccessStatus: 204,
+
+  maxAge: 60 * 60 * 24,
 };

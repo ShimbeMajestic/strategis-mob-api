@@ -1,14 +1,10 @@
-import { registerEnumType } from "@nestjs/graphql";
+import { registerEnumType } from '@nestjs/graphql';
 
 export enum IdType {
-    NIN = "National Identification Number (NIN)",
-    VOTERS_REG_NUM = "Voters registration number",
-    PASSPORT_NUM = "Passport number",
-    DRIVING_LICENSE = "Driving License",
-    ZAN_ID = "Zanzibar Resident Id(ZANID)",
-    TIN = "Tax Identification Number (TIN)",
-    COMPANY_INC_CERT_NUMBER = "Company Incorporation Certificate Number"
+  NIN = 'NIN',
+  VOTERS_REG_NUM = 'VOTERS_REG_NUM',
+  PASSPORT_NUM = 'PASSPORT_NUM',
+  TIN_NUM = 'TIN_NUM',
 }
 
 registerEnumType(IdType, { name: 'IdType' });
-

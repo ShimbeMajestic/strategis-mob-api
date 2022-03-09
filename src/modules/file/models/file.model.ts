@@ -1,5 +1,5 @@
 import { FilterableField, KeySet } from '@nestjs-query/query-graphql';
-import { Field, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
+import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   CreateDateColumn,
@@ -16,7 +16,7 @@ import * as prettyBytes from 'pretty-bytes';
 @ObjectType()
 @KeySet(['id'])
 export class File extends BaseEntity {
-  @FilterableField()
+  @FilterableField(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 

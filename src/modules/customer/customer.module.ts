@@ -6,14 +6,12 @@ import { CustomerService } from './providers/customer.service';
 import { CustomerResolver } from './resolvers/customer.resolver';
 
 @Module({
-    imports: [
-        NestjsQueryGraphQLModule.forFeature({
-
-            imports: [NestjsQueryTypeOrmModule.forFeature([Customer])],
-            dtos: [{ DTOClass: Customer }]
-
-        }),
-    ],
-    providers: [CustomerService, CustomerResolver],
+  imports: [
+    NestjsQueryGraphQLModule.forFeature({
+      imports: [NestjsQueryTypeOrmModule.forFeature([Customer])],
+      dtos: [{ DTOClass: Customer }],
+    }),
+  ],
+  providers: [CustomerService, CustomerResolver],
 })
-export class CustomerModule { }
+export class CustomerModule {}
