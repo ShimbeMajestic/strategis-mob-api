@@ -154,7 +154,7 @@ export class TransactionService {
 
     const payload = this.transformPayload({
       vendor: selcomConfig.selcomVendor,
-      amount: 1000,
+      amount,
       buyerEmail,
       buyerName,
       buyerPhone,
