@@ -364,7 +364,7 @@ export class MotorCoverConsumer {
 
         POL_PROD_CODE: this.getPolicyCode(request.usageType),
 
-        POL_CUST_CODE: 'DC0015599',
+        POL_CUST_CODE: premiaConfig.policyCustomerCode,
 
         POL_ASSR_CODE: policyAssrCode,
 
@@ -396,8 +396,8 @@ export class MotorCoverConsumer {
       },
       RECEIPT: {
         RECEIPT_MODE: 'BANK',
-        BANK_CODE: '1201009',
-        BANK_NAME: 'SELCOM',
+        BANK_CODE: premiaConfig.bankDetails.code,
+        BANK_NAME: premiaConfig.bankDetails.name,
         RECEIPT_REF_NO: reference,
       },
     };
