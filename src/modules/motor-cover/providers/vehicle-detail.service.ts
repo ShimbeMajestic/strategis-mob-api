@@ -70,27 +70,17 @@ export class VehicleDetailService {
         };
       }
 
-      if (result.data.data.code !== 1000) {
-        return {
-          success: false,
-          exists: false,
-          data: result.data.data,
-        };
-      }
-
-      const { coverNoteEndDate } = result.data.data.data[0];
-
-      if (moment(new Date(coverNoteEndDate)).isAfter()) {
+      if (result.data.status === 'ACTIVE') {
         return {
           success: true,
           exists: true,
-          data: result.data.data.data[0],
+          data: result.data.policy,
         };
       } else {
         return {
           success: true,
           exists: false,
-          data: result.data.data.data[0],
+          data: result.data,
         };
       }
     } catch (error) {
