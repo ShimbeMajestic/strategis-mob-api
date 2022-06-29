@@ -17,7 +17,7 @@ export class CreateTravelPlanDto {
   @Field()
   priceInUSD: number;
 
-  @Field()
+  @Field({ defaultValue: 'TZS' })
   currency: string;
 
   @Field({ nullable: true })
