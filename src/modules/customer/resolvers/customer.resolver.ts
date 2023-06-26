@@ -1,4 +1,4 @@
-import { CRUDResolver } from '@nestjs-query/query-graphql';
+import { CRUDResolver } from '@ptc-org/nestjs-query-graphql';
 import { UseGuards } from '@nestjs/common';
 import {
   Resolver,

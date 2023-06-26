@@ -136,7 +136,9 @@ export class CustomerAuthService {
     await customerOtp.save();
 
     // Fetch user by phone number
-    const customer = await Customer.findOne({ phone: customerOtp.phone });
+    const customer = await Customer.findOne({
+      where: { phone: customerOtp.phone },
+    });
     // If user not found, create user
     if (!customer) {
       const newCustomer = new Customer();

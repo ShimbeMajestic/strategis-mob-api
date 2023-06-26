@@ -1,4 +1,4 @@
-import { CRUDResolver, QueryArgsType } from '@nestjs-query/query-graphql';
+import { CRUDResolver, QueryArgsType } from '@ptc-org/nestjs-query-graphql';
 import { UseGuards } from '@nestjs/common';
 import { ArgsType, Query, Resolver } from '@nestjs/graphql';
 import { UserTypeGuard } from 'src/modules/permission/guards/user-type.guard';
@@ -17,5 +17,6 @@ export class TransactionResolver extends CRUDResolver(Transaction) {
 
   @Query(() => [Transaction])
   @UseGuards(UserTypeGuard)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   transactions() {}
 }

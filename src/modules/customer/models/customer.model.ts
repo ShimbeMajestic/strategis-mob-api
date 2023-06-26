@@ -14,7 +14,7 @@ import {
   FilterableField,
   OffsetConnection,
   KeySet,
-} from '@nestjs-query/query-graphql';
+} from '@ptc-org/nestjs-query-graphql';
 import { Region } from 'src/modules/lists/models/region.model';
 import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.interface';
 import { IdType } from '../enum/id-type.enum';
@@ -26,18 +26,18 @@ import { MotorPolicy } from 'src/modules/motor-cover/models/motor-policy.model';
 @KeySet(['id'])
 @OffsetConnection('region', () => Region, {
   nullable: true,
-  disableUpdate: true,
-  disableRemove: true,
+  remove: { enabled: false },
+  update: { enabled: false },
 })
 @OffsetConnection('transactions', () => Transaction, {
   nullable: true,
-  disableUpdate: true,
-  disableRemove: true,
+  remove: { enabled: false },
+  update: { enabled: false },
 })
 @OffsetConnection('policies', () => MotorPolicy, {
   nullable: true,
-  disableUpdate: true,
-  disableRemove: true,
+  remove: { enabled: false },
+  update: { enabled: false },
 })
 @Entity()
 export class Customer extends BaseEntity implements AuthenticatedUser {

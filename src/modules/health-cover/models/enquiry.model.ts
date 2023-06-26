@@ -2,7 +2,7 @@ import {
   Authorize,
   FilterableField,
   Relation,
-} from '@nestjs-query/query-graphql';
+} from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import {

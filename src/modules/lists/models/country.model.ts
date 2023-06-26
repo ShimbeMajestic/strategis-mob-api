@@ -2,7 +2,7 @@ import {
     FilterableField,
     OffsetConnection,
     KeySet,
-} from '@nestjs-query/query-graphql';
+} from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import {
     Entity,
@@ -20,8 +20,8 @@ import { Region } from './region.model';
 @ObjectType()
 @KeySet(['id'])
 @OffsetConnection('regions', () => Region, {
-    disableUpdate: true,
-    disableRemove: true,
+    remove: { enabled: false },
+    update: { enabled: false },
 })
 @Entity()
 export class Country extends BaseEntity {
@@ -49,10 +49,7 @@ export class Country extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date;
 
-    @OneToMany(
-        () => Region,
-        region => region.country,
-    )
+    @OneToMany(() => Region, (region) => region.country)
     regions: Region[];
 
     @BeforeInsert()

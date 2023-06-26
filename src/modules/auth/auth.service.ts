@@ -42,11 +42,11 @@ export class AuthService {
 
         // Find by Email
         if (Validator.isEmail(identifier)) {
-            user = await User.findOne({ email: identifier });
+            user = await User.findOne({ where: { email: identifier } });
         }
         // Find by Phone Number
         else if (Validator.isPhone(identifier)) {
-            user = await User.findOne({ phone: identifier });
+            user = await User.findOne({ where: { phone: identifier } });
         } else {
             throw new AuthenticationError(
                 'Invalid identifier provided! Identifier must be a VALID email or phone.',

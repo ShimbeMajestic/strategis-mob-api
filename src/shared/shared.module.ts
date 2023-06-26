@@ -5,16 +5,7 @@ import { SmsModule } from './sms/sms.module';
 import { NotificationModule } from './notification/notification.module';
 
 @Module({
-    imports: [
-        SmsModule,
-        PaymentModule,
-        NotificationModule,
-        BullUiModule,
-    ],
-    exports: [
-        SmsModule,
-        PaymentModule,
-        NotificationModule,
-    ],
+    imports: [SmsModule, PaymentModule, NotificationModule, BullUiModule],
+    exports: [SmsModule, PaymentModule, NotificationModule],
 })
-export class SharedModule { }
+export class SharedModule {}

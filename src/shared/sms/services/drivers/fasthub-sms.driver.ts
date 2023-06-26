@@ -1,5 +1,4 @@
 import {
-    HttpService,
     Injectable,
     InternalServerErrorException,
     Logger,
@@ -8,6 +7,7 @@ import { smsConfig } from 'src/config/sms.config';
 import { SendSMSDto } from '../../dtos/SendSMS.dto';
 import { SmsDriver } from './sms-driver.interface';
 import * as crypto from 'crypto';
+import { HttpService } from '@nestjs/axios';
 
 /**
  * This SMS driver relays messages using Fasthub SMS gateway
@@ -52,7 +52,7 @@ export class FastHubSms implements SmsDriver {
         this.httpService
             .post(endpoint, payload)
             .toPromise()
-            .then(response => {
+            .then((response) => {
                 if (response.status !== 200) {
                     throw new InternalServerErrorException(response.data);
                 }
@@ -64,16 +64,13 @@ export class FastHubSms implements SmsDriver {
                     throw new InternalServerErrorException(response.data);
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 throw new InternalServerErrorException(error);
             });
     }
 
     protected encodePassword(password: string): string {
-        const hash = crypto
-            .createHash('sha256')
-            .update(password)
-            .digest('hex');
+        const hash = crypto.createHash('sha256').update(password).digest('hex');
 
         const encPassword = Buffer.from(hash).toString('base64');
 

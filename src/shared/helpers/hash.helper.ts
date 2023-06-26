@@ -3,9 +3,9 @@ import * as argon2 from 'argon2';
 import { InternalServerErrorException } from '@nestjs/common';
 
 export class Hash {
-    static async make(value: string, algorithm = 'bcrypt'): Promise<string> {
+    static async make(value: string, algorithm = 'argon2'): Promise<string> {
         // Is bcrypt Hash
-        if (algorithm === 'argon2') {
+        if (algorithm === 'Argon2') {
             return Hash.argon2Hash(value);
         }
 
@@ -51,14 +51,16 @@ export class Hash {
     }
 
     static async argon2Hash(value: string): Promise<string> {
-        const argon2Config = {
-            type: argon2.argon2id,
-            memoryCost: 1024,
-            parallelism: 2,
-            timeCost: 2,
-        };
+        // const argon2Config = {
+        //     type: argon2.argon2id,
+        //     memoryCost: 1024,
+        //     parallelism: 2,
+        //     timeCost: 2,
+        // };
 
-        return await argon2.hash(value, argon2Config);
+        const hash = await argon2.hash(value);
+
+        return hash;
     }
 
     static async argon2Verify(

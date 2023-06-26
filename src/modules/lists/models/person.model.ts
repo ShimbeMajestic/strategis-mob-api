@@ -1,10 +1,10 @@
-import { FilterableField } from '@nestjs-query/query-graphql';
+import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 import { GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 import { BaseEntity, Column } from 'typeorm';
 import { GenderEnum } from '../enums/gender.enum';
 
 @ObjectType()
-export abstract class Person extends BaseEntity {
+export class Person extends BaseEntity {
     @FilterableField()
     @Column()
     firstName: string;

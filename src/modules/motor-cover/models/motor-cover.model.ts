@@ -2,7 +2,7 @@ import {
   FilterableField,
   OffsetConnection,
   PagingStrategies,
-} from '@nestjs-query/query-graphql';
+} from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import {
   BaseEntity,

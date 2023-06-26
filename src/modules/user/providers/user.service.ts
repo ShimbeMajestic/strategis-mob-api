@@ -7,6 +7,7 @@ import { User } from '../models/user.model';
 import { UserUpdatePasswordInput } from '../dto/user-update-password.dto';
 import { Hash } from 'src/shared/helpers/hash.helper';
 import { ChangePasswordRequest } from 'src/modules/auth/dto/change-password-request.dto';
+import { FindOneOptions } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -34,7 +35,9 @@ export class UserService {
         targetUser: User | number,
     ): Promise<boolean> {
         if (typeof targetUser === 'number') {
-            targetUser = await User.findOneOrFail(targetUser);
+            targetUser = await User.findOneOrFail(
+                targetUser as FindOneOptions<User>,
+            );
         }
 
         // Validate password confirmation

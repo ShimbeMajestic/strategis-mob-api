@@ -1,8 +1,8 @@
-import { Filter } from '@nestjs-query/core';
+import { Filter } from '@ptc-org/nestjs-query-core';
 import {
   AuthorizationContext,
   CustomAuthorizer,
-} from '@nestjs-query/query-graphql/dist/src/auth/authorizer';
+} from '@ptc-org/nestjs-query-graphql';
 import { Injectable } from '@nestjs/common';
 import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { HealthCoverEnquiry } from '../models/enquiry.model';

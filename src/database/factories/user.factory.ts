@@ -1,29 +1,35 @@
+import { faker } from '@faker-js/faker';
 import { User } from 'src/modules/user/models/user.model';
-import { define } from 'typeorm-seeding';
-import * as Faker from 'faker';
 import { GenderEnum } from 'src/modules/lists/enums/gender.enum';
+import { Injectable } from '@nestjs/common';
 
-define(User, (faker: typeof Faker) => {
-    const gender = faker.random.number(1);
-    const firstName = faker.name.firstName(gender);
-    const lastName = faker.name.lastName(gender);
-    // set middlename as null 50% of the time
-    const middleName =
-        faker.random.number(1) === 1 ? null : faker.name.lastName(gender);
-    const username = lastName.substr(0, 4) + firstName.substr(0, 1) + '001';
+@Injectable()
+export class UserFactory {
+    public generate(): User {
+        const gender = faker.number.int(1) === 1 ? 'male' : 'female';
+        const firstName = faker.person.firstName(gender);
+        const lastName = faker.person.lastName(gender);
+        // set middlename as null 50% of the time
+        const middleName =
+            faker.number.int(1) === 1 ? null : faker.person.lastName(gender);
+        const username = lastName.substr(0, 4) + firstName.substr(0, 1) + '001';
 
-    const user = new User();
-    user.workID = username.toLowerCase();
-    user.firstName = firstName;
-    user.middleName = middleName;
-    user.lastName = lastName;
-    user.gender = gender === 1 ? GenderEnum.MALE : GenderEnum.FEMALE;
-    user.email = faker.internet
-        .email(firstName, lastName, 'codeblock.co.tz')
-        .toLocaleLowerCase();
-    user.phone = faker.phone.phoneNumber();
-    user.address = faker.address.streetAddress();
-    user.password = 'password@1'; // password@1
+        const user = new User();
+        user.workID = username.toLowerCase();
+        user.firstName = firstName;
+        user.middleName = middleName;
+        user.lastName = lastName;
+        user.gender =
+            Number(gender) === 1 ? GenderEnum.MALE : GenderEnum.FEMALE;
+        user.email = faker.internet
+            .email({ firstName, lastName, provider: 'codeblock.co.tz' })
+            .toLocaleLowerCase();
+        user.phone = faker.phone.number('+255 6/7# ### ####');
+        user.address = faker.location.streetAddress({ useFullAddress: true });
+        user.password = 'password@1'; // password@1
 
-    return user;
-});
+        user.save();
+
+        return user;
+    }
+}

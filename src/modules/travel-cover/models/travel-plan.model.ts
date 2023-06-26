@@ -1,8 +1,7 @@
 import {
   FilterableField,
   FilterableRelation,
-  Relation,
-} from '@nestjs-query/query-graphql';
+} from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import {
   BaseEntity,

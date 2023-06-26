@@ -7,7 +7,7 @@ import { Any } from 'typeorm';
 export class FileLoader {
   public readonly findByIds = new DataLoader<File['id'], File>(
     async (fileIds) => {
-      const files = await File.find({ id: Any(fileIds.concat()) });
+      const files = await File.find({ where: { id: Any(fileIds.concat()) } });
 
       return fileIds.map((fileId) => files.find((file) => file.id === fileId));
     },

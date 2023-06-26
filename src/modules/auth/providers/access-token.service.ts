@@ -7,12 +7,13 @@ import { JwtPayload } from '../jwt-payload.interface';
 import { AccessToken } from '../models/access-token.model';
 import { AuthenticatedUser } from '../models/authenticated-user.interface';
 import { userType } from '../models/user-type';
+import { getRepository } from 'typeorm';
 
 @Injectable()
 export class AccessTokenService {
     protected readonly logger = new Logger('AccessTokenService');
 
-    constructor(protected readonly jwtService: JwtService) { }
+    constructor(protected readonly jwtService: JwtService) {}
 
     async validateAccessToken(tokenId: string): Promise<AuthenticatedUser> {
         if (!tokenId)
@@ -32,7 +33,11 @@ export class AccessTokenService {
             throw new AuthenticationError('Session expired! Please login.');
 
         // Retrieve user by type: customer/user
-        const user = userType[token.userType].findOne({ id: token.userId });
+        const userRepository = getRepository(userType[token.userType]);
+
+        const user = userRepository.findOne({
+            where: { id: token.userId },
+        });
 
         if (!user)
             throw new AuthenticationError('Session expired! Please login.');
@@ -45,9 +50,7 @@ export class AccessTokenService {
         const token = new AccessToken();
         token.userId = user.id;
         token.userType = user.type;
-        token.expiresAt = moment()
-            .add(authConfig.tokenLife, 'second')
-            .toDate();
+        token.expiresAt = moment().add(authConfig.tokenLife, 'second').toDate();
         await token.save();
 
         // create signed JWT

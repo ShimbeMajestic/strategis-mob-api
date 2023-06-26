@@ -89,7 +89,7 @@ export class MotorCovernoteService {
     const { motorCoverReqId, registrationNumber } = input;
 
     const motorCoverRequest = await MotorCoverRequest.findOne({
-      id: motorCoverReqId,
+      where: { id: motorCoverReqId },
     });
 
     if (!motorCoverRequest) {
@@ -145,7 +145,7 @@ export class MotorCovernoteService {
     const { requestId, usageType } = input;
 
     const motorCoverRequest = await MotorCoverRequest.findOne({
-      id: requestId,
+      where: { id: requestId },
     });
     motorCoverRequest.usageType = usageType;
 
@@ -267,7 +267,9 @@ export class MotorCovernoteService {
       OwnerCategory,
       value,
     } = input;
-    const motorRequest = await MotorCoverRequest.findOne({ id: requestId });
+    const motorRequest = await MotorCoverRequest.findOne({
+      where: { id: requestId },
+    });
 
     if (!motorRequest) {
       throw new NotFoundException('Motor cover request not found!');
@@ -312,7 +314,9 @@ export class MotorCovernoteService {
   ): Promise<TransactionPaymentResultDto> {
     const { requestId, email } = input;
 
-    const motorRequest = await MotorCoverRequest.findOne({ id: requestId });
+    const motorRequest = await MotorCoverRequest.findOne({
+      where: { id: requestId },
+    });
 
     if (!motorRequest) {
       throw new NotFoundException('Motor cover request not found!');
@@ -420,7 +424,9 @@ export class MotorCovernoteService {
       });
 
       const transaction = await Transaction.findOne({
-        reference: RequestId,
+        where: {
+          reference: RequestId,
+        },
       });
 
       if (!request) {
@@ -538,7 +544,7 @@ export class MotorCovernoteService {
   async approveCoverRequest(user: User, input: ApprovalDto) {
     try {
       const request = await MotorCoverRequest.findOne({
-        where: { id: input.requestId },
+        where: { id: Number(input.requestId) },
       });
 
       if (!request) {

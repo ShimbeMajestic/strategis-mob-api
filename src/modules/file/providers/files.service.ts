@@ -44,7 +44,7 @@ export class FilesService {
   // }
 
   async getFile(fileId: number) {
-    const file = await File.findOne({ id: fileId });
+    const file = await File.findOne({ where: { id: fileId } });
     if (file) {
       const url = await this.getUrl(file.key);
       return {
@@ -56,7 +56,7 @@ export class FilesService {
   }
 
   async getFileStream(fileId: number) {
-    const fileInfo = await File.findOne({ id: fileId });
+    const fileInfo = await File.findOne({ where: { id: fileId } });
     if (fileInfo) {
       const stream = await FilesService.s3
         .getObject({
