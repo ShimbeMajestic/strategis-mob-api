@@ -6,7 +6,7 @@ import { GenderEnum } from '../enums/gender.enum';
 @ObjectType()
 export class Person extends BaseEntity {
     @FilterableField()
-    @Column()
+    @Column({ nullable: true })
     firstName: string;
 
     @FilterableField({ nullable: true })
@@ -14,7 +14,7 @@ export class Person extends BaseEntity {
     middleName?: string;
 
     @FilterableField()
-    @Column()
+    @Column({ nullable: true })
     lastName: string;
 
     @FilterableField({ nullable: true })

@@ -11,27 +11,14 @@ import { PermissionEnum } from '../permission/enums/permission.enum';
 import { PermissionGuard } from '../permission/guards/permission.guard';
 import { Country } from './models/country.model';
 import { Region } from './models/region.model';
-import { CountriesSeed } from 'src/database/seeds/0850-countries.seed';
-import { RoleSeed } from 'src/database/seeds/0900-role.seed';
-import { UserSeed } from 'src/database/seeds/1000-user.seed';
-import { Role } from '../permission/models/role.model';
-import { Permission } from '../permission/models/permission.model';
-import { User } from '../user/models/user.model';
+import { CountriesSeeder } from './countries-seeder.provider';
 
 @Module({
     imports: [
         NestjsQueryGraphQLModule.forFeature({
             // import the NestjsQueryTypeOrmModule to register the entity with typeorm
             // and provide a QueryService
-            imports: [
-                NestjsQueryTypeOrmModule.forFeature([
-                    Country,
-                    Region,
-                    Role,
-                    Permission,
-                    User,
-                ]),
-            ],
+            imports: [NestjsQueryTypeOrmModule.forFeature([Country, Region])],
             // describe the resolvers you want to expose
             resolvers: [
                 {
@@ -95,6 +82,6 @@ import { User } from '../user/models/user.model';
             ],
         }),
     ],
-    providers: [CountriesSeed, RoleSeed, UserSeed],
+    providers: [CountriesSeeder],
 })
 export class ListsModule {}

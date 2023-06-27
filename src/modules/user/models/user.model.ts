@@ -14,6 +14,7 @@ import {
 import { Permission } from 'src/modules/permission/models/permission.model';
 import {
     FilterableField,
+    FilterableRelation,
     KeySet,
     OffsetConnection,
 } from '@ptc-org/nestjs-query-graphql';
@@ -26,14 +27,14 @@ import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.in
 
 @ObjectType()
 @KeySet(['id'])
-@OffsetConnection('role', () => Role)
-@OffsetConnection('permissions', () => Permission)
-@OffsetConnection('country', () => Country, {
+@FilterableRelation('role', () => Role)
+@FilterableRelation('permissions', () => Permission)
+@FilterableRelation('country', () => Country, {
     nullable: true,
     update: { enabled: false },
     remove: { enabled: false },
 })
-@OffsetConnection('region', () => Region, {
+@FilterableRelation('region', () => Region, {
     nullable: true,
     update: { enabled: false },
     remove: { enabled: false },
@@ -54,7 +55,7 @@ export class User extends Person implements AuthenticatedUser {
     @Column({ unique: true })
     email: string;
 
-    @Column({ comment: 'Hashed password' })
+    @Column({ comment: 'Hashed password', nullable: true })
     password: string;
 
     @FilterableField({ nullable: true, defaultValue: true })

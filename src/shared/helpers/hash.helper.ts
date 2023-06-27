@@ -14,9 +14,9 @@ export class Hash {
             return Hash.brcryptHash(value);
         }
 
-        throw new InternalServerErrorException(
-            'Unsupported hash algorithm provided. Supported: argon2, bcrypt',
-        );
+        // throw new InternalServerErrorException(
+        //     'Unsupported hash algorithm provided. Supported: argon2, bcrypt',
+        // );
     }
 
     static async compare(value: string, hashedValue: string): Promise<boolean> {

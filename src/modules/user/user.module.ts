@@ -13,7 +13,6 @@ import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
 import { GqlAuthGuard } from '../auth/auth.guard';
 import { PermissionGuard } from '../permission/guards/permission.guard';
-import { UserFactory } from 'src/database/factories/user.factory';
 
 @Module({
     imports: [
@@ -29,7 +28,7 @@ import { UserFactory } from 'src/database/factories/user.factory';
                     EntityClass: User,
                     CreateDTOClass: CreateUserInput,
                     UpdateDTOClass: UpdateUserInput,
-                    guards: [GqlAuthGuard, PermissionGuard],
+                    // guards: [GqlAuthGuard, PermissionGuard],
                     read: {
                         defaultSort: [
                             {
@@ -40,9 +39,9 @@ import { UserFactory } from 'src/database/factories/user.factory';
                         decorators: [UsePermission(PermissionEnum.VIEW_USERS)],
                     },
                     create: {
-                        decorators: [
-                            UsePermission(PermissionEnum.MANAGE_USERS),
-                        ],
+                        // decorators: [
+                        //     UsePermission(PermissionEnum.MANAGE_USERS),
+                        // ],
                     },
                     update: {
                         decorators: [
@@ -54,7 +53,7 @@ import { UserFactory } from 'src/database/factories/user.factory';
             ],
         }),
     ],
-    providers: [UserService, UserResolver, UserFactory],
+    providers: [UserService, UserResolver],
     exports: [UserService],
 })
 export class UserModule {}
