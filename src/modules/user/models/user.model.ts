@@ -16,7 +16,6 @@ import {
     FilterableField,
     FilterableRelation,
     KeySet,
-    OffsetConnection,
 } from '@ptc-org/nestjs-query-graphql';
 import { Hash } from 'src/shared/helpers/hash.helper';
 import { Region } from 'src/modules/lists/models/region.model';

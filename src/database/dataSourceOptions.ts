@@ -1,4 +1,4 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { DEFAULT_CONNECTION } from './constants';
 import { SeederOptions } from 'typeorm-extension';

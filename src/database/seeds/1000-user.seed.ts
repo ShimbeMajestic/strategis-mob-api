@@ -26,6 +26,6 @@ export default class UserSeeder implements Seeder {
 
         const userFactory = await factoryManager.get(User);
         // save 1 factory generated entity, to the database
-        await userFactory.saveMany(5);
+        await userFactory.saveMany(30);
     }
 }
