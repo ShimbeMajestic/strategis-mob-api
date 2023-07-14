@@ -6,14 +6,18 @@ import { authConfig } from 'src/config/auth.config';
 import { JwtPayload } from '../jwt-payload.interface';
 import { AccessToken } from '../models/access-token.model';
 import { AuthenticatedUser } from '../models/authenticated-user.interface';
-import { userType } from '../models/user-type';
-import { getRepository } from 'typeorm';
+import { DataSource } from 'typeorm';
+import { User } from 'src/modules/user/models/user.model';
+import { Customer } from 'src/modules/customer/models/customer.model';
 
 @Injectable()
 export class AccessTokenService {
     protected readonly logger = new Logger('AccessTokenService');
 
-    constructor(protected readonly jwtService: JwtService) {}
+    constructor(
+        protected readonly jwtService: JwtService,
+        protected readonly dataSource: DataSource,
+    ) {}
 
     async validateAccessToken(tokenId: string): Promise<AuthenticatedUser> {
         if (!tokenId)
@@ -32,12 +36,23 @@ export class AccessTokenService {
         if (!token)
             throw new AuthenticationError('Session expired! Please login.');
 
-        // Retrieve user by type: customer/user
-        const userRepository = getRepository(userType[token.userType]);
+        let user = null;
+        switch (token.userType) {
+            case 'user':
+                user = User.findOne({
+                    where: { id: token.userId },
+                });
+                break;
 
-        const user = userRepository.findOne({
-            where: { id: token.userId },
-        });
+            case 'customer':
+                user = Customer.findOne({
+                    where: { id: token.userId },
+                });
+                break;
+
+            default:
+                throw new Error('Invalid user type');
+        }
 
         if (!user)
             throw new AuthenticationError('Session expired! Please login.');
