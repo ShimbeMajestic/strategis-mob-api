@@ -3,18 +3,23 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { configService } from './config/config.service';
 import { GqlBadRequestHandler } from './shared/exception/gql-bad-request.handler';
-import * as admin from 'firebase-admin';
+import * as firebaseAdmin from 'firebase-admin';
+import { corsConfig } from './config/cors.config';
+import { json } from 'express';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-    admin.initializeApp({
-        credential: admin.credential.applicationDefault(),
+    firebaseAdmin.initializeApp({
+        credential: firebaseAdmin.credential.applicationDefault(),
     });
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
     const port = configService.getPort();
     const logger = new Logger('bootstrap');
 
-    // app.enableCors(corsConfig);
+    app.disable('x-powered-by');
+    app.enableCors(corsConfig);
+    app.use(json({ limit: '1gb' }));
     app.useGlobalFilters(new GqlBadRequestHandler());
     app.useGlobalPipes(new ValidationPipe());
 
