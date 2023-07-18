@@ -5,26 +5,34 @@ import { GqlAuthGuard } from '../auth/auth.guard';
 import { CreateClaimDto } from './dtos/create-claim.dto';
 import { Claim } from './models/claim.model';
 import { ClaimResolver } from './resolvers/claim.resolver';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
 
 @Module({
-  imports: [
-    NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Claim])],
-      resolvers: [
-        {
-          guards: [GqlAuthGuard],
-          DTOClass: Claim,
-          EntityClass: Claim,
-          CreateDTOClass: CreateClaimDto,
-          //   create: {},
-          update: { disabled: true },
-          enableAggregate: true,
-          enableTotalCount: true,
-          enableSubscriptions: true,
-        },
-      ],
-    }),
-  ],
-  providers: [ClaimResolver],
+    imports: [
+        NestjsQueryGraphQLModule.forFeature({
+            imports: [NestjsQueryTypeOrmModule.forFeature([Claim])],
+            resolvers: [
+                {
+                    guards: [GqlAuthGuard],
+                    DTOClass: Claim,
+                    EntityClass: Claim,
+                    CreateDTOClass: CreateClaimDto,
+                    read: {
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
+                    update: { disabled: true },
+                    enableAggregate: true,
+                    enableTotalCount: true,
+                    enableSubscriptions: true,
+                },
+            ],
+        }),
+    ],
+    providers: [ClaimResolver],
 })
 export class ClaimModule {}

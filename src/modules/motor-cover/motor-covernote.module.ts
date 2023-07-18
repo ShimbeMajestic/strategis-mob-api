@@ -28,6 +28,7 @@ import { HttpModule } from '@nestjs/axios';
 import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
 import { MotorCoverController } from './controllers/motor-cover.controller';
 import { SharedModule } from 'src/shared/shared.module';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
 
 @Module({
     imports: [
@@ -114,6 +115,15 @@ import { SharedModule } from 'src/shared/shared.module';
                     DTOClass: MotorCoverRequest,
                     EntityClass: MotorCoverRequest,
                     guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: { disabled: true },
                     update: { disabled: true },
                     delete: { disabled: true },
@@ -125,6 +135,15 @@ import { SharedModule } from 'src/shared/shared.module';
                     DTOClass: MotorPolicy,
                     EntityClass: MotorPolicy,
                     guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: { disabled: true },
                     update: { disabled: true },
                     delete: { disabled: true },
