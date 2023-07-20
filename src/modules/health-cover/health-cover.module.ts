@@ -13,6 +13,7 @@ import { UpdateHospitalDto } from './dto/update-hospitals.dto';
 import { HealthCoverEnquiry } from './models/enquiry.model';
 import { Hospital } from './models/hospital.model';
 import { HealthPlan } from './models/plan.model';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
 
 @Module({
     imports: [
@@ -31,7 +32,12 @@ import { HealthPlan } from './models/plan.model';
                     CreateDTOClass: CreateHospitalDto,
                     UpdateDTOClass: UpdateHospitalDto,
                     // guards: [GqlAuthGuard],
-                    read: { pagingStrategy: PagingStrategies.CURSOR },
+                    read: {
+                        pagingStrategy: PagingStrategies.CURSOR,
+                        defaultSort: [
+                            { field: 'id', direction: SortDirection.DESC },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(PermissionEnum.MANAGE_HOSPITALS),
@@ -53,6 +59,14 @@ import { HealthPlan } from './models/plan.model';
                     EntityClass: HealthCoverEnquiry,
                     CreateDTOClass: CreateHealthCoverEnquiryDto,
                     guards: [GqlAuthGuard],
+                    read: {
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(
@@ -79,6 +93,14 @@ import { HealthPlan } from './models/plan.model';
                     DTOClass: HealthPlan,
                     EntityClass: HealthPlan,
                     guards: [GqlAuthGuard],
+                    read: {
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS),
