@@ -17,6 +17,7 @@ import { TravelProduct } from './models/travel-product.model';
 import { MapfreService } from './providers/mapfre.service';
 import { TravelCoverService } from './providers/travel-cover.service';
 import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
 
 @Module({
     imports: [
@@ -39,6 +40,15 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
                     CreateDTOClass: CreateTravelPlanDto,
                     UpdateDTOClass: UpdateTravelPlanDto,
                     guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(PermissionEnum.MANAGE_TRAVEL_PLANS),
@@ -60,6 +70,15 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
                     DTOClass: TravelDestination,
                     EntityClass: TravelDestination,
                     guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(
@@ -86,6 +105,15 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
                     DTOClass: TravelProduct,
                     EntityClass: TravelProduct,
                     guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT),
@@ -107,6 +135,15 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
                     DTOClass: TravelEntity,
                     EntityClass: TravelEntity,
                     guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(
@@ -134,6 +171,15 @@ import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
                     DTOClass: TravelCoverRequest,
                     EntityClass: TravelCoverRequest,
                     guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: { disabled: true },
                     update: { disabled: true },
                     delete: { disabled: true },
