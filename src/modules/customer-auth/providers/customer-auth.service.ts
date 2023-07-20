@@ -36,9 +36,9 @@ export class CustomerAuthService {
         const { otpLifeTime, otpLength } = authConfig.customerAuth;
 
         const otp = otpGen.generate(otpLength, {
-            upperCase: false,
+            lowerCaseAlphabets: false,
+            upperCaseAlphabets: false,
             specialChars: false,
-            alphabets: false,
         });
         const nonce = otpGen.generate(32, { specialChars: false });
 
