@@ -59,14 +59,6 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
                     EntityClass: HealthCoverEnquiry,
                     CreateDTOClass: CreateHealthCoverEnquiryDto,
                     guards: [GqlAuthGuard],
-                    read: {
-                        defaultSort: [
-                            {
-                                field: 'id',
-                                direction: SortDirection.DESC,
-                            },
-                        ],
-                    },
                     create: {
                         decorators: [
                             UsePermission(
@@ -93,14 +85,6 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
                     DTOClass: HealthPlan,
                     EntityClass: HealthPlan,
                     guards: [GqlAuthGuard],
-                    read: {
-                        defaultSort: [
-                            {
-                                field: 'id',
-                                direction: SortDirection.DESC,
-                            },
-                        ],
-                    },
                     create: {
                         decorators: [
                             UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS),
