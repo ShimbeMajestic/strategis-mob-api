@@ -15,54 +15,64 @@ import { Transaction } from './models/transaction.model';
 import { TransactionConsumer } from './consumers/transaction.consumer';
 import { TransactionService } from './providers/transaction.service';
 import { SharedModule } from 'src/shared/shared.module';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
 
 @Module({
-  imports: [
-    HttpModule,
-    SharedModule,
-    NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Transaction])],
-      resolvers: [
-        {
-          DTOClass: Transaction,
-          EntityClass: Transaction,
-          guards: [GqlAuthGuard],
-          create: { disabled: true },
-          update: { disabled: true },
-          delete: { disabled: true },
-          enableAggregate: true,
-          enableTotalCount: true,
-          enableSubscriptions: true,
-        },
-      ],
-    }),
-    BullModule.registerQueue({
-      name: TRANSACTION_CALLBACK_QUEUE,
-      redis: redisConfig.bullQueue,
-      defaultJobOptions: {
-        lifo: true,
-        attempts: 15,
-      },
-    }),
-    BullModule.registerQueue({
-      name: MOTOR_COVER_QUEUE,
-      redis: redisConfig.bullQueue,
-      defaultJobOptions: {
-        lifo: true,
-        attempts: 15,
-      },
-    }),
-    BullModule.registerQueue({
-      name: TRAVEL_COVER_QUEUE,
-      redis: redisConfig.bullQueue,
-      defaultJobOptions: {
-        lifo: true,
-        attempts: 15,
-      },
-    }),
-  ],
-  controllers: [TransactionController],
-  providers: [TransactionConsumer, TransactionService],
-  exports: [TransactionService, BullModule],
+    imports: [
+        HttpModule,
+        SharedModule,
+        NestjsQueryGraphQLModule.forFeature({
+            imports: [NestjsQueryTypeOrmModule.forFeature([Transaction])],
+            resolvers: [
+                {
+                    DTOClass: Transaction,
+                    EntityClass: Transaction,
+                    guards: [GqlAuthGuard],
+                    read: {
+                        disabled: false,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
+                    create: { disabled: true },
+                    update: { disabled: true },
+                    delete: { disabled: true },
+                    enableAggregate: true,
+                    enableTotalCount: true,
+                    enableSubscriptions: true,
+                },
+            ],
+        }),
+        BullModule.registerQueue({
+            name: TRANSACTION_CALLBACK_QUEUE,
+            redis: redisConfig.bullQueue,
+            defaultJobOptions: {
+                lifo: true,
+                attempts: 15,
+            },
+        }),
+        BullModule.registerQueue({
+            name: MOTOR_COVER_QUEUE,
+            redis: redisConfig.bullQueue,
+            defaultJobOptions: {
+                lifo: true,
+                attempts: 15,
+            },
+        }),
+        BullModule.registerQueue({
+            name: TRAVEL_COVER_QUEUE,
+            redis: redisConfig.bullQueue,
+            defaultJobOptions: {
+                lifo: true,
+                attempts: 15,
+            },
+        }),
+    ],
+    controllers: [TransactionController],
+    providers: [TransactionConsumer, TransactionService],
+    exports: [TransactionService, BullModule],
 })
 export class TransactionsModule {}

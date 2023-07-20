@@ -1,14 +1,11 @@
 import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { DEFAULT_CONNECTION } from './constants';
 import { SeederOptions } from 'typeorm-extension';
 
 dotenv.config();
 
 export const getDataSourceOptions = (): DataSourceOptions & SeederOptions => {
     return {
-        name: DEFAULT_CONNECTION ?? 'default',
-
         type: process.env.DB_CONNECTION as 'postgres',
         host: process.env.DB_HOST as 'localhost',
         port: parseInt(process.env.DB_PORT, 10),

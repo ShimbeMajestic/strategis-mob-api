@@ -52,7 +52,15 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
                     CreateDTOClass: CreateMotorCoverDurationDto,
                     UpdateDTOClass: UpdateMotorCoverDurationDto,
                     guards: [GqlAuthGuard],
-                    read: { pagingStrategy: PagingStrategies.NONE },
+                    read: {
+                        pagingStrategy: PagingStrategies.NONE,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(PermissionEnum.MANAGE_COVER_DURATION),
@@ -75,7 +83,15 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
                     CreateDTOClass: CreateMotorCoverTypeDto,
                     UpdateDTOClass: UpdateMotorCoverTypeDto,
                     guards: [GqlAuthGuard],
-                    read: { pagingStrategy: PagingStrategies.NONE },
+                    read: {
+                        pagingStrategy: PagingStrategies.NONE,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     // create: { disabled: true },
                     update: {
                         decorators: [
@@ -94,7 +110,15 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
                     CreateDTOClass: CreateMotorCoverDto,
                     UpdateDTOClass: UpdateMotorCoverDto,
                     guards: [GqlAuthGuard],
-                    read: { pagingStrategy: PagingStrategies.NONE },
+                    read: {
+                        pagingStrategy: PagingStrategies.NONE,
+                        defaultSort: [
+                            {
+                                field: 'id',
+                                direction: SortDirection.DESC,
+                            },
+                        ],
+                    },
                     create: {
                         decorators: [
                             UsePermission(PermissionEnum.MANAGE_COVER_TYPES),

@@ -19,106 +19,136 @@ import { TravelCoverService } from './providers/travel-cover.service';
 import { TravelCoverResolver } from './resolvers/travel-cover.resolver';
 
 @Module({
-  imports: [
-    HttpModule,
-    TransactionsModule,
-    NestjsQueryGraphQLModule.forFeature({
-      imports: [
-        NestjsQueryTypeOrmModule.forFeature([
-          TravelCoverRequest,
-          TravelPlan,
-          TravelDestination,
-          TravelEntity,
-          TravelProduct,
-        ]),
-      ],
-      resolvers: [
-        {
-          DTOClass: TravelPlan,
-          EntityClass: TravelPlan,
-          CreateDTOClass: CreateTravelPlanDto,
-          UpdateDTOClass: UpdateTravelPlanDto,
-          guards: [GqlAuthGuard],
-          create: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PLANS)],
-          },
-          update: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PLANS)],
-          },
-          delete: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PLANS)],
-          },
-        },
-
-        {
-          DTOClass: TravelDestination,
-          EntityClass: TravelDestination,
-          guards: [GqlAuthGuard],
-          create: {
-            decorators: [
-              UsePermission(PermissionEnum.MANAGE_TRAVEL_DESTINATION),
+    imports: [
+        HttpModule,
+        TransactionsModule,
+        NestjsQueryGraphQLModule.forFeature({
+            imports: [
+                NestjsQueryTypeOrmModule.forFeature([
+                    TravelCoverRequest,
+                    TravelPlan,
+                    TravelDestination,
+                    TravelEntity,
+                    TravelProduct,
+                ]),
             ],
-          },
-          update: {
-            decorators: [
-              UsePermission(PermissionEnum.MANAGE_TRAVEL_DESTINATION),
-            ],
-          },
-          delete: {
-            decorators: [
-              UsePermission(PermissionEnum.MANAGE_TRAVEL_DESTINATION),
-            ],
-          },
-        },
-        {
-          DTOClass: TravelProduct,
-          EntityClass: TravelProduct,
-          guards: [GqlAuthGuard],
-          create: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT)],
-          },
-          update: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT)],
-          },
-          delete: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT)],
-          },
-        },
+            resolvers: [
+                {
+                    DTOClass: TravelPlan,
+                    EntityClass: TravelPlan,
+                    CreateDTOClass: CreateTravelPlanDto,
+                    UpdateDTOClass: UpdateTravelPlanDto,
+                    guards: [GqlAuthGuard],
+                    create: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_TRAVEL_PLANS),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_TRAVEL_PLANS),
+                        ],
+                    },
+                    delete: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_TRAVEL_PLANS),
+                        ],
+                    },
+                },
 
-        {
-          DTOClass: TravelEntity,
-          EntityClass: TravelEntity,
-          guards: [GqlAuthGuard],
-          create: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_ENTITIES)],
-          },
-          update: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_ENTITIES)],
-          },
-          delete: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_TRAVEL_ENTITIES)],
-          },
-        },
+                {
+                    DTOClass: TravelDestination,
+                    EntityClass: TravelDestination,
+                    guards: [GqlAuthGuard],
+                    create: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_TRAVEL_DESTINATION,
+                            ),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_TRAVEL_DESTINATION,
+                            ),
+                        ],
+                    },
+                    delete: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_TRAVEL_DESTINATION,
+                            ),
+                        ],
+                    },
+                },
+                {
+                    DTOClass: TravelProduct,
+                    EntityClass: TravelProduct,
+                    guards: [GqlAuthGuard],
+                    create: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT),
+                        ],
+                    },
+                    delete: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_TRAVEL_PRODUCT),
+                        ],
+                    },
+                },
 
-        {
-          DTOClass: TravelCoverRequest,
-          EntityClass: TravelCoverRequest,
-          guards: [GqlAuthGuard],
-          create: { disabled: true },
-          update: { disabled: true },
-          delete: { disabled: true },
-          enableAggregate: true,
-          enableTotalCount: true,
-          enableSubscriptions: true,
-        },
-      ],
-    }),
-  ],
-  providers: [
-    TravelCoverService,
-    TravelCoverResolver,
-    MapfreService,
-    TravelConsumer,
-  ],
+                {
+                    DTOClass: TravelEntity,
+                    EntityClass: TravelEntity,
+                    guards: [GqlAuthGuard],
+                    create: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_TRAVEL_ENTITIES,
+                            ),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_TRAVEL_ENTITIES,
+                            ),
+                        ],
+                    },
+                    delete: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_TRAVEL_ENTITIES,
+                            ),
+                        ],
+                    },
+                },
+
+                {
+                    DTOClass: TravelCoverRequest,
+                    EntityClass: TravelCoverRequest,
+                    guards: [GqlAuthGuard],
+                    create: { disabled: true },
+                    update: { disabled: true },
+                    delete: { disabled: true },
+                    enableAggregate: true,
+                    enableTotalCount: true,
+                    enableSubscriptions: true,
+                },
+            ],
+        }),
+    ],
+    providers: [
+        TravelCoverService,
+        TravelCoverResolver,
+        MapfreService,
+        TravelConsumer,
+    ],
 })
 export class TravelCoverModule {}
