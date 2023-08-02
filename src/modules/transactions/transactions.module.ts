@@ -5,9 +5,9 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { redisConfig } from 'src/config/redis.config';
 import {
-  MOTOR_COVER_QUEUE,
-  TRANSACTION_CALLBACK_QUEUE,
-  TRAVEL_COVER_QUEUE,
+    MOTOR_COVER_QUEUE,
+    TRANSACTION_CALLBACK_QUEUE,
+    TRAVEL_COVER_QUEUE,
 } from 'src/shared/sms/constants';
 import { GqlAuthGuard } from '../auth/auth.guard';
 import { TransactionController } from './controllers/transaction.controller';
