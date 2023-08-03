@@ -45,6 +45,15 @@ export class IdNumberLengthValidator implements ValidatorConstraintInterface {
 
     defaultMessage(args?: ValidationArguments): string {
         const enumValue = args.object['identityType'] as IdType;
-        return `Invalid ID number length for ${enumValue}. It should be ${this.idLengthMap[enumValue]} characters long`;
+        const enumDisplayValueMap = {
+            NIN: 'National Identification Number(NIN)',
+            VOTERS_REG_NUM: 'Voters Registration Number',
+            PASSPORT_NUM: 'Passport Number',
+            DRIVING_LICENSE: 'Driving License',
+            TIN_NUM: 'Tax Identification Number(TIN)',
+            ZAN_ID: 'Zanzibar Identification Number',
+            COMPANY_INC_CERT_NUMBER: 'Company Incorporation Certificate Number',
+        };
+        return `${enumDisplayValueMap[enumValue]} must have ${this.idLengthMap[enumValue]} characters`;
     }
 }
