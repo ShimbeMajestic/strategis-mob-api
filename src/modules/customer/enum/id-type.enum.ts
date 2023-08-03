@@ -50,7 +50,7 @@ export class IdNumberLengthValidator implements ValidatorConstraintInterface {
             VOTERS_REG_NUM: 'Voters Registration Number',
             PASSPORT_NUM: 'Passport Number',
             DRIVING_LICENSE: 'Driving License',
-            TIN_NUM: 'Tax Identification Number(TIN)',
+            TIN: 'Tax Identification Number(TIN)',
             ZAN_ID: 'Zanzibar Identification Number',
             COMPANY_INC_CERT_NUMBER: 'Company Incorporation Certificate Number',
         };
