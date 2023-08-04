@@ -14,6 +14,7 @@ import { HealthCoverEnquiry } from './models/enquiry.model';
 import { Hospital } from './models/hospital.model';
 import { HealthPlan } from './models/plan.model';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { HealthResolver } from './health-list.resolver';
 
 @Module({
     imports: [
@@ -104,5 +105,6 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
             ],
         }),
     ],
+    providers: [HealthResolver],
 })
 export class HealthCoverModule {}
