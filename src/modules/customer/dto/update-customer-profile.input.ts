@@ -1,5 +1,9 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IdNumberLengthValidator, IdType } from '../enum/id-type.enum';
+import {
+    IdNumberLengthValidator,
+    IdType,
+    IsValidEnumValue,
+} from '../enum/id-type.enum';
 import { IsEnum, Validate } from 'class-validator';
 
 @InputType()
@@ -23,7 +27,7 @@ export class UpdateCustomerProfileInput {
     token?: string;
 
     @Field({ nullable: true })
-    @IsEnum(IdType, { message: 'Invalid enum value' })
+    @Validate(IsValidEnumValue)
     identityType?: IdType;
 
     @Field({ nullable: true })

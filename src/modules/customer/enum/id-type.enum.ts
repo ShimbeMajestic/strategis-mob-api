@@ -17,7 +17,24 @@ export enum IdType {
 
 registerEnumType(IdType, { name: 'IdType' });
 
-@ValidatorConstraint({ name: 'identityNumber', async: false })
+@ValidatorConstraint({ name: 'isValidEnumValue', async: false })
+export class IsValidEnumValue implements ValidatorConstraintInterface {
+    validate(value: any) {
+        // Allow null values
+        if (value === null || value === undefined) {
+            return true;
+        }
+
+        // Check if the value is a valid enum value
+        return Object.values(IdType).includes(value as IdType);
+    }
+
+    defaultMessage(): string {
+        return 'Invalid enum value';
+    }
+}
+
+@ValidatorConstraint({ name: 'IdNumberLengthValidator', async: false })
 export class IdNumberLengthValidator implements ValidatorConstraintInterface {
     private idLengthMap = {
         [IdType.NIN]: 20,
