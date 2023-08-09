@@ -1,31 +1,33 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { IsEmail } from 'class-validator';
 
 @InputType()
 export class CreateHealthCoverEnquiryDto {
-  @Field({ nullable: true })
-  customerId?: number;
+    @Field({ nullable: true })
+    customerId?: number;
 
-  @Field()
-  customerName: string;
+    @Field()
+    customerName: string;
 
-  @Field()
-  city: string;
+    @Field()
+    city: string;
 
-  @Field()
-  age: number;
+    @Field()
+    age: number;
 
-  @Field()
-  gender: string;
+    @Field()
+    gender: string;
 
-  @Field()
-  numberOfDependents: number;
+    @Field()
+    numberOfDependents: number;
 
-  @Field()
-  mobileNumber: string;
+    @Field()
+    mobileNumber: string;
 
-  @Field()
-  email: string;
+    @Field()
+    @IsEmail()
+    email: string;
 
-  @Field()
-  healthPlanId: number;
+    @Field()
+    healthPlanId: number;
 }
