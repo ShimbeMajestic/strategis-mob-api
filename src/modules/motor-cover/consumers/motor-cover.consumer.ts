@@ -19,7 +19,6 @@ import { appConfig } from 'src/config/app.config';
 import { OwnerCategory } from '../enums/motor-owner-category.enum';
 import { MotorUsage, MotorUsageType } from '../enums/motor-usage.enum';
 import { PaymentModeEnum } from '../enums/payment-mode.enum';
-import { IdType } from 'aws-sdk/clients/workdocs';
 import { premiaConfig } from 'src/config/premia.config';
 import { MotorPolicy } from '../models/motor-policy.model';
 
@@ -182,7 +181,7 @@ export class MotorCoverConsumer {
         };
     };
 
-    getIdTypeToTira(idType: IdType) {
+    getIdTypeToTira(idType: string) {
         switch (idType) {
             case 'NIN':
                 return 1;

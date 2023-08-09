@@ -13,9 +13,7 @@ import { MotorCoverType } from './models/motor-cover-type.model';
 import { GqlAuthGuard } from '../auth/auth.guard';
 import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
-import { redisConfig } from 'src/config/redis.config';
 import { VehicleDetailService } from './providers/vehicle-detail.service';
-import * as redisStore from 'cache-manager-redis-store';
 import { MotorCover } from './models/motor-cover.model';
 import { CreateMotorCoverDto } from './dtos/create-motor-cover.dto';
 import { UpdateMotorCoverDto } from './dtos/update-motor-cover.dto';
@@ -29,6 +27,7 @@ import { MotorCoverConsumer } from './consumers/motor-cover.consumer';
 import { MotorCoverController } from './controllers/motor-cover.controller';
 import { SharedModule } from 'src/shared/shared.module';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { VehiclePhoto } from './models/vehicle-photo.model';
 
 @Module({
     imports: [
@@ -44,6 +43,9 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
                     MotorPolicy,
                 ]),
                 TransactionsModule,
+            ],
+            dtos:[
+                { DTOClass: VehiclePhoto },
             ],
             resolvers: [
                 {

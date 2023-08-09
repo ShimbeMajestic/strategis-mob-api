@@ -28,6 +28,7 @@ import { MotorCoverDuration } from './motor-cover-duration.model';
 import { MotorCoverType } from './motor-cover-type.model';
 import { MotorCover } from './motor-cover.model';
 import { VehicleDetails } from './vehicle-details.model';
+import { VehiclePhoto } from './vehicle-photo.model';
 
 @Entity()
 @ObjectType()
@@ -184,4 +185,11 @@ export class MotorCoverRequest extends BaseEntity {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @OneToMany(
+      () => VehiclePhoto,
+      photo => photo.motorCoverRequest,
+  )
+  vehiclePhotos: VehiclePhoto[];
+
 }

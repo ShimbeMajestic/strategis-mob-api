@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
 import { BullUiModule } from './bull-ui/bull-ui.module';
-import { PaymentModule } from './payment/payment.module';
 import { SmsModule } from './sms/sms.module';
 import { NotificationModule } from './notification/notification.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
-    imports: [SmsModule, PaymentModule, NotificationModule, BullUiModule],
-    exports: [SmsModule, PaymentModule, NotificationModule],
+    imports: [
+        SmsModule, //
+        NotificationModule,
+        UploadsModule,
+        BullUiModule,
+    ],
+    exports: [
+        SmsModule, //
+        NotificationModule,
+        UploadsModule,
+    ],
 })
-export class SharedModule {}
+export class SharedModule { }

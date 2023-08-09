@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
+import { AuthenticationError, ForbiddenError } from '@nestjs/apollo';
 import * as moment from 'moment';
 import { authConfig } from 'src/config/auth.config';
 import { AccessTokenService } from 'src/modules/auth/providers/access-token.service';
@@ -10,7 +10,7 @@ import { RequestLoginOtpResponse } from '../dtos/request-login-otp.response';
 import { ValidateLoginOtpInput } from '../dtos/validate-login-otp.input';
 import { ValidateLoginOtpResponse } from '../dtos/validate-login-otp.response';
 import { CustomerLoginOtp } from '../models/customer-login-otp.model';
-import * as otpGen from 'otp-generator';
+import { Str } from 'src/shared';
 
 @Injectable()
 export class CustomerAuthService {
@@ -35,12 +35,8 @@ export class CustomerAuthService {
 
         const { otpLifeTime, otpLength } = authConfig.customerAuth;
 
-        const otp = otpGen.generate(otpLength, {
-            lowerCaseAlphabets: false,
-            upperCaseAlphabets: false,
-            specialChars: false,
-        });
-        const nonce = otpGen.generate(32, { specialChars: false });
+        const otp = Str.randomFixedInteger(otpLength);
+        const nonce = Str.random(32);
 
         const otpExpiresAt = moment().add(otpLifeTime, 'seconds').toDate();
 

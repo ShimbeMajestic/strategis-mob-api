@@ -11,7 +11,6 @@ import { UserModule } from './modules/user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { MotorCovernoteModule } from './modules/motor-cover/motor-covernote.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
-import { FileModule } from './modules/file/file.module';
 import { TravelCoverModule } from './modules/travel-cover/travel-cover.module';
 import { HealthCoverModule } from './modules/health-cover/health-cover.module';
 import { NotificationModule } from './modules/notification/notification.module';
@@ -20,6 +19,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { CacheModule } from '@nestjs/cache-manager';
 import { CacheConfigService } from './config/cache.config';
+import { UrlGeneratorModule } from 'nestjs-url-generator';
+import { appConfig } from './config/app.config';
+import { join } from 'path';
 
 @Module({
     imports: [
@@ -31,9 +33,13 @@ import { CacheConfigService } from './config/cache.config';
             isGlobal: true,
             useClass: CacheConfigService,
         }),
+        UrlGeneratorModule.forRoot({
+            secret: appConfig.secret, // optional, required only for signed URL
+            appUrl: appConfig.baseUrl,
+        }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
-            autoSchemaFile: true,
+            autoSchemaFile: join(process.cwd(), 'src/schema/schema.gql'),
             includeStacktraceInErrorResponses: false,
             context: ({ req, res, payload, connection }: any) => ({
                 req,
@@ -56,7 +62,6 @@ import { CacheConfigService } from './config/cache.config';
                 },
             },
         }),
-        FileModule,
         UserModule,
         AuthModule,
         SharedModule,
@@ -73,4 +78,4 @@ import { CacheConfigService } from './config/cache.config';
         ClaimModule,
     ],
 })
-export class AppModule {}
+export class AppModule { }

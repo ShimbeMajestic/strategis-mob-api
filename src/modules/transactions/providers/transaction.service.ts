@@ -10,7 +10,6 @@ import { CallbackDataDto } from '../dtos/callback-data.dto';
 import { InitiateSelcomTransactionDto } from '../dtos/initiate-selcom-transaction.dto';
 import { TransactionPaymentResultDto } from '../dtos/transaction-payment.result.dto';
 import { Transaction } from '../models/transaction.model';
-import * as generateUniqueId from 'generate-unique-id';
 import { InjectQueue } from '@nestjs/bull';
 import {
   MOTOR_TRANSACTION_CALLBACK_JOB,
@@ -18,6 +17,7 @@ import {
   TRANSACTION_CALLBACK_QUEUE,
 } from 'src/shared/sms/constants';
 import { Queue } from 'bull';
+import { Str } from 'src/shared';
 
 @Injectable()
 export class TransactionService {
@@ -38,7 +38,7 @@ export class TransactionService {
     const selcomData = new InitiateSelcomTransactionDto();
 
     const reference =
-      'SITLREQTRAV' + generateUniqueId({ length: 7, useLetters: false });
+      'SITLREQTRAV' + Str.randomFixedInteger(7);
 
     selcomData.amount = plan.price;
     selcomData.buyerEmail = email;
@@ -91,7 +91,7 @@ export class TransactionService {
     const selcomData = new InitiateSelcomTransactionDto();
 
     const reference =
-      'SITLREQMOT' + generateUniqueId({ length: 7, useLetters: false });
+      'SITLREQMOT' + Str.randomFixedInteger(7);
 
     selcomData.amount = motorCoverRequest.minimumAmountIncTax;
     selcomData.buyerEmail = email;
@@ -197,7 +197,7 @@ export class TransactionService {
       return {
         success: false,
         message: error.message,
-        data: error.response.data,
+        data: error.response?.data,
       };
     }
   }

@@ -6,7 +6,7 @@ import { LoginRequestDto } from './dto/login-request.dto';
 import { ChangePasswordRequest } from './dto/change-password-request.dto';
 import { Hash } from 'src/shared/helpers/hash.helper';
 import { AccessToken } from './models/access-token.model';
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError } from '@nestjs/apollo';
 import { Validator } from 'src/shared/helpers/validator.helper';
 import { AccessTokenService } from './providers/access-token.service';
 
