@@ -1,0 +1,21 @@
+POST http://localhost:3009/api/motor-cover/10/upload-photo/FRONT
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb3RvciI6IjEwIiwiaWF0IjoxNTY0NjY0NjQ2LCJleH
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="photo"; filename="front.jpg"
+Content-Type: image/jpeg
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+```
+
+### Response
+
+```json
+{
+    "id": 5,
+    "fileName": "front.jpg",
+    "mimeType": "image/jpeg",
+    "size": 0
+}
+```

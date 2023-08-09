@@ -10,7 +10,7 @@ import { TiraCallbackDto } from '../dtos/tira-callback.dto';
 import { MotorCovernoteService } from '../providers/motor-covernote.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('motor-cover')
+@Controller('api/motor-cover')
 export class MotorCoverController {
     constructor(private service: MotorCovernoteService) {}
 

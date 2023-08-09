@@ -177,7 +177,7 @@ export class MotorCoverConsumer {
                     : OwnerCategory.CORPORATE,
             ownerAddress: request.vehicleDetails.OwnerAddress,
             sittingCapacity: request.vehicleDetails.SittingCapacity,
-            callbackUrl: appConfig.appCallbackUrl + '/motor-cover/callback',
+            callbackUrl: appConfig.appCallbackUrl + '/api/motor-cover/callback',
         };
     };
 
