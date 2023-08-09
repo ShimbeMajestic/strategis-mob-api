@@ -4,7 +4,7 @@ import {
     IdType,
     IsValidEnumValue,
 } from '../enum/id-type.enum';
-import { IsEnum, Validate } from 'class-validator';
+import { Validate } from 'class-validator';
 
 @InputType()
 export class UpdateCustomerProfileInput {

@@ -15,8 +15,9 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
     handleRequest(err: any, user: any) {
         if (err || !user) {
-            throw err ||
-                new AuthenticationError('Session expired! Please login.');
+            throw (
+                err || new AuthenticationError('Session expired! Please login.')
+            );
         }
         return user;
     }

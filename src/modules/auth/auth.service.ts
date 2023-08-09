@@ -17,7 +17,7 @@ export class AuthService {
     constructor(
         protected readonly userService: UserService,
         protected readonly accessTokenService: AccessTokenService,
-    ) { }
+    ) {}
 
     async login(loginDto: LoginRequestDto): Promise<LoginResponseDto> {
         const user = await this.validateUserCredentials(loginDto);
@@ -78,7 +78,10 @@ export class AuthService {
 
     async logout(user: User): Promise<boolean> {
         const result = await AccessToken.createQueryBuilder('access_token')
-            .where('userId = :userId and userType = :userType', { userId: user.id, userType: 'user' })
+            .where('userId = :userId and userType = :userType', {
+                userId: user.id,
+                userType: 'user',
+            })
             .update({ isRevoked: true })
             .execute();
 

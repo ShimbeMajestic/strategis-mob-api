@@ -3,29 +3,26 @@ import * as crypto from 'crypto';
 import { Arr } from './array.helper';
 
 export class Str {
-
     static uuid = (): string => uuid();
 
     static slug(text: string) {
         return text
             .toLowerCase()
             .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, '')
-            ;
+            .replace(/[^\w-]+/g, '');
     }
 
     static nameCapitalize(text: string) {
-        return (text && text.length > 0)
+        return text && text.length > 0
             ? text?.charAt(0)?.toUpperCase() + text?.slice(1)?.toLowerCase()
             : null;
     }
 
     static normalizePhoneNumber(str: string): string {
-
         // Check for null/empty values
         if (!str || str.length === 0) {
             return null;
-        };
+        }
 
         // remove white spaces
         str = str.replace(/\s/g, '');
@@ -48,11 +45,11 @@ export class Str {
         return str;
     }
 
-    static isValidPhoneNumber(str: string): boolean {   
+    static isValidPhoneNumber(str: string): boolean {
         // Check for null/empty values
         if (!str || str.length === 0) {
             return false;
-        };
+        }
 
         // remove white spaces
         str = str.replace(/\s/g, '');
@@ -84,7 +81,7 @@ export class Str {
         // Check for null/empty values
         if (!str || str.length === 0) {
             return false;
-        };
+        }
 
         // remove white spaces
         str = str.replace(/\s/g, '');
@@ -98,7 +95,7 @@ export class Str {
     }
 
     static randomFixedInteger(digits = 10) {
-        return [...Array(digits)].map(_=>crypto.randomInt(10)).join('');
+        return [...Array(digits)].map(() => crypto.randomInt(10)).join('');
     }
 
     static random(length = 10) {
@@ -106,7 +103,6 @@ export class Str {
     }
 
     static maskPhoneNumber(phoneNumber: string) {
-
         const lastdigits = phoneNumber?.slice(-3);
         const firstdigits = phoneNumber?.substring(0, 6);
 
@@ -114,9 +110,9 @@ export class Str {
     }
 
     static generatePassword(passwordLength = 8) {
-        const numberChars = "0123456789";
-        const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+        const numberChars = '0123456789';
+        const upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowerChars = 'abcdefghijklmnopqrstuvwxyz';
         const allChars = numberChars + upperChars + lowerChars;
 
         const randPasswordArray = Array(passwordLength);
@@ -125,12 +121,16 @@ export class Str {
         randPasswordArray[2] = lowerChars; // to make sure atleast one lower case letter is there in password
         const newRandPasswordArray = randPasswordArray.fill(allChars, 3); // fill rest of the password array with all chars
 
-        const newPasswordArray = newRandPasswordArray.map((x) => x[crypto.randomInt(x.length)]); // create password array from the password array
+        const newPasswordArray = newRandPasswordArray.map(
+            (x) => x[crypto.randomInt(x.length)],
+        ); // create password array from the password array
 
         return Arr.shuffle(newPasswordArray).join(''); // shuffle the generated password array and convert to string
     }
 
     static isEmptyOrWhitespace(value: string): boolean {
-        return value == null || value.trim() === '' || typeof value === 'undefined';
+        return (
+            value == null || value.trim() === '' || typeof value === 'undefined'
+        );
     }
 }

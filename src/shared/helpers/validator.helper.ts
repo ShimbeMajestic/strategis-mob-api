@@ -15,7 +15,7 @@ export class Validator {
         conditions.push(!/[^\d+]/i.test(value));
 
         // Find boolean product of all conditions
-        return conditions.reduce(function(prev, curr) {
+        return conditions.reduce(function (prev, curr) {
             return prev && curr;
         });
     }

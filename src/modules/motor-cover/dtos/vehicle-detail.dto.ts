@@ -4,64 +4,64 @@ import { MotorCategory } from '../enums/motor-category.enum';
 
 @InputType()
 export class CreateVehicleDetailDto {
-  @Field()
-  @IsNotEmpty()
-  requestId: number;
+    @Field()
+    @IsNotEmpty()
+    requestId: number;
 
-  @Field()
-  MotorCategory: MotorCategory;
+    @Field()
+    MotorCategory: MotorCategory;
 
-  @Field()
-  RegistrationNumber: string;
+    @Field()
+    RegistrationNumber: string;
 
-  @Field()
-  BodyType: string;
+    @Field()
+    BodyType: string;
 
-  @Field()
-  ChassisNumber?: string;
+    @Field()
+    ChassisNumber?: string;
 
-  @Field()
-  Make?: string;
+    @Field()
+    Make?: string;
 
-  @Field()
-  Model?: string;
+    @Field()
+    Model?: string;
 
-  @Field()
-  ModelNumber?: string;
+    @Field()
+    ModelNumber?: string;
 
-  @Field()
-  Color?: string;
+    @Field()
+    Color?: string;
 
-  @Field()
-  EngineNumber?: string;
+    @Field()
+    EngineNumber?: string;
 
-  @Field()
-  EngineCapacity?: number;
+    @Field()
+    EngineCapacity?: number;
 
-  @Field()
-  FuelUsed?: string;
+    @Field()
+    FuelUsed?: string;
 
-  @Field()
-  YearOfManufacture?: number;
+    @Field()
+    YearOfManufacture?: number;
 
-  @Field()
-  TareWeight?: number;
+    @Field()
+    TareWeight?: number;
 
-  @Field()
-  GrossWeight?: number;
+    @Field()
+    GrossWeight?: number;
 
-  @Field()
-  MotorUsage?: string;
+    @Field()
+    MotorUsage?: string;
 
-  @Field()
-  OwnerName?: string;
+    @Field()
+    OwnerName?: string;
 
-  @Field()
-  OwnerCategory?: string;
+    @Field()
+    OwnerCategory?: string;
 
-  @Field({ nullable: true })
-  SittingCapacity?: number;
+    @Field({ nullable: true })
+    SittingCapacity?: number;
 
-  @Field({ nullable: true })
-  value?: number;
+    @Field({ nullable: true })
+    value?: number;
 }

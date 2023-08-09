@@ -9,7 +9,11 @@ import {
     DeleteDateColumn,
 } from 'typeorm';
 
-import { FilterableField, FilterableRelation, KeySet, Relation } from '@ptc-org/nestjs-query-graphql';
+import {
+    FilterableField,
+    KeySet,
+    Relation,
+} from '@ptc-org/nestjs-query-graphql';
 import { Int, ObjectType } from '@nestjs/graphql';
 import { Upload } from 'src/shared/uploads/models/upload.model';
 import { MotorCoverRequest } from './motor-cover-request.model';
@@ -17,10 +21,12 @@ import { MotorCover } from './motor-cover.model';
 
 @ObjectType()
 @KeySet(['id'])
-@Relation('upload', () => Upload, { remove: { enabled: false }, update: { enabled: false } })
+@Relation('upload', () => Upload, {
+    remove: { enabled: false },
+    update: { enabled: false },
+})
 @Entity()
 export class VehiclePhoto extends BaseEntity {
-
     @FilterableField(() => Int)
     @PrimaryGeneratedColumn()
     id: number;
@@ -52,10 +58,16 @@ export class VehiclePhoto extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date;
 
-    @ManyToOne(() => MotorCoverRequest, coverRequest => coverRequest.vehiclePhotos, { nullable: true })
+    @ManyToOne(
+        () => MotorCoverRequest,
+        (coverRequest) => coverRequest.vehiclePhotos,
+        { nullable: true },
+    )
     motorCoverRequest: MotorCoverRequest;
 
-    @ManyToOne(() => MotorCover, cover => cover.vehiclePhotos, { nullable: true })
+    @ManyToOne(() => MotorCover, (cover) => cover.vehiclePhotos, {
+        nullable: true,
+    })
     motorCover: MotorCover;
 
     @ManyToOne(() => Upload)

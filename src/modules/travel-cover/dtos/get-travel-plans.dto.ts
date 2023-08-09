@@ -3,11 +3,11 @@ import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class GetTravelPlansDto {
-  @Field()
-  @IsNotEmpty()
-  destinationId: string;
+    @Field()
+    @IsNotEmpty()
+    destinationId: string;
 
-  @Field()
-  @IsNotEmpty()
-  entityTypeId: string;
+    @Field()
+    @IsNotEmpty()
+    entityTypeId: string;
 }

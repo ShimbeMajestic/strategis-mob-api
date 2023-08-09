@@ -3,12 +3,12 @@ import { MotorCoverRequest } from '../models/motor-cover-request.model';
 
 @ObjectType()
 export class PaymentResult {
-  @Field()
-  success: boolean;
+    @Field()
+    success: boolean;
 
-  @Field()
-  message: string;
+    @Field()
+    message: string;
 
-  @Field()
-  data: MotorCoverRequest;
+    @Field()
+    data: MotorCoverRequest;
 }

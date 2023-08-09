@@ -78,4 +78,4 @@ import { join } from 'path';
         ClaimModule,
     ],
 })
-export class AppModule { }
+export class AppModule {}

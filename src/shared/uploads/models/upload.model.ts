@@ -1,4 +1,12 @@
-import { Entity, Column, BaseEntity, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, DeleteDateColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    BaseEntity,
+    CreateDateColumn,
+    UpdateDateColumn,
+    PrimaryGeneratedColumn,
+    DeleteDateColumn,
+} from 'typeorm';
 import { Expose } from 'class-transformer';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { FilterableField } from '@ptc-org/nestjs-query-graphql';

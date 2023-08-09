@@ -11,12 +11,12 @@ export const TransactionConnection = TransactionQuery.ConnectionType;
 
 @Resolver(() => Transaction)
 export class TransactionResolver extends CRUDResolver(Transaction) {
-  constructor(readonly transactionCrudService: TransactionCrudService) {
-    super(transactionCrudService);
-  }
+    constructor(readonly transactionCrudService: TransactionCrudService) {
+        super(transactionCrudService);
+    }
 
-  @Query(() => [Transaction])
-  @UseGuards(UserTypeGuard)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  transactions() {}
+    @Query(() => [Transaction])
+    @UseGuards(UserTypeGuard)
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    transactions() {}
 }

@@ -26,7 +26,10 @@ export class UploadsService implements OnModuleInit {
     }
 
     static getSignedUrl(upload: Upload, download = false) {
-        return new URL(`uploads/${upload.id}/${upload.key}?download=${download}`, appConfig.baseUrl).href;
+        return new URL(
+            `uploads/${upload.id}/${upload.key}?download=${download}`,
+            appConfig.baseUrl,
+        ).href;
     }
 
     /**
@@ -34,7 +37,7 @@ export class UploadsService implements OnModuleInit {
      *
      * @param path Absolute path of directory
      */
-    async createDirectory(path: string): Promise<string|undefined> {
+    async createDirectory(path: string): Promise<string | undefined> {
         return fs.mkdir(path, { recursive: true });
     }
 
@@ -49,7 +52,10 @@ export class UploadsService implements OnModuleInit {
 
     async uploadFileBase64(base64image: string): Promise<Upload> {
         // to convert base64 format into random filename
-        const base64Data = base64image.replace(/^data:([A-Za-z-+/]+);base64,/, '');
+        const base64Data = base64image.replace(
+            /^data:([A-Za-z-+/]+);base64,/,
+            '',
+        );
 
         const buffer = Buffer.from(base64Data, 'base64');
 
@@ -75,7 +81,10 @@ export class UploadsService implements OnModuleInit {
         if (type?.ext) {
             extension = type.ext;
             mimeType = type.mime;
-        } else if (options?.fileName && options?.fileName.split('.').length > 1) {
+        } else if (
+            options?.fileName &&
+            options?.fileName.split('.').length > 1
+        ) {
             const fileNameParts = options.fileName?.split('.');
             extension = fileNameParts[fileNameParts.length - 1]; // get last part of fileName
             mimeType = extension;
@@ -85,44 +94,57 @@ export class UploadsService implements OnModuleInit {
         }
 
         const fileNameOnDisk = Str.uuid() + '.' + extension;
-        return await this.dataSource.manager.transaction(async transactionalEntityManager => {
-            const fileModel = new Upload();
-            fileModel.name = options?.fileName ?? fileNameOnDisk;
-            fileModel.fileName = options?.fileName ?? fileNameOnDisk;
-            fileModel.mimeType = mimeType;
-            fileModel.size = size;
-            fileModel.key = fileNameOnDisk;
+        return await this.dataSource.manager.transaction(
+            async (transactionalEntityManager) => {
+                const fileModel = new Upload();
+                fileModel.name = options?.fileName ?? fileNameOnDisk;
+                fileModel.fileName = options?.fileName ?? fileNameOnDisk;
+                fileModel.mimeType = mimeType;
+                fileModel.size = size;
+                fileModel.key = fileNameOnDisk;
 
-            // Save file to database
-            await transactionalEntityManager.save(fileModel);
+                // Save file to database
+                await transactionalEntityManager.save(fileModel);
 
-            // Create Subdirectory for this media
-            const thisMediaSubFolder = path.join(appConfig.uploadsDir, String(fileModel.id));
-            await this.createDirectory(thisMediaSubFolder);
+                // Create Subdirectory for this media
+                const thisMediaSubFolder = path.join(
+                    appConfig.uploadsDir,
+                    String(fileModel.id),
+                );
+                await this.createDirectory(thisMediaSubFolder);
 
-            const location = path.join(thisMediaSubFolder, fileNameOnDisk);
-            // Save file to disk
-            await fs.writeFile(location, fileBuffer, { flag: 'wx' });
+                const location = path.join(thisMediaSubFolder, fileNameOnDisk);
+                // Save file to disk
+                await fs.writeFile(location, fileBuffer, { flag: 'wx' });
 
-            return fileModel;
-        });
+                return fileModel;
+            },
+        );
     }
 
     async download(uploadId: number, res: Response, download: boolean) {
         const fileInfo = await Upload.findOne({ where: { id: uploadId } });
 
-        if(!fileInfo) {
+        if (!fileInfo) {
             res.status(404).send('File not found');
             return;
         }
 
-        const location = path.join(appConfig.uploadsDir, String(fileInfo.id), fileInfo.key);
+        const attachment = download ? 'attachment' : 'inline';
+        const location = path.join(
+            appConfig.uploadsDir,
+            String(fileInfo.id),
+            fileInfo.key,
+        );
 
         const buffer = await fs.readFile(location);
 
         res.set('Content-Type', fileInfo.mimeType);
         res.set('Content-Length', String(fileInfo.size));
-        res.set('Content-Disposition', `attachment; filename="${appConfig.appName} ${fileInfo.key}"`);
+        res.set(
+            'Content-Disposition',
+            `${attachment}; filename="${appConfig.appName} ${fileInfo.key}"`,
+        );
         res.set('Cache-Control', 'private, max-age=315360000');
         res.status(200);
 
@@ -130,9 +152,7 @@ export class UploadsService implements OnModuleInit {
     }
 
     async getSignedUrl(model: Upload, download = false) {
-        const urlExpiresAt = moment()
-            .add(1, 'hour')
-            .toDate();
+        const urlExpiresAt = moment().add(1, 'hour').toDate();
 
         return this.urlService.signControllerUrl({
             controller: UploadsController,

@@ -3,11 +3,11 @@ import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class SetVehicleValueDto {
-  @Field()
-  @IsNotEmpty()
-  value: number;
+    @Field()
+    @IsNotEmpty()
+    value: number;
 
-  @Field()
-  @IsNotEmpty()
-  requestId: number;
+    @Field()
+    @IsNotEmpty()
+    requestId: number;
 }

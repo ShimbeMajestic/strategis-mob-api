@@ -1,9 +1,9 @@
 import {
-  Authorize,
-  FilterableField,
-  OffsetConnection,
-  PagingStrategies,
-  Relation,
+    Authorize,
+    FilterableField,
+    OffsetConnection,
+    PagingStrategies,
+    Relation,
 } from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
@@ -11,15 +11,15 @@ import { Customer } from 'src/modules/customer/models/customer.model';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { User } from 'src/modules/user/models/user.model';
 import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 import { MotorCoverRequestAuthorizer } from '../authorizers/motor-cover-request.authorizer';
 import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
@@ -40,156 +40,155 @@ import { VehiclePhoto } from './vehicle-photo.model';
 @Relation('customer', () => Customer, { nullable: true })
 @Relation('approvedBy', () => User, { nullable: true })
 @OffsetConnection('transactions', () => Transaction, {
-  nullable: true,
-  pagingStrategy: PagingStrategies.NONE,
+    nullable: true,
+    pagingStrategy: PagingStrategies.NONE,
 })
 export class MotorCoverRequest extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  @FilterableField(() => ID)
-  id: number;
+    @PrimaryGeneratedColumn()
+    @FilterableField(() => ID)
+    id: number;
 
-  @ManyToOne(() => MotorCover)
-  motorCover: MotorCover;
+    @ManyToOne(() => MotorCover)
+    motorCover: MotorCover;
 
-  @ManyToOne(() => MotorCoverType)
-  motorCoverType: MotorCoverType;
+    @ManyToOne(() => MotorCoverType)
+    motorCoverType: MotorCoverType;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  motorCoverTypeId: number;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    motorCoverTypeId: number;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  motorCoverId: number;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    motorCoverId: number;
 
-  @ManyToOne(() => MotorCoverDuration, { nullable: true })
-  motorCoverDuration: MotorCoverDuration;
+    @ManyToOne(() => MotorCoverDuration, { nullable: true })
+    motorCoverDuration: MotorCoverDuration;
 
-  @ManyToOne(
-    () => VehicleDetails,
-    (vehicleDetails) => vehicleDetails.motorCoverRequest,
-    { nullable: true },
-  )
-  vehicleDetails: VehicleDetails;
+    @ManyToOne(
+        () => VehicleDetails,
+        (vehicleDetails) => vehicleDetails.motorCoverRequest,
+        { nullable: true },
+    )
+    vehicleDetails: VehicleDetails;
 
-  @ManyToOne(() => Customer)
-  customer: Customer;
+    @ManyToOne(() => Customer)
+    customer: Customer;
 
-  @Field()
-  @Column()
-  customerId: number;
+    @Field()
+    @Column()
+    customerId: number;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  vehicleDetailsId: number;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    vehicleDetailsId: number;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  vehicleType: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    vehicleType: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  motorCoverDurationId: number;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    motorCoverDurationId: number;
 
-  @FilterableField()
-  @Column({ default: MotorCoverRequestStatus.PENDING })
-  status: MotorCoverRequestStatus;
+    @FilterableField()
+    @Column({ default: MotorCoverRequestStatus.PENDING })
+    status: MotorCoverRequestStatus;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  statusDescription: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    statusDescription: string;
 
-  @FilterableField(() => GraphQLISODateTime, { nullable: true })
-  @Column({ nullable: true })
-  coverNoteStartDate: Date;
+    @FilterableField(() => GraphQLISODateTime, { nullable: true })
+    @Column({ nullable: true })
+    coverNoteStartDate: Date;
 
-  @FilterableField(() => GraphQLISODateTime, { nullable: true })
-  @Column({ nullable: true })
-  coverNoteEndDate: Date;
+    @FilterableField(() => GraphQLISODateTime, { nullable: true })
+    @Column({ nullable: true })
+    coverNoteEndDate: Date;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.motorCoverRequest)
-  transactions: Transaction[];
+    @OneToMany(
+        () => Transaction,
+        (transaction) => transaction.motorCoverRequest,
+    )
+    transactions: Transaction[];
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  minimumAmount: number;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    minimumAmount: number;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  minimumAmountIncTax: number;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    minimumAmountIncTax: number;
 
-  @Field()
-  @Column({ default: 'TZS' })
-  currency: string;
+    @Field()
+    @Column({ default: 'TZS' })
+    currency: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  productCode: string;
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    productCode: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  productName: string;
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    productName: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  riskCode: string;
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    riskCode: string;
 
-  @Column({ nullable: true })
-  @Field({ nullable: true })
-  riskName: string;
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    riskName: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  usageType: MotorUsageType;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    usageType: MotorUsageType;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  requestId: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    requestId: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  coverNoteNumber: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    coverNoteNumber: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  coverNoteReferenceNumber: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    coverNoteReferenceNumber: string;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  policyNumber: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    policyNumber: string;
 
-  @Field()
-  @Column({ default: false })
-  requiresApproval: boolean;
+    @Field()
+    @Column({ default: false })
+    requiresApproval: boolean;
 
-  @Field()
-  @Column({ default: true })
-  approved: boolean;
+    @Field()
+    @Column({ default: true })
+    approved: boolean;
 
-  @Field({ nullable: true })
-  @ManyToOne(() => User)
-  approvedBy: User;
+    @Field({ nullable: true })
+    @ManyToOne(() => User)
+    approvedBy: User;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  approvedAt: Date;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    approvedAt: Date;
 
-  @FilterableField(() => GraphQLISODateTime)
-  @CreateDateColumn()
-  createdAt: Date;
+    @FilterableField(() => GraphQLISODateTime)
+    @CreateDateColumn()
+    createdAt: Date;
 
-  @FilterableField(() => GraphQLISODateTime)
-  @UpdateDateColumn()
-  updatedAt: Date;
+    @FilterableField(() => GraphQLISODateTime)
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  @DeleteDateColumn()
-  deletedAt: Date;
+    @Field(() => GraphQLISODateTime, { nullable: true })
+    @DeleteDateColumn()
+    deletedAt: Date;
 
-  @OneToMany(
-      () => VehiclePhoto,
-      photo => photo.motorCoverRequest,
-  )
-  vehiclePhotos: VehiclePhoto[];
-
+    @OneToMany(() => VehiclePhoto, (photo) => photo.motorCoverRequest)
+    vehiclePhotos: VehiclePhoto[];
 }

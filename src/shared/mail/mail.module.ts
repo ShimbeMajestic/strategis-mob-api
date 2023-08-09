@@ -45,4 +45,4 @@ const smtpConfig = mailConfig.smtp;
         },
     ],
 })
-export class MailModule { }
+export class MailModule {}

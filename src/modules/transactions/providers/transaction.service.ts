@@ -12,265 +12,274 @@ import { TransactionPaymentResultDto } from '../dtos/transaction-payment.result.
 import { Transaction } from '../models/transaction.model';
 import { InjectQueue } from '@nestjs/bull';
 import {
-  MOTOR_TRANSACTION_CALLBACK_JOB,
-  TRAVEL_TRANSACTION_CALLBACK_JOB,
-  TRANSACTION_CALLBACK_QUEUE,
+    MOTOR_TRANSACTION_CALLBACK_JOB,
+    TRAVEL_TRANSACTION_CALLBACK_JOB,
+    TRANSACTION_CALLBACK_QUEUE,
 } from 'src/shared/sms/constants';
 import { Queue } from 'bull';
 import { Str } from 'src/shared';
 
 @Injectable()
 export class TransactionService {
-  private logger: Logger = new Logger();
+    private logger: Logger = new Logger();
 
-  constructor(
-    private httpService: HttpService,
-    @InjectQueue(TRANSACTION_CALLBACK_QUEUE)
-    private readonly transactionCallbackQueue: Queue,
-  ) {}
+    constructor(
+        private httpService: HttpService,
+        @InjectQueue(TRANSACTION_CALLBACK_QUEUE)
+        private readonly transactionCallbackQueue: Queue,
+    ) {}
 
-  async payForTravelCover(
-    travelCoverRequestId: number,
-    plan: TravelPlan,
-    customer: Customer,
-    email: string,
-  ): Promise<TransactionPaymentResultDto> {
-    const selcomData = new InitiateSelcomTransactionDto();
+    async payForTravelCover(
+        travelCoverRequestId: number,
+        plan: TravelPlan,
+        customer: Customer,
+        email: string,
+    ): Promise<TransactionPaymentResultDto> {
+        const selcomData = new InitiateSelcomTransactionDto();
 
-    const reference =
-      'SITLREQTRAV' + Str.randomFixedInteger(7);
+        const reference = 'SITLREQTRAV' + Str.randomFixedInteger(7);
 
-    selcomData.amount = plan.price;
-    selcomData.buyerEmail = email;
-    selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
-    selcomData.buyerPhone = customer.phone.substring(1);
-    selcomData.currency = plan.currency;
-    selcomData.noOfItems = 1;
-    selcomData.orderId = reference;
+        selcomData.amount = plan.price;
+        selcomData.buyerEmail = email;
+        selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
+        selcomData.buyerPhone = customer.phone.substring(1);
+        selcomData.currency = plan.currency;
+        selcomData.noOfItems = 1;
+        selcomData.orderId = reference;
 
-    const result = await this.initiateSelcomTransaction(selcomData, 'travel');
+        const result = await this.initiateSelcomTransaction(
+            selcomData,
+            'travel',
+        );
 
-    this.logger.log(result);
+        this.logger.log(result);
 
-    if (!result.success) {
-      return {
-        success: false,
-        message: result.message,
-        transaction: null,
-      };
+        if (!result.success) {
+            return {
+                success: false,
+                message: result.message,
+                transaction: null,
+            };
+        }
+
+        const transaction = new Transaction();
+
+        transaction.amount = plan.price;
+        transaction.currency = plan.currency;
+        transaction.customerId = customer.id;
+        transaction.travelCoverRequestId = travelCoverRequestId;
+        transaction.operatorReferenceId = result.data.reference;
+        transaction.provider = 'SELCOM';
+        transaction.reference = reference;
+
+        await transaction.save();
+
+        return {
+            success: true,
+            transaction,
+            message: 'success',
+            redirectUrl: Buffer.from(
+                result.data.data[0].payment_gateway_url,
+                'base64url',
+            ).toString('ascii'),
+        };
     }
 
-    const transaction = new Transaction();
+    async payForMotorCover(
+        motorCoverRequest: MotorCoverRequest,
+        customer: Customer,
+        email: string,
+    ): Promise<TransactionPaymentResultDto> {
+        const selcomData = new InitiateSelcomTransactionDto();
 
-    transaction.amount = plan.price;
-    transaction.currency = plan.currency;
-    transaction.customerId = customer.id;
-    transaction.travelCoverRequestId = travelCoverRequestId;
-    transaction.operatorReferenceId = result.data.reference;
-    transaction.provider = 'SELCOM';
-    transaction.reference = reference;
+        const reference = 'SITLREQMOT' + Str.randomFixedInteger(7);
 
-    await transaction.save();
+        selcomData.amount = motorCoverRequest.minimumAmountIncTax;
+        selcomData.buyerEmail = email;
+        selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
+        selcomData.buyerPhone = customer.phone.substring(1);
+        selcomData.currency = motorCoverRequest.currency;
+        selcomData.noOfItems = 1;
+        selcomData.orderId = reference;
 
-    return {
-      success: true,
-      transaction,
-      message: 'success',
-      redirectUrl: Buffer.from(
-        result.data.data[0].payment_gateway_url,
-        'base64url',
-      ).toString('ascii'),
-    };
-  }
+        const result = await this.initiateSelcomTransaction(
+            selcomData,
+            'motor',
+        );
 
-  async payForMotorCover(
-    motorCoverRequest: MotorCoverRequest,
-    customer: Customer,
-    email: string,
-  ): Promise<TransactionPaymentResultDto> {
-    const selcomData = new InitiateSelcomTransactionDto();
+        this.logger.log(result);
 
-    const reference =
-      'SITLREQMOT' + Str.randomFixedInteger(7);
+        if (!result.success) {
+            return {
+                success: false,
+                message: result.message,
+                transaction: null,
+            };
+        }
 
-    selcomData.amount = motorCoverRequest.minimumAmountIncTax;
-    selcomData.buyerEmail = email;
-    selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
-    selcomData.buyerPhone = customer.phone.substring(1);
-    selcomData.currency = motorCoverRequest.currency;
-    selcomData.noOfItems = 1;
-    selcomData.orderId = reference;
+        const transaction = new Transaction();
 
-    const result = await this.initiateSelcomTransaction(selcomData, 'motor');
+        transaction.amount = motorCoverRequest.minimumAmountIncTax;
+        transaction.currency = motorCoverRequest.currency;
+        transaction.customerId = customer.id;
+        transaction.motorCoverRequestId = motorCoverRequest.id;
+        transaction.operatorReferenceId = result.data.reference;
+        transaction.provider = 'SELCOM';
+        transaction.reference = reference;
 
-    this.logger.log(result);
+        await transaction.save();
 
-    if (!result.success) {
-      return {
-        success: false,
-        message: result.message,
-        transaction: null,
-      };
+        return {
+            success: true,
+            transaction,
+            message: 'success',
+            redirectUrl: Buffer.from(
+                result.data.data[0].payment_gateway_url,
+                'base64url',
+            ).toString('ascii'),
+        };
     }
 
-    const transaction = new Transaction();
+    async initiateSelcomTransaction(
+        data: InitiateSelcomTransactionDto,
+        type?: string,
+    ) {
+        const {
+            amount,
+            buyerEmail,
+            buyerName,
+            buyerPhone,
+            currency,
+            noOfItems,
+            orderId,
+        } = data;
 
-    transaction.amount = motorCoverRequest.minimumAmountIncTax;
-    transaction.currency = motorCoverRequest.currency;
-    transaction.customerId = customer.id;
-    transaction.motorCoverRequestId = motorCoverRequest.id;
-    transaction.operatorReferenceId = result.data.reference;
-    transaction.provider = 'SELCOM';
-    transaction.reference = reference;
+        console.log(data);
 
-    await transaction.save();
+        const payload = this.transformPayload({
+            vendor: selcomConfig.selcomVendor,
+            amount,
+            buyerEmail,
+            buyerName,
+            buyerPhone,
+            currency,
+            noOfItems,
+            orderId,
+            webhook: Buffer.from(
+                type === 'motor'
+                    ? `${selcomConfig.selcomCallbackUrl}/transactions/motor/callback`
+                    : `${selcomConfig.selcomCallbackUrl}/transactions/travel/callback`,
+            ).toString('base64'),
+        });
+        const headers = this.getHeaders(payload);
 
-    return {
-      success: true,
-      transaction,
-      message: 'success',
-      redirectUrl: Buffer.from(
-        result.data.data[0].payment_gateway_url,
-        'base64url',
-      ).toString('ascii'),
-    };
-  }
+        this.logger.log(payload);
 
-  async initiateSelcomTransaction(
-    data: InitiateSelcomTransactionDto,
-    type?: string,
-  ) {
-    const {
-      amount,
-      buyerEmail,
-      buyerName,
-      buyerPhone,
-      currency,
-      noOfItems,
-      orderId,
-    } = data;
+        this.logger.log(headers);
 
-    console.log(data);
+        try {
+            const result = await this.httpService
+                .post(
+                    `${selcomConfig.selcomApiBaseUrl}/checkout/create-order-minimal`,
+                    payload,
+                    {
+                        headers: {
+                            'Content-type': 'application/json',
+                            Accept: 'application/json',
+                            ...headers,
+                        },
+                    },
+                )
+                .toPromise();
 
-    const payload = this.transformPayload({
-      vendor: selcomConfig.selcomVendor,
-      amount,
-      buyerEmail,
-      buyerName,
-      buyerPhone,
-      currency,
-      noOfItems,
-      orderId,
-      webhook: Buffer.from(
-        type === 'motor'
-          ? `${selcomConfig.selcomCallbackUrl}/transactions/motor/callback`
-          : `${selcomConfig.selcomCallbackUrl}/transactions/travel/callback`,
-      ).toString('base64'),
-    });
-    const headers = this.getHeaders(payload);
-
-    this.logger.log(payload);
-
-    this.logger.log(headers);
-
-    try {
-      const result = await this.httpService
-        .post(
-          `${selcomConfig.selcomApiBaseUrl}/checkout/create-order-minimal`,
-          payload,
-          {
-            headers: {
-              'Content-type': 'application/json',
-              Accept: 'application/json',
-              ...headers,
-            },
-          },
-        )
-        .toPromise();
-
-      return {
-        success: true,
-        message: 'Successfully inititated selcom transaction',
-        data: result.data,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-        data: error.response?.data,
-      };
+            return {
+                success: true,
+                message: 'Successfully inititated selcom transaction',
+                data: result.data,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.message,
+                data: error.response?.data,
+            };
+        }
     }
-  }
 
-  getHeaders(body: any) {
-    const authorization =
-      `SELCOM ` + Buffer.from(selcomConfig.selcomApiKey).toString('base64');
+    getHeaders(body: any) {
+        const authorization =
+            `SELCOM ` +
+            Buffer.from(selcomConfig.selcomApiKey).toString('base64');
 
-    const timestamp = moment().format();
-    const digestMethod = 'HS256';
-    const digest = createHmac('SHA256', selcomConfig.selcomApiSecret)
-      .update(
-        `timestamp=${timestamp}&` +
-          Object.keys(body)
-            .map((key) => key + '=' + body[key])
-            .join('&'),
-      )
-      .digest('base64');
+        const timestamp = moment().format();
+        const digestMethod = 'HS256';
+        const digest = createHmac('SHA256', selcomConfig.selcomApiSecret)
+            .update(
+                `timestamp=${timestamp}&` +
+                    Object.keys(body)
+                        .map((key) => key + '=' + body[key])
+                        .join('&'),
+            )
+            .digest('base64');
 
-    const signedFields = Object.keys(body).join(',');
+        const signedFields = Object.keys(body).join(',');
 
-    return {
-      Authorization: authorization,
-      'Digest-Method': digestMethod,
-      Digest: digest,
-      Timestamp: timestamp,
-      'Signed-Fields': signedFields,
-    };
-  }
+        return {
+            Authorization: authorization,
+            'Digest-Method': digestMethod,
+            Digest: digest,
+            Timestamp: timestamp,
+            'Signed-Fields': signedFields,
+        };
+    }
 
-  transformPayload(data: any) {
-    return {
-      vendor: data.vendor,
-      amount: data.amount,
-      buyer_email: data.buyerEmail,
-      buyer_name: data.buyerName,
-      buyer_phone: data.buyerPhone,
-      currency: data.currency,
-      no_of_items: data.noOfItems,
-      order_id: data.orderId,
-      webhook: data.webhook,
-    };
-  }
+    transformPayload(data: any) {
+        return {
+            vendor: data.vendor,
+            amount: data.amount,
+            buyer_email: data.buyerEmail,
+            buyer_name: data.buyerName,
+            buyer_phone: data.buyerPhone,
+            currency: data.currency,
+            no_of_items: data.noOfItems,
+            order_id: data.orderId,
+            webhook: data.webhook,
+        };
+    }
 
-  async motorTransactionCallback(data: CallbackDataDto) {
-    this.logger.log(`Add callback to queue, Payload: ${JSON.stringify(data)}`);
+    async motorTransactionCallback(data: CallbackDataDto) {
+        this.logger.log(
+            `Add callback to queue, Payload: ${JSON.stringify(data)}`,
+        );
 
-    const job = await this.transactionCallbackQueue.add(
-      MOTOR_TRANSACTION_CALLBACK_JOB,
-      data,
-    );
+        const job = await this.transactionCallbackQueue.add(
+            MOTOR_TRANSACTION_CALLBACK_JOB,
+            data,
+        );
 
-    this.logger.verbose(`Transaction callback jobId ${job.id}`);
+        this.logger.verbose(`Transaction callback jobId ${job.id}`);
 
-    return {
-      success: true,
-      message: 'Success',
-    };
-  }
+        return {
+            success: true,
+            message: 'Success',
+        };
+    }
 
-  async travelTransactionCallback(data: CallbackDataDto) {
-    this.logger.log(`Add callback to queue, Payload: ${JSON.stringify(data)}`);
+    async travelTransactionCallback(data: CallbackDataDto) {
+        this.logger.log(
+            `Add callback to queue, Payload: ${JSON.stringify(data)}`,
+        );
 
-    const job = await this.transactionCallbackQueue.add(
-      TRAVEL_TRANSACTION_CALLBACK_JOB,
-      data,
-    );
+        const job = await this.transactionCallbackQueue.add(
+            TRAVEL_TRANSACTION_CALLBACK_JOB,
+            data,
+        );
 
-    this.logger.verbose(`Transaction callback jobId ${job.id}`);
+        this.logger.verbose(`Transaction callback jobId ${job.id}`);
 
-    return {
-      success: true,
-      message: 'Success',
-    };
-  }
+        return {
+            success: true,
+            message: 'Success',
+        };
+    }
 }

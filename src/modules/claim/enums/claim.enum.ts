@@ -1,5 +1,5 @@
 export enum ClaimEnum {
-  PENDING = 'PENDING',
-  SUCCESSFUL = 'SUCCESSFUL',
-  FAILED = 'FAILED',
+    PENDING = 'PENDING',
+    SUCCESSFUL = 'SUCCESSFUL',
+    FAILED = 'FAILED',
 }

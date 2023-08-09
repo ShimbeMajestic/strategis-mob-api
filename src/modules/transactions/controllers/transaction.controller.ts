@@ -5,27 +5,27 @@ import { TransactionService } from '../providers/transaction.service';
 
 @Controller('transactions')
 export class TransactionController {
-  constructor(private transactionService: TransactionService) {}
+    constructor(private transactionService: TransactionService) {}
 
-  @Post('selcom-pay')
-  attemptPayment(@Body() data: InitiateSelcomTransactionDto) {
-    return this.transactionService.initiateSelcomTransaction(data);
-  }
+    @Post('selcom-pay')
+    attemptPayment(@Body() data: InitiateSelcomTransactionDto) {
+        return this.transactionService.initiateSelcomTransaction(data);
+    }
 
-  @Post('motor/callback')
-  motorCallback(@Body() data: CallbackDataDto) {
-    console.log(data);
-    return this.transactionService.motorTransactionCallback(data);
-  }
+    @Post('motor/callback')
+    motorCallback(@Body() data: CallbackDataDto) {
+        console.log(data);
+        return this.transactionService.motorTransactionCallback(data);
+    }
 
-  @Post('travel/callback')
-  travelCallback(@Body() data: CallbackDataDto) {
-    console.log(data);
-    return this.transactionService.travelTransactionCallback(data);
-  }
+    @Post('travel/callback')
+    travelCallback(@Body() data: CallbackDataDto) {
+        console.log(data);
+        return this.transactionService.travelTransactionCallback(data);
+    }
 
-  @Post('callback')
-  callback(@Body() data: CallbackDataDto) {
-    return this.transactionService.travelTransactionCallback(data);
-  }
+    @Post('callback')
+    callback(@Body() data: CallbackDataDto) {
+        return this.transactionService.travelTransactionCallback(data);
+    }
 }

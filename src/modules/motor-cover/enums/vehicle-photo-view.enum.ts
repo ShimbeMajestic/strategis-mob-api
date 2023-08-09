@@ -1,5 +1,3 @@
-
-
 export enum VehiclePhotoView {
     FRONT = 'FRONT',
     BACK = 'BACK',

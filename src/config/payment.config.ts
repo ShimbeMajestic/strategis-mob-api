@@ -21,8 +21,11 @@ export const paymentConfig = {
         endpoint:
             process.env.FASTHUB_GATEWAY_URL ||
             'https://secure-gw-test.fasthub.co.tz/fasthub/mobile/money/debitdeposit/api/json',
-        altEndpoint: process.env.FASTHUB_ALT_GATEWAY_URL ||
-            'https://gcs-api.fasthub.co.tz/fasthub/mobile/money/debitdeposit/api/json'
+        altEndpoint:
+            process.env.FASTHUB_ALT_GATEWAY_URL ||
+            'https://gcs-api.fasthub.co.tz/fasthub/mobile/money/debitdeposit/api/json',
     },
-    callback: process.env.PAYMENT_GATEWAY_CALLBACK_URL || 'https://chapchap-api.codeblock.co.tz/payment/callback'
+    callback:
+        process.env.PAYMENT_GATEWAY_CALLBACK_URL ||
+        'https://chapchap-api.codeblock.co.tz/payment/callback',
 };

@@ -167,7 +167,7 @@ export class MailMessageBuilder {
         if (typeof line === 'string') {
             return line
                 .split(/\\r\\n|\\r|\\n/)
-                .map(value => {
+                .map((value) => {
                     return value.trim();
                 })
                 .join('');

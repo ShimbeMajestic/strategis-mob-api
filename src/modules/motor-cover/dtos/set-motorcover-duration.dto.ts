@@ -4,15 +4,15 @@ import { VehicleTypeEnum } from '../enums/vehicle-type.enum';
 
 @InputType()
 export class SetMotorCoverDurationDto {
-  @Field()
-  @IsNotEmpty()
-  motorCoverId: number;
+    @Field()
+    @IsNotEmpty()
+    motorCoverId: number;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  motorCoverDurationId: number;
+    @Field({ nullable: true })
+    @IsOptional()
+    motorCoverDurationId: number;
 
-  @Field()
-  @IsNotEmpty()
-  vehicleType: VehicleTypeEnum;
+    @Field()
+    @IsNotEmpty()
+    vehicleType: VehicleTypeEnum;
 }

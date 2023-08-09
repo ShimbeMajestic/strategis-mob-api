@@ -1,10 +1,16 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { redisConfig } from 'src/config/redis.config';
-import { PUSH_NOTIFICATION_QUEUE, PUSH_NOTIFICATION_TOPIC_QUEUE } from './constants';
+import {
+    PUSH_NOTIFICATION_QUEUE,
+    PUSH_NOTIFICATION_TOPIC_QUEUE,
+} from './constants';
 import { FirebaseNotificationService } from './drivers/firebase-notification.driver';
 import { NotificationController } from './notification.controller';
-import { NotificationConsumer, NotificationTopicConsumer } from './services/notification.consumer';
+import {
+    NotificationConsumer,
+    NotificationTopicConsumer,
+} from './services/notification.consumer';
 import { NotificationService } from './services/notification.service';
 
 @Module({
@@ -33,18 +39,16 @@ import { NotificationService } from './services/notification.service';
                         delay: 5000,
                     },
                 },
-            }
+            },
         ),
     ],
     providers: [
         NotificationService,
         FirebaseNotificationService,
         NotificationTopicConsumer,
-        NotificationConsumer
+        NotificationConsumer,
     ],
     controllers: [NotificationController],
-    exports: [
-        NotificationService
-    ]
+    exports: [NotificationService],
 })
-export class NotificationModule { }
+export class NotificationModule {}

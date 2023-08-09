@@ -55,7 +55,7 @@ export class MotorCovernoteService {
         private readonly motorCoverQueue: Queue,
         private readonly smsService: SmsService,
         protected uploadService: UploadsService,
-    ) { }
+    ) {}
 
     async setMotorCoverAndDuration(
         input: SetMotorCoverDurationDto,
@@ -114,9 +114,10 @@ export class MotorCovernoteService {
             };
         }
 
-        const result = await this.vehicleDetailService.getVehicleDetailsFromTira(
-            registrationNumber,
-        );
+        const result =
+            await this.vehicleDetailService.getVehicleDetailsFromTira(
+                registrationNumber,
+            );
 
         if (!result.success) {
             return {
@@ -159,10 +160,16 @@ export class MotorCovernoteService {
         return motorCoverRequest;
     }
 
-    async getTotalAmountToBePaid(requestId: number): Promise<MotorCoverRequest> {
+    async getTotalAmountToBePaid(
+        requestId: number,
+    ): Promise<MotorCoverRequest> {
         const motorRequest = await MotorCoverRequest.findOne({
             where: { id: requestId },
-            relations: ['vehicleDetails', 'motorCoverDuration', 'motorCoverType'],
+            relations: [
+                'vehicleDetails',
+                'motorCoverDuration',
+                'motorCoverType',
+            ],
         });
 
         if (!motorRequest) {
@@ -235,19 +242,14 @@ export class MotorCovernoteService {
             .subtract(1, 'day')
             .endOf('day')
             .toDate();
-        motorRequest.coverNoteNumber =
-            'SITL-' + Str.randomFixedInteger(7);
-        motorRequest.policyNumber =
-            'SITL-POL-' + Str.randomFixedInteger(7);
-        motorRequest.coverNoteNumber =
-            'SITL-' + Str.randomFixedInteger(7); // comeback to this
+        motorRequest.coverNoteNumber = 'SITL-' + Str.randomFixedInteger(7);
+        motorRequest.policyNumber = 'SITL-POL-' + Str.randomFixedInteger(7);
+        motorRequest.coverNoteNumber = 'SITL-' + Str.randomFixedInteger(7); // comeback to this
 
         await motorRequest.save();
 
         return motorRequest;
     }
-
-    async getComprehensiveAmount() { }
 
     async setMotorVehicleDetails(input: CreateVehicleDetailDto) {
         const {
@@ -384,7 +386,8 @@ export class MotorCovernoteService {
             );
         }
 
-        motorCoverRequest.vehicleDetails.bonnetViewImageUrl = bonnetViewImageUrl;
+        motorCoverRequest.vehicleDetails.bonnetViewImageUrl =
+            bonnetViewImageUrl;
         motorCoverRequest.vehicleDetails.frontViewImageUrl = frontViewImageUrl;
         motorCoverRequest.vehicleDetails.backViewImageUrl = backViewImageUrl;
         motorCoverRequest.vehicleDetails.rightSideViewImageUrl =
@@ -399,18 +402,33 @@ export class MotorCovernoteService {
         return motorCoverRequest;
     }
 
-    async uploadVehiclePhoto(motorCoverRequestId: number, view: string, uploadedFile: any) {
-        const cover = await MotorCoverRequest.findOne({ where: { id: motorCoverRequestId } });
+    async uploadVehiclePhoto(
+        motorCoverRequestId: number,
+        view: string,
+        uploadedFile: any,
+    ) {
+        const cover = await MotorCoverRequest.findOne({
+            where: { id: motorCoverRequestId },
+        });
 
-        if (!cover) throw new NotFoundException(`Motor Cover Request Not Found`);
+        if (!cover)
+            throw new NotFoundException(`Motor Cover Request Not Found`);
 
         // Check cover is in PENDING state
-        if (cover.status !== 'PENDING') throw new NotFoundException(`Photo upload is allowed only when Request is in PENDING state`);
+        if (cover.status !== 'PENDING')
+            throw new NotFoundException(
+                `Photo upload is allowed only when Request is in PENDING state`,
+            );
 
         const upload = await this.uploadService.uploadFile(uploadedFile);
 
         // Check if photo view is valid enum VehiclePhotoView
-        if (!Object.values(VehiclePhotoView).includes(view as VehiclePhotoView)) throw new BadRequestException(`Invalid photo view. Valid values are ${Object.values(VehiclePhotoView).join(', ')}`);
+        if (!Object.values(VehiclePhotoView).includes(view as VehiclePhotoView))
+            throw new BadRequestException(
+                `Invalid photo view. Valid values are ${Object.values(
+                    VehiclePhotoView,
+                ).join(', ')}`,
+            );
 
         const vehiclePhoto = VehiclePhoto.create({
             view,
@@ -495,24 +513,36 @@ export class MotorCovernoteService {
                 // Notify user via sms & push notification
                 await this.notificationService.sendNotificationToDevice({
                     title: 'Successfully Proccessed e-Sticker',
-                    body: `Successfully recieved e-Sticker from TIRA for Vehicle Registration number: ${request.vehicleDetails.RegistrationNumber
-                        }\nSticker number ${policy.eSticker}.\nCovernote reference number: ${policy.coverNoteReferenceNumber
-                        }.\nStart Date: ${moment(policy.coverNoteStartDate)
-                            .format('DD MMM YYYY')
-                            .toUpperCase()}.\nEnd Date: ${moment(policy.coverNoteEndDate)
-                                .format('DD MMM YYYY')
-                                .toUpperCase()}`,
+                    body: `Successfully recieved e-Sticker from TIRA for Vehicle Registration number: ${
+                        request.vehicleDetails.RegistrationNumber
+                    }\nSticker number ${
+                        policy.eSticker
+                    }.\nCovernote reference number: ${
+                        policy.coverNoteReferenceNumber
+                    }.\nStart Date: ${moment(policy.coverNoteStartDate)
+                        .format('DD MMM YYYY')
+                        .toUpperCase()}.\nEnd Date: ${moment(
+                        policy.coverNoteEndDate,
+                    )
+                        .format('DD MMM YYYY')
+                        .toUpperCase()}`,
                     token: request.customer.token,
                 });
 
                 this.smsService.sendSms({
-                    message: `Successfully recieved e-Sticker from TIRA for Vehicle Registration number: ${request.vehicleDetails.RegistrationNumber
-                        }\nSticker number ${policy.eSticker}.\nCovernote reference number: ${policy.coverNoteReferenceNumber
-                        }.\nStart Date: ${moment(policy.coverNoteStartDate)
-                            .format('DD MMM YYYY')
-                            .toUpperCase()}.\nEnd Date: ${moment(policy.coverNoteEndDate)
-                                .format('DD MMM YYYY')
-                                .toUpperCase()}`,
+                    message: `Successfully recieved e-Sticker from TIRA for Vehicle Registration number: ${
+                        request.vehicleDetails.RegistrationNumber
+                    }\nSticker number ${
+                        policy.eSticker
+                    }.\nCovernote reference number: ${
+                        policy.coverNoteReferenceNumber
+                    }.\nStart Date: ${moment(policy.coverNoteStartDate)
+                        .format('DD MMM YYYY')
+                        .toUpperCase()}.\nEnd Date: ${moment(
+                        policy.coverNoteEndDate,
+                    )
+                        .format('DD MMM YYYY')
+                        .toUpperCase()}`,
                     to: request.customer.phone,
                 });
 

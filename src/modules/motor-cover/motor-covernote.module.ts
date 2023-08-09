@@ -3,7 +3,7 @@ import {
     PagingStrategies,
 } from '@ptc-org/nestjs-query-graphql';
 import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
-import { CacheModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { CreateMotorCoverDurationDto } from './dtos/create-motor-cover-duration.dto';
 import { CreateMotorCoverTypeDto } from './dtos/create-motor-cover-type.dto';
 import { UpdateMotorCoverDurationDto } from './dtos/update-motor-cover-duration.dto';
@@ -44,9 +44,7 @@ import { VehiclePhoto } from './models/vehicle-photo.model';
                 ]),
                 TransactionsModule,
             ],
-            dtos:[
-                { DTOClass: VehiclePhoto },
-            ],
+            dtos: [{ DTOClass: VehiclePhoto }],
             resolvers: [
                 {
                     DTOClass: MotorCoverDuration,

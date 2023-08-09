@@ -9,14 +9,10 @@ import { Upload } from './models/upload.model';
 @Module({
     imports: [
         NestjsQueryGraphQLModule.forFeature({
-            imports: [
-                NestjsQueryTypeOrmModule.forFeature([
-                    Upload,
-                ]),
-            ],
+            imports: [NestjsQueryTypeOrmModule.forFeature([Upload])],
             dtos: [{ DTOClass: Upload }],
-            resolvers:[
-                { 
+            resolvers: [
+                {
                     DTOClass: Upload,
                     EntityClass: Upload,
                     read: { disabled: true },
@@ -27,15 +23,8 @@ import { Upload } from './models/upload.model';
             ],
         }),
     ],
-    providers: [
-        UploadsService,
-        UploadsResolver,
-    ],
-    exports: [
-        UploadsService,
-    ],
-    controllers: [
-        UploadsController,
-    ]
+    providers: [UploadsService, UploadsResolver],
+    exports: [UploadsService],
+    controllers: [UploadsController],
 })
-export class UploadsModule { }
+export class UploadsModule {}

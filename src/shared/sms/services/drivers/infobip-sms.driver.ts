@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { smsConfig } from '../../../../config/sms.config';
 import { SendSMSDto } from '../../dtos/SendSMS.dto';
 import { SmsDriver } from './sms-driver.interface';

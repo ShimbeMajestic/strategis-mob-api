@@ -1,15 +1,15 @@
 export class CallbackDataDto {
-  transid: string;
+    transid: string;
 
-  order_id: string;
+    order_id: string;
 
-  reference: string;
+    reference: string;
 
-  result: string;
+    result: string;
 
-  resultcode: string;
+    resultcode: string;
 
-  payment_status: string;
+    payment_status: string;
 
-  channel: string;
+    channel: string;
 }

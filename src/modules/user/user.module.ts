@@ -28,7 +28,7 @@ import { PermissionGuard } from '../permission/guards/permission.guard';
                     EntityClass: User,
                     CreateDTOClass: CreateUserInput,
                     UpdateDTOClass: UpdateUserInput,
-                    // guards: [GqlAuthGuard, PermissionGuard],
+                    guards: [GqlAuthGuard, PermissionGuard],
                     read: {
                         defaultSort: [
                             {
@@ -39,9 +39,9 @@ import { PermissionGuard } from '../permission/guards/permission.guard';
                         decorators: [UsePermission(PermissionEnum.VIEW_USERS)],
                     },
                     create: {
-                        // decorators: [
-                        //     UsePermission(PermissionEnum.MANAGE_USERS),
-                        // ],
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_USERS),
+                        ],
                     },
                     update: {
                         decorators: [

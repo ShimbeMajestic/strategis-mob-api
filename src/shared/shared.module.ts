@@ -17,4 +17,4 @@ import { UploadsModule } from './uploads/uploads.module';
         UploadsModule,
     ],
 })
-export class SharedModule { }
+export class SharedModule {}

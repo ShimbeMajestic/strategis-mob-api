@@ -6,8 +6,8 @@ import { Transaction } from '../models/transaction.model';
 
 @QueryService(Transaction)
 export class TransactionCrudService extends TypeOrmQueryService<Transaction> {
-  constructor(@InjectRepository(Transaction) repo: Repository<Transaction>) {
-    // pass the use soft delete option to the service.
-    super(repo, { useSoftDelete: true });
-  }
+    constructor(@InjectRepository(Transaction) repo: Repository<Transaction>) {
+        // pass the use soft delete option to the service.
+        super(repo, { useSoftDelete: true });
+    }
 }

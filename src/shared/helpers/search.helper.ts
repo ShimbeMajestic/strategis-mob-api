@@ -11,7 +11,7 @@ export function applySearchQuery<T>(
     Logger.debug(`Applying searchTerm: ${searchTerm}`, 'SearchQuery');
 
     query.andWhere(
-        new Brackets(subQuery => {
+        new Brackets((subQuery) => {
             for (const index in searchableColumns) {
                 const searchableColumn = searchableColumns[index];
                 Logger.debug(

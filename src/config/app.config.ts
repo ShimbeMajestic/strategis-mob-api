@@ -20,5 +20,6 @@ export const appConfig = {
 
     environment: process.env.ENVIRONMENT || 'STAGING',
 
-    uploadsDir: process.env.UPLOADS_PATH || path.join(__dirname, '../../../../uploads'),
+    uploadsDir:
+        process.env.UPLOADS_PATH || path.join(__dirname, '../../../../uploads'),
 };
