@@ -28,6 +28,7 @@ import { join } from 'path';
         ConfigModule.forRoot({
             isGlobal: true,
         }),
+        ScheduleModule.forRoot(),
         DatabaseModule,
         CacheModule.registerAsync({
             isGlobal: true,
@@ -69,7 +70,6 @@ import { join } from 'path';
         ListsModule,
         CustomerModule,
         CustomerAuthModule,
-        ScheduleModule.forRoot(),
         MotorCovernoteModule,
         TransactionsModule,
         TravelCoverModule,
