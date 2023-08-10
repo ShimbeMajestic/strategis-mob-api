@@ -21,7 +21,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { CacheConfigService } from './config/cache.config';
 import { UrlGeneratorModule } from 'nestjs-url-generator';
 import { appConfig } from './config/app.config';
-import { join } from 'path';
+import { graphqlConfigFactory } from './config/graphql.config';
 
 @Module({
     imports: [
@@ -38,30 +38,9 @@ import { join } from 'path';
             secret: appConfig.secret, // optional, required only for signed URL
             appUrl: appConfig.baseUrl,
         }),
-        GraphQLModule.forRoot<ApolloDriverConfig>({
+        GraphQLModule.forRootAsync<ApolloDriverConfig>({
             driver: ApolloDriver,
-            autoSchemaFile: join(process.cwd(), 'src/schema/schema.gql'),
-            includeStacktraceInErrorResponses: false,
-            context: ({ req, res, payload, connection }: any) => ({
-                req,
-                res,
-                payload,
-                connection,
-            }),
-            subscriptions: {
-                'graphql-ws': true,
-                'subscriptions-transport-ws': {
-                    onConnect: (connectionParams) => {
-                        return {
-                            req: {
-                                headers: {
-                                    authorization: `${connectionParams.headers['Authorization']}`,
-                                },
-                            },
-                        };
-                    },
-                },
-            },
+            useFactory: graphqlConfigFactory,
         }),
         UserModule,
         AuthModule,

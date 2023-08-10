@@ -18,7 +18,7 @@ export const appConfig = {
 
     tiraApiUrl: process.env.TIRA_BRIDGE_API_URL,
 
-    environment: process.env.ENVIRONMENT || 'STAGING',
+    environment: process.env.ENVIRONMENT || 'local',
 
     uploadsDir:
         process.env.UPLOADS_PATH || path.join(__dirname, '../../../../uploads'),
