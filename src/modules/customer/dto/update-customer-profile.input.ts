@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
-import {
-    IdNumberLengthValidator,
-    IdType,
-    IsValidEnumValue,
-} from '../enum/id-type.enum';
 import { Validate } from 'class-validator';
+import {
+    IsValidEnumValue,
+    IdNumberLengthValidator,
+} from '../enum/id-type-validator';
+import { IdType } from '../enum/id-type.enum';
 
 @InputType()
 export class UpdateCustomerProfileInput {

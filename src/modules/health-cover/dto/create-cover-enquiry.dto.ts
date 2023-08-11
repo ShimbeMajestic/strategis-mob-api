@@ -1,5 +1,4 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail } from 'class-validator';
 
 @InputType()
 export class CreateHealthCoverEnquiryDto {
@@ -25,7 +24,6 @@ export class CreateHealthCoverEnquiryDto {
     mobileNumber: string;
 
     @Field()
-    @IsEmail()
     email: string;
 
     @Field()
