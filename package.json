@@ -23,6 +23,7 @@
         "schema:refresh": "npm run schema:drop && npm run schema:sync && npm run seed:run",
         "schema:drop": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:drop",
         "schema:sync": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:sync",
+        "schema:log": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:log --dataSource src/database/cli.config.ts",
         "seed:config": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli.js config",
         "seed:run": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js seed",
         "seeder": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./src/seeder.ts",

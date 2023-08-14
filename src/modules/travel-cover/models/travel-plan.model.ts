@@ -60,7 +60,7 @@ export class TravelPlan extends BaseEntity {
     @FilterableField()
     price: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'decimal', nullable: true })
     @FilterableField({ nullable: true })
     priceInUSD: number;
 
