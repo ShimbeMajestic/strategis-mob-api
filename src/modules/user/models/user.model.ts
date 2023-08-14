@@ -103,7 +103,7 @@ export class User extends Person implements AuthenticatedUser {
     role: Role;
 
     @BeforeInsert()
-    async beforeInsert() {
+    async hashPassword() {
         this.password = await Hash.make(this.password);
     }
 }
