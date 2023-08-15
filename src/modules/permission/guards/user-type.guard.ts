@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { ForbiddenError } from '@nestjs/apollo';
+import { Role } from '../models/role.model';
 
 @Injectable()
 export class UserTypeGuard implements CanActivate {
@@ -43,21 +44,22 @@ export class UserTypeGuard implements CanActivate {
         const request = ctx.getContext().req;
         const user = request.user;
 
-        if (user) {
-            // Returns true if NO userTypes required OR user has any of required userTypes
-            const isAllowed =
-                userTypes.length === 0 || userTypes.includes(user.type);
+        // fetch current user role
+        const currentUserRole = await Role.findOne({
+            where: {
+                id: user.roleId,
+            },
+        });
 
-            if (isAllowed) return true;
-
+        for (const roleType of userTypes) {
             // Return failure on first missing permission
-            throw new ForbiddenError(
-                `Forbidden! Only user type '${userTypes
-                    .join(', ')
-                    ?.toUpperCase()}' can access this resource`,
-            );
-        } else {
-            return false;
+            if (currentUserRole.name === roleType) {
+                throw new ForbiddenError(
+                    `Forbidden! Role type '${roleType.toUpperCase()}' is required to access this resource`,
+                );
+            }
         }
+
+        return true;
     }
 }
