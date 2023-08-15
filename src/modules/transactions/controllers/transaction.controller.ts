@@ -3,7 +3,7 @@ import { CallbackDataDto } from '../dtos/callback-data.dto';
 import { InitiateSelcomTransactionDto } from '../dtos/initiate-selcom-transaction.dto';
 import { TransactionService } from '../providers/transaction.service';
 
-@Controller('transactions')
+@Controller('api/transactions')
 export class TransactionController {
     constructor(private transactionService: TransactionService) {}
 
@@ -21,11 +21,6 @@ export class TransactionController {
     @Post('travel/callback')
     travelCallback(@Body() data: CallbackDataDto) {
         console.log(data);
-        return this.transactionService.travelTransactionCallback(data);
-    }
-
-    @Post('callback')
-    callback(@Body() data: CallbackDataDto) {
         return this.transactionService.travelTransactionCallback(data);
     }
 }

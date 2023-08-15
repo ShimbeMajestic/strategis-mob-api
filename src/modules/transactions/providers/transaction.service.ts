@@ -167,8 +167,8 @@ export class TransactionService {
             orderId,
             webhook: Buffer.from(
                 type === 'motor'
-                    ? `${selcomConfig.selcomCallbackUrl}/transactions/motor/callback`
-                    : `${selcomConfig.selcomCallbackUrl}/transactions/travel/callback`,
+                    ? `${selcomConfig.selcomCallbackUrl}/api/transactions/motor/callback`
+                    : `${selcomConfig.selcomCallbackUrl}/api/transactions/travel/callback`,
             ).toString('base64'),
         });
         const headers = this.getHeaders(payload);
