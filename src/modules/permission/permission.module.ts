@@ -12,6 +12,7 @@ import { PermissionGuard } from './guards/permission.guard';
 import { Permission } from './models/permission.model';
 import { Role } from './models/role.model';
 import { PermissionService } from './providers/permission.service';
+import { CreateRoleInput } from './dtos/create-role.input';
 
 @Module({
     imports: [
@@ -41,6 +42,7 @@ import { PermissionService } from './providers/permission.service';
                 {
                     DTOClass: Role,
                     EntityClass: Role,
+                    CreateDTOClass: CreateRoleInput,
                     guards: [GqlAuthGuard, PermissionGuard],
                     read: {
                         defaultSort: [
