@@ -13,6 +13,7 @@ import { Permission } from './models/permission.model';
 import { Role } from './models/role.model';
 import { PermissionService } from './providers/permission.service';
 import { CreateRoleInput } from './dtos/create-role.input';
+import { RoleResolver } from './resolvers/role.resolver';
 
 @Module({
     imports: [
@@ -70,7 +71,7 @@ import { CreateRoleInput } from './dtos/create-role.input';
             ],
         }),
     ],
-    providers: [PermissionGuard, PermissionService],
+    providers: [PermissionGuard, PermissionService, RoleResolver],
     exports: [PermissionGuard],
 })
 export class PermissionModule {}

@@ -3,8 +3,9 @@ import { Permission } from '../models/permission.model';
 import { Role } from '../models/role.model';
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { GuardType } from '../models/guard-type.enum';
+import { AssignPermissionsDto } from '../dtos/assign-permissions.dto';
 
 export class PermissionService implements OnModuleInit {
     private readonly logger = new Logger(PermissionService.name);
@@ -142,5 +143,33 @@ export class PermissionService implements OnModuleInit {
             });
             wareHouse.save();
         }
+    }
+
+    async assignPermissionToRoles(input: AssignPermissionsDto): Promise<Role> {
+        const role = await this.roleRepository.findOne({
+            where: {
+                id: input.roleId,
+            },
+            relations: ['permissions'],
+        });
+
+        if (!role) {
+            throw new Error('Role not found');
+        }
+
+        const permissions = await this.permissionRepository.find({
+            where: {
+                id: In(input.permissionsIds),
+            },
+        });
+
+        if (permissions.length !== input.permissionsIds.length) {
+            throw new Error('Permission(s) not found');
+        }
+
+        role.permissions = permissions;
+        await this.roleRepository.save(role);
+
+        return role;
     }
 }
