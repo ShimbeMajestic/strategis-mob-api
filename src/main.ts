@@ -20,6 +20,7 @@ async function bootstrap() {
     app.disable('x-powered-by');
     app.enableCors(corsConfig);
     app.use(json({ limit: '1gb' }));
+    app.set('trust proxy', true); // trust reverse proxy (nginx)
     app.useGlobalFilters(new GqlBadRequestHandler());
     app.useGlobalPipes(new ValidationPipe());
 
