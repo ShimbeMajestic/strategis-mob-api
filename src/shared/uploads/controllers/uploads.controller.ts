@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Res, Query, UseGuards, ParseBoolPipe, ParseIntPipe } from '@nestjs/common';
 import { Logger } from '@nestjs/common/services/logger.service';
 import { UploadsService } from '../providers/uploads.service';
 import { Response } from 'express';
@@ -13,8 +13,8 @@ export class UploadsController {
     @Get(':uploadId')
     @UseGuards(SignedUrlGuard)
     view(
-        @Param('uploadId') uploadId,
-        @Query('download') download,
+        @Param('uploadId', ParseIntPipe) uploadId: number,
+        @Query('download', ParseBoolPipe) download: boolean,
         @Res() res: Response,
     ): Promise<void> {
         return this.service.download(uploadId, res, download);
