@@ -92,13 +92,6 @@ export class MotorCovernoteResolver {
     @Mutation(() => MotorCoverRequest)
     @UseGuards(UserTypeGuard)
     @AllowUserType(UserTypeEnum.CUSTOMER)
-    setMotorVehicleImageUrls(@Args('input') input: SetVehicleImagesDto) {
-        return this.motorCovernoteService.setVehicleImages(input);
-    }
-
-    @Mutation(() => MotorCoverRequest)
-    @UseGuards(UserTypeGuard)
-    @AllowUserType(UserTypeEnum.CUSTOMER)
     setMotorCoverType(@Args('input') input: SetMotorCoverType) {
         return this.motorCovernoteService.setMotorCoverType(input);
     }

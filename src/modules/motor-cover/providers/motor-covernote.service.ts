@@ -360,48 +360,6 @@ export class MotorCovernoteService {
         return motorCoverRequest;
     }
 
-    async setVehicleImages(input: SetVehicleImagesDto) {
-        const {
-            frontViewImageUrl,
-            bonnetViewImageUrl,
-            backViewImageUrl,
-            rightSideViewImageUrl,
-            leftSideViewImageUrl,
-            dashboardOdoImageUrl,
-            requestId,
-        } = input;
-
-        const motorCoverRequest = await MotorCoverRequest.findOne({
-            where: { id: requestId },
-            relations: ['vehicleDetails'],
-        });
-
-        if (!motorCoverRequest) {
-            throw new NotFoundException('Motor cover request id not found!');
-        }
-
-        if (!motorCoverRequest.vehicleDetails) {
-            throw new NotFoundException(
-                'Motor cover request does not contain any vehicle set!',
-            );
-        }
-
-        motorCoverRequest.vehicleDetails.bonnetViewImageUrl =
-            bonnetViewImageUrl;
-        motorCoverRequest.vehicleDetails.frontViewImageUrl = frontViewImageUrl;
-        motorCoverRequest.vehicleDetails.backViewImageUrl = backViewImageUrl;
-        motorCoverRequest.vehicleDetails.rightSideViewImageUrl =
-            rightSideViewImageUrl;
-        motorCoverRequest.vehicleDetails.leftSideViewImageUrl =
-            leftSideViewImageUrl;
-        motorCoverRequest.vehicleDetails.dashboardOdoImageUrl =
-            dashboardOdoImageUrl;
-
-        await motorCoverRequest.vehicleDetails.save();
-
-        return motorCoverRequest;
-    }
-
     async uploadVehiclePhoto(
         motorCoverRequestId: number,
         view: string,

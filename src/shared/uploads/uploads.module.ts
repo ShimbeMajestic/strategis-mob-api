@@ -10,7 +10,6 @@ import { Upload } from './models/upload.model';
     imports: [
         NestjsQueryGraphQLModule.forFeature({
             imports: [NestjsQueryTypeOrmModule.forFeature([Upload])],
-            dtos: [{ DTOClass: Upload }],
             resolvers: [
                 {
                     DTOClass: Upload,

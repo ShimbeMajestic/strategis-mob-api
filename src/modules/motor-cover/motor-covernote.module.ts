@@ -28,6 +28,7 @@ import { MotorCoverController } from './controllers/motor-cover.controller';
 import { SharedModule } from 'src/shared/shared.module';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { VehiclePhoto } from './models/vehicle-photo.model';
+import { Upload } from 'src/shared/uploads/models/upload.model';
 
 @Module({
     imports: [
@@ -41,11 +42,20 @@ import { VehiclePhoto } from './models/vehicle-photo.model';
                     MotorCover,
                     MotorCoverRequest,
                     MotorPolicy,
+                    VehiclePhoto,
                 ]),
                 TransactionsModule,
             ],
-            dtos: [{ DTOClass: VehiclePhoto }],
+            dtos: [],
             resolvers: [
+                {
+                    DTOClass: VehiclePhoto,
+                    EntityClass: VehiclePhoto,
+                    read: { disabled: true },
+                    create: { disabled: true },
+                    update: { disabled: true },
+                    delete: { disabled: true },
+                },
                 {
                     DTOClass: MotorCoverDuration,
                     EntityClass: MotorCoverDuration,

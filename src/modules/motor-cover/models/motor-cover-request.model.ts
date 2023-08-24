@@ -1,12 +1,12 @@
 import {
     Authorize,
     FilterableField,
+    FilterableUnPagedRelation,
     OffsetConnection,
     PagingStrategies,
     Relation,
 } from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
-import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { User } from 'src/modules/user/models/user.model';
@@ -42,6 +42,9 @@ import { VehiclePhoto } from './vehicle-photo.model';
 @OffsetConnection('transactions', () => Transaction, {
     nullable: true,
     pagingStrategy: PagingStrategies.NONE,
+})
+@FilterableUnPagedRelation('vehiclePhotos', () => VehiclePhoto, {
+    nullable: true,
 })
 export class MotorCoverRequest extends BaseEntity {
     @PrimaryGeneratedColumn()

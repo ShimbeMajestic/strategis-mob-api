@@ -11,17 +11,16 @@ import {
 
 import {
     FilterableField,
+    FilterableRelation,
     KeySet,
-    Relation,
 } from '@ptc-org/nestjs-query-graphql';
 import { Int, ObjectType } from '@nestjs/graphql';
 import { Upload } from 'src/shared/uploads/models/upload.model';
 import { MotorCoverRequest } from './motor-cover-request.model';
-import { MotorCover } from './motor-cover.model';
 
 @ObjectType()
 @KeySet(['id'])
-@Relation('upload', () => Upload, {
+@FilterableRelation('upload', () => Upload, {
     remove: { enabled: false },
     update: { enabled: false },
 })
@@ -34,10 +33,6 @@ export class VehiclePhoto extends BaseEntity {
     @FilterableField(() => Int, { nullable: true })
     @Column({ nullable: true })
     motorCoverRequestId: number;
-
-    @FilterableField(() => Int, { nullable: true })
-    @Column({ nullable: true })
-    motorCoverId: number;
 
     @FilterableField(() => Int)
     @Column()
@@ -64,11 +59,6 @@ export class VehiclePhoto extends BaseEntity {
         { nullable: true },
     )
     motorCoverRequest: MotorCoverRequest;
-
-    @ManyToOne(() => MotorCover, (cover) => cover.vehiclePhotos, {
-        nullable: true,
-    })
-    motorCover: MotorCover;
 
     @ManyToOne(() => Upload)
     upload: Upload;

@@ -114,30 +114,6 @@ export class VehicleDetails extends BaseEntity {
     @Column({ default: 0 })
     value: number;
 
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    backViewImageUrl: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    frontViewImageUrl: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    leftSideViewImageUrl: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    rightSideViewImageUrl: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    bonnetViewImageUrl: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    dashboardOdoImageUrl: string;
-
     @OneToMany(() => MotorCoverRequest, (request) => request.vehicleDetails, {
         nullable: true,
     })
