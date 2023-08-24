@@ -4,7 +4,7 @@ import { UploadsService } from '../providers/uploads.service';
 import { Response } from 'express';
 import { SignedUrlGuard } from 'nestjs-url-generator';
 
-@Controller('uploads')
+@Controller('api/uploads')
 export class UploadsController {
     protected readonly logger = new Logger(UploadsController.name);
 
