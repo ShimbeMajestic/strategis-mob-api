@@ -25,13 +25,6 @@ export class UploadsService implements OnModuleInit {
         this.createDirectory(appConfig.uploadsDir);
     }
 
-    static getSignedUrl(upload: Upload, download = false) {
-        return new URL(
-            `uploads/${upload.id}/${upload.key}?download=${download}`,
-            appConfig.baseUrl,
-        ).href;
-    }
-
     /**
      * Creates a directory path if not exists
      *
