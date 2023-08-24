@@ -56,11 +56,16 @@ export class TravelCoverService {
         );
     }
 
-    async setTravelTripInformation(
-        input: SetTripInformationDto,
-        customer: Customer,
-    ) {
-        const { departureDate, returnDate, passportNo } = input;
+    async setTravelTripInformation(input: SetTripInformationDto) {
+        const {
+            departureDate,
+            returnDate,
+            passportNo,
+            email,
+            name,
+            gender,
+            dateOfBirth,
+        } = input;
         const travelRequest = await TravelCoverRequest.findOne({
             where: {
                 id: input.requestId,
@@ -74,6 +79,10 @@ export class TravelCoverService {
         travelRequest.departureDate = departureDate;
         travelRequest.returnDate = returnDate;
         travelRequest.passportNo = passportNo;
+        travelRequest.email = email;
+        travelRequest.name = name;
+        travelRequest.gender = gender;
+        travelRequest.dateOfBirth = dateOfBirth;
 
         return travelRequest.save();
     }

@@ -56,6 +56,22 @@ export class TravelCoverRequest extends BaseEntity {
 
     @Column({ nullable: true })
     @Field({ nullable: true })
+    name: string;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    gender: string;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    dateOfBirth: Date;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    email: string;
+
+    @Column({ nullable: true })
+    @Field({ nullable: true })
     departureDate: Date;
 
     @Column({ nullable: true })

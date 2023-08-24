@@ -41,13 +41,7 @@ export class TravelCoverResolver {
     @Mutation(() => TravelCoverRequest)
     @UseGuards(UserTypeGuard)
     @AllowUserType(UserTypeEnum.CUSTOMER)
-    setTravelTripInformation(
-        @Args('input') input: SetTripInformationDto,
-        @CurrentUser() customer: Customer,
-    ) {
-        return this.travelCoverService.setTravelTripInformation(
-            input,
-            customer,
-        );
+    setTravelTripInformation(@Args('input') input: SetTripInformationDto) {
+        return this.travelCoverService.setTravelTripInformation(input);
     }
 }
