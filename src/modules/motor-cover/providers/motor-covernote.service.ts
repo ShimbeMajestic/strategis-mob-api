@@ -91,7 +91,8 @@ export class MotorCovernoteService {
     async getVehicleDetails(
         input: VehicleDetailRequestDto,
     ): Promise<GetVehicleDetailsDto> {
-        const { motorCoverReqId, registrationNumber } = input;
+        const { motorCoverReqId, registrationNumber, coverNoteStartDate } =
+            input;
 
         const motorCoverRequest = await MotorCoverRequest.findOne({
             where: { id: motorCoverReqId },
@@ -135,6 +136,7 @@ export class MotorCovernoteService {
 
         motorCoverRequest.vehicleDetails = vehicleDetails;
         motorCoverRequest.vehicleDetailsId = vehicleDetails.id;
+        motorCoverRequest.coverNoteStartDate = coverNoteStartDate;
 
         await motorCoverRequest.save();
 

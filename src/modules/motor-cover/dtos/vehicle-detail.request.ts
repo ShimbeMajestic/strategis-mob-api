@@ -7,6 +7,10 @@ export class VehicleDetailRequestDto {
     @IsNotEmpty()
     motorCoverReqId?: number;
 
+    @Field()
+    @IsNotEmpty()
+    coverNoteStartDate: Date;
+
     @Field({ nullable: true })
     @IsOptional()
     registrationNumber?: string;
