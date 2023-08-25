@@ -61,7 +61,12 @@ export class MotorCovernoteService {
         input: SetMotorCoverDurationDto,
         customer: Customer,
     ): Promise<MotorCoverRequest> {
-        const { motorCoverId, motorCoverDurationId, vehicleType } = input;
+        const {
+            motorCoverId,
+            motorCoverDurationId,
+            vehicleType,
+            coverNoteStartDate,
+        } = input;
 
         const motorCover = await MotorCover.findOne({
             where: {
@@ -71,6 +76,7 @@ export class MotorCovernoteService {
 
         const motorCoverRequest = new MotorCoverRequest();
         motorCoverRequest.motorCoverId = motorCoverId;
+        motorCoverRequest.coverNoteStartDate = coverNoteStartDate;
         motorCoverRequest.customer = customer;
 
         if (vehicleType) {
@@ -236,8 +242,7 @@ export class MotorCovernoteService {
         motorRequest.productCode = motorRequest.motorCoverType.productCode;
         motorRequest.riskCode = motorRequest.motorCoverType.riskCode;
         motorRequest.productName = motorRequest.motorCoverType.productName;
-        motorRequest.coverNoteStartDate = moment().toDate();
-        motorRequest.coverNoteEndDate = moment()
+        motorRequest.coverNoteEndDate = moment(motorRequest.coverNoteStartDate)
             .add(motorRequest.motorCoverDuration.duration, 'days')
             .subtract(1, 'day')
             .endOf('day')
