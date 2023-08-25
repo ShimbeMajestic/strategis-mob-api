@@ -9,7 +9,7 @@ export class SetMotorCoverDurationDto {
     motorCoverId: number;
 
     @Field({ nullable: true })
-    @IsNotEmpty()
+    @IsOptional()
     motorCoverDurationId: number;
 
     @Field()
