@@ -8,10 +8,6 @@ export class SetMotorCoverDurationDto {
     @IsNotEmpty()
     motorCoverId: number;
 
-    @Field()
-    @IsNotEmpty()
-    coverNoteStartDate: Date;
-
     @Field({ nullable: true })
     @IsNotEmpty()
     motorCoverDurationId: number;

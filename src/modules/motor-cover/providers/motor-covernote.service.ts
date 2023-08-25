@@ -61,12 +61,7 @@ export class MotorCovernoteService {
         input: SetMotorCoverDurationDto,
         customer: Customer,
     ): Promise<MotorCoverRequest> {
-        const {
-            motorCoverId,
-            motorCoverDurationId,
-            vehicleType,
-            coverNoteStartDate,
-        } = input;
+        const { motorCoverId, motorCoverDurationId, vehicleType } = input;
 
         const motorCover = await MotorCover.findOne({
             where: {
@@ -76,7 +71,6 @@ export class MotorCovernoteService {
 
         const motorCoverRequest = new MotorCoverRequest();
         motorCoverRequest.motorCoverId = motorCoverId;
-        motorCoverRequest.coverNoteStartDate = coverNoteStartDate;
         motorCoverRequest.customer = customer;
 
         if (vehicleType) {
