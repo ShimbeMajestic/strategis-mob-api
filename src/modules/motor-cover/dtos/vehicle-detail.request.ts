@@ -8,8 +8,8 @@ export class VehicleDetailRequestDto {
     motorCoverReqId?: number;
 
     @Field()
-    @IsNotEmpty()
-    coverNoteStartDate: Date;
+    @IsOptional()
+    coverNoteStartDate?: Date;
 
     @Field({ nullable: true })
     @IsOptional()
