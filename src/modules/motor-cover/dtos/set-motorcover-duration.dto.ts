@@ -1,6 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { VehicleTypeEnum } from '../enums/vehicle-type.enum';
 
 @InputType()
 export class SetMotorCoverDurationDto {
@@ -11,8 +10,15 @@ export class SetMotorCoverDurationDto {
     @Field({ nullable: true })
     @IsOptional()
     motorCoverDurationId: number;
+}
+
+@InputType()
+export class SetMotorCoverDurationInput {
+    @Field()
+    @IsNotEmpty()
+    motorCoverRequestId: number;
 
     @Field()
     @IsNotEmpty()
-    vehicleType: VehicleTypeEnum;
+    motorCoverDurationId: number;
 }

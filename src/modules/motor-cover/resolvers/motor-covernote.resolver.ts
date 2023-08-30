@@ -13,9 +13,11 @@ import { ApprovalResult } from '../dtos/approval.result';
 import { GetVehicleDetailsDto } from '../dtos/get-vehicle-details.response';
 import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { SetMotorUsageTypeDto } from '../dtos/set-motor-usage-type.dto';
-import { SetMotorCoverDurationDto } from '../dtos/set-motorcover-duration.dto';
+import {
+    SetMotorCoverDurationDto,
+    SetMotorCoverDurationInput,
+} from '../dtos/set-motorcover-duration.dto';
 import { SetMotorCoverType } from '../dtos/set-motorcover-type.dto';
-import { SetVehicleImagesDto } from '../dtos/set-vehicle-images.dto';
 import { SetVehicleValueDto } from '../dtos/set-vehicle-value.dto';
 import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
@@ -38,6 +40,15 @@ export class MotorCovernoteResolver {
             input,
             customer,
         );
+    }
+
+    @Mutation(() => MotorCoverRequest)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    setMotorCoverDuration(
+        @Args('input') input: SetMotorCoverDurationInput,
+    ): Promise<MotorCoverRequest> {
+        return this.motorCovernoteService.setMotorCoverDuration(input);
     }
 
     @UseGuards(UserTypeGuard)

@@ -10,8 +10,10 @@ import { TransactionService } from 'src/modules/transactions/providers/transacti
 import { GetVehicleDetailsDto } from '../dtos/get-vehicle-details.response';
 import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
 import { SetMotorUsageTypeDto } from '../dtos/set-motor-usage-type.dto';
-import { SetMotorCoverDurationDto } from '../dtos/set-motorcover-duration.dto';
-import { SetVehicleImagesDto } from '../dtos/set-vehicle-images.dto';
+import {
+    SetMotorCoverDurationDto,
+    SetMotorCoverDurationInput,
+} from '../dtos/set-motorcover-duration.dto';
 import { SetVehicleValueDto } from '../dtos/set-vehicle-value.dto';
 import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
@@ -61,7 +63,7 @@ export class MotorCovernoteService {
         input: SetMotorCoverDurationDto,
         customer: Customer,
     ): Promise<MotorCoverRequest> {
-        const { motorCoverId, motorCoverDurationId, vehicleType } = input;
+        const { motorCoverId, motorCoverDurationId } = input;
 
         const motorCover = await MotorCover.findOne({
             where: {
@@ -73,15 +75,34 @@ export class MotorCovernoteService {
         motorCoverRequest.motorCoverId = motorCoverId;
         motorCoverRequest.customer = customer;
 
-        if (vehicleType) {
-            motorCoverRequest.vehicleType = vehicleType;
-        }
-
         if (motorCoverDurationId)
             motorCoverRequest.motorCoverDurationId = motorCoverDurationId;
 
         if (motorCover && motorCover.name === 'Comprehensive')
             motorCoverRequest.requiresApproval = true;
+
+        await motorCoverRequest.save();
+
+        return motorCoverRequest;
+    }
+
+    async setMotorCoverDuration(
+        input: SetMotorCoverDurationInput,
+    ): Promise<MotorCoverRequest> {
+        const { motorCoverRequestId, motorCoverDurationId } = input;
+
+        const motorCoverRequest = await MotorCoverRequest.findOne({
+            where: {
+                id: motorCoverRequestId,
+            },
+        });
+
+        if (!motorCoverRequest) {
+            throw new BadRequestException('Invalid motor cover request id!');
+        }
+
+        if (motorCoverDurationId)
+            motorCoverRequest.motorCoverDurationId = motorCoverDurationId;
 
         await motorCoverRequest.save();
 
