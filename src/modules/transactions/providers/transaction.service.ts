@@ -94,7 +94,7 @@ export class TransactionService {
 
         const reference = 'SITLREQMOT' + Str.randomFixedInteger(7);
 
-        (selcomData.amount = 1000), //motorCoverRequest.minimumAmountIncTax;
+        selcomData.amount = motorCoverRequest.minimumAmountIncTax;
             (selcomData.buyerEmail = email);
         selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
         selcomData.buyerPhone = customer.phone.substring(1);
