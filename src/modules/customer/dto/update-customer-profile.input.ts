@@ -5,6 +5,7 @@ import {
     IdNumberLengthValidator,
 } from '../enum/id-type-validator';
 import { IdType } from '../enum/id-type.enum';
+import { IsOldEnoughValidator } from '../enum/age-validator';
 
 @InputType()
 export class UpdateCustomerProfileInput {
@@ -35,6 +36,7 @@ export class UpdateCustomerProfileInput {
     identityNumber?: string;
 
     @Field({ nullable: true })
+    @Validate(IsOldEnoughValidator)
     dob?: string;
 
     @Field({ nullable: true })
