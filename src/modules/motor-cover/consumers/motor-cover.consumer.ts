@@ -387,13 +387,13 @@ export class MotorCoverConsumer {
 
                 POL_ASSR_CODE: policyAssrCode,
 
-                POL_SRC_CODE: null,
+                POL_SRC_CODE: 'Mobile Application',
 
                 POL_ISSUE_DT: moment(request.updatedAt)
                     .format('DD MMM YYYY')
                     .toUpperCase(),
 
-                POL_SRC_TYPE: '1',
+                POL_SRC_TYPE: '5',
 
                 POL_FLEX_14: '01',
 
