@@ -11,7 +11,9 @@ import { PermissionEnum } from '../permission/enums/permission.enum';
 import { PermissionGuard } from '../permission/guards/permission.guard';
 import { Country } from './models/country.model';
 import { Region } from './models/region.model';
-import { CountriesSeeder } from './countries-seeder.provider';
+import { GeoDataService } from './providers/geodata.service';
+import { ListResolver } from './resolvers/lists.resolver';
+import { ListService } from './providers/list.service';
 
 @Module({
     imports: [
@@ -82,6 +84,6 @@ import { CountriesSeeder } from './countries-seeder.provider';
             ],
         }),
     ],
-    providers: [CountriesSeeder],
+    providers: [GeoDataService, ListResolver, ListService],
 })
 export class ListsModule {}

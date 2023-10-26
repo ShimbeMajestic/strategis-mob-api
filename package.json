@@ -26,7 +26,6 @@
         "schema:log": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js schema:log --dataSource src/database/cli.config.ts",
         "seed:config": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli.js config",
         "seed:run": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js seed",
-        "seeder": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ./src/seeder.ts",
         "typeorm": "ts-node ./node_modules/.bin/typeorm",
         "migration:create": "npm run typeorm -- migration:create",
         "migration:gen": "npm run typeorm -- migration:generate",

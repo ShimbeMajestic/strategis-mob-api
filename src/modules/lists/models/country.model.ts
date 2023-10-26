@@ -16,10 +16,15 @@ import {
     BeforeInsert,
 } from 'typeorm';
 import { Region } from './region.model';
+import { District } from './district.model';
 
 @ObjectType()
 @KeySet(['id'])
 @OffsetConnection('regions', () => Region, {
+    remove: { enabled: false },
+    update: { enabled: false },
+})
+@OffsetConnection('districts', () => District, {
     remove: { enabled: false },
     update: { enabled: false },
 })
@@ -51,6 +56,9 @@ export class Country extends BaseEntity {
 
     @OneToMany(() => Region, (region) => region.country)
     regions: Region[];
+
+    @OneToMany(() => District, (district) => district.country)
+    districts: District[];
 
     @BeforeInsert()
     async beforeInsert() {
