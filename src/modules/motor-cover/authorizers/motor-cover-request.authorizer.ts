@@ -18,7 +18,7 @@ export class MotorCoverRequestAuthorizer
         if (context.req.user.type === 'customer')
             return Promise.resolve({
                 customerId: { eq: context.req.user.id },
-                minimumAmount: { neq: null },
+                minimumAmount: { isNot: null },
             });
         else return Promise.resolve({});
     }
