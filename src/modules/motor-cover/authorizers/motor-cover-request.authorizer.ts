@@ -16,7 +16,10 @@ export class MotorCoverRequestAuthorizer
         authorizerContext: AuthorizationContext,
     ): Promise<Filter<MotorCoverRequest>> {
         if (context.req.user.type === 'customer')
-            return Promise.resolve({ customerId: { eq: context.req.user.id } });
+            return Promise.resolve({
+                customerId: { eq: context.req.user.id },
+                minimumAmount: { neq: null },
+            });
         else return Promise.resolve({});
     }
     authorizeRelation?(
