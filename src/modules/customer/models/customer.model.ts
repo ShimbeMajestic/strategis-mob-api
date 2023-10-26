@@ -75,6 +75,10 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
     @Column({ type: 'int', unsigned: true, nullable: true })
     regionId?: number;
 
+    @FilterableField(() => Int, { nullable: true })
+    @Column({ type: 'int', unsigned: true, nullable: true })
+    districtId?: number;
+
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
     createdAt: Date;
