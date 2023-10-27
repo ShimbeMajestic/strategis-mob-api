@@ -192,6 +192,8 @@ export class MotorCoverRequest extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date;
 
-    @OneToMany(() => VehiclePhoto, (photo) => photo.motorCoverRequest)
+    @OneToMany(() => VehiclePhoto, (photo) => photo.motorCoverRequest, {
+        onDelete: 'CASCADE',
+    })
     vehiclePhotos: VehiclePhoto[];
 }
