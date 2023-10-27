@@ -125,6 +125,7 @@ export class TransactionService {
         transaction.motorCoverRequestId = motorCoverRequest.id;
         transaction.operatorReferenceId = result.data.reference;
         transaction.provider = 'SELCOM';
+        transaction.buyerPhoneNumber = selcomData.buyerPhone;
         transaction.reference = reference;
 
         await transaction.save();

@@ -92,6 +92,10 @@ export class Transaction extends BaseEntity {
     @Column({ nullable: true })
     reference: string;
 
+    @Column()
+    @FilterableField()
+    buyerPhoneNumber: string;
+
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
     createdAt: Date;
