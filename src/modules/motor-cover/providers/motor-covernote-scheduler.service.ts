@@ -7,7 +7,7 @@ import { In, IsNull } from 'typeorm';
 export class MotorCoverNoteScheduler {
     private readonly logger = new Logger(MotorCoverNoteScheduler.name);
 
-    @Cron(CronExpression.EVERY_30_SECONDS)
+    // @Cron(CronExpression.EVERY_30_SECONDS)
     async removeIncompleteRequests() {
         this.logger.log(
             'Executing job for removal of incomplete cover requests',
