@@ -193,7 +193,7 @@ export class MotorCoverRequest extends BaseEntity {
     deletedAt: Date;
 
     @OneToMany(() => VehiclePhoto, (photo) => photo.motorCoverRequest, {
-        onDelete: 'CASCADE',
+        cascade: true,
     })
     vehiclePhotos: VehiclePhoto[];
 }

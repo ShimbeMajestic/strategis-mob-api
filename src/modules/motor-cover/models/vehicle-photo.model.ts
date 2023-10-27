@@ -56,7 +56,7 @@ export class VehiclePhoto extends BaseEntity {
     @ManyToOne(
         () => MotorCoverRequest,
         (coverRequest) => coverRequest.vehiclePhotos,
-        { nullable: true, cascade: true },
+        { nullable: true, onDelete: 'CASCADE' },
     )
     motorCoverRequest: MotorCoverRequest;
 
