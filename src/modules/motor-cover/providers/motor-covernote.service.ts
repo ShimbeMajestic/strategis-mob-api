@@ -457,6 +457,7 @@ export class MotorCovernoteService {
                     'vehicleDetails',
                     'motorCover',
                     'customer.region',
+                    'customer.district',
                 ],
             });
 

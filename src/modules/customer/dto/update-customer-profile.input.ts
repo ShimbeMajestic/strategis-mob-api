@@ -43,7 +43,7 @@ export class UpdateCustomerProfileInput {
     location?: string;
 
     @Field({ nullable: true })
-    district?: string;
+    districtId?: number;
 
     @Field({ nullable: true })
     gender?: string;

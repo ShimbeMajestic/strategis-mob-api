@@ -137,16 +137,16 @@ export class MotorCoverConsumer {
             gender: request.customer.gender.toUpperCase().substring(0, 1),
             countryCode: 'TZA',
             region: request.customer.region.name,
-            district: request.customer.district
-                ? request.customer.district
+            district: request.customer.district.name
+                ? request.customer.district.name
                 : 'ilala',
             policyHolderPhoneNumber: request.customer.phone.substring(
                 1,
                 request.customer.phone.length,
             ),
             paymentMode: PaymentModeEnum.EFT,
-            street: request.customer.district
-                ? request.customer.district
+            street: request.customer.district.name
+                ? request.customer.district.name
                 : 'ilala',
             emailAddress: request.customer.email,
             motorCategory: request.vehicleDetails.MotorCategory,

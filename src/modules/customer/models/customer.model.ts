@@ -21,10 +21,16 @@ import { IdType } from '../enum/id-type.enum';
 import { Transaction } from 'src/modules/transactions/models/transaction.model';
 import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover-request.model';
 import { MotorPolicy } from 'src/modules/motor-cover/models/motor-policy.model';
+import { District } from 'src/modules/lists/models/district.model';
 
 @ObjectType()
 @KeySet(['id'])
 @OffsetConnection('region', () => Region, {
+    nullable: true,
+    remove: { enabled: false },
+    update: { enabled: false },
+})
+@OffsetConnection('district', () => District, {
     nullable: true,
     remove: { enabled: false },
     update: { enabled: false },
@@ -77,7 +83,7 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
 
     @FilterableField(() => Int, { nullable: true })
     @Column({ type: 'int', unsigned: true, nullable: true })
-    districtId?: number;
+    districtId: number;
 
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
@@ -93,6 +99,9 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
 
     @ManyToOne(() => Region, { nullable: true })
     region: Region;
+
+    @ManyToOne(() => District, { nullable: true })
+    district: District;
 
     @OneToMany(() => Transaction, (transaction) => transaction.customer)
     transactions: Transaction[];
@@ -138,8 +147,4 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
     @Field({ nullable: true })
     @Column({ nullable: true })
     gender: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    district: string;
 }
