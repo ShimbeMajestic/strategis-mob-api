@@ -14,6 +14,7 @@ import {
     FilterableField,
     OffsetConnection,
     KeySet,
+    FilterableRelation,
 } from '@ptc-org/nestjs-query-graphql';
 import { Region } from 'src/modules/lists/models/region.model';
 import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.interface';
@@ -25,22 +26,22 @@ import { District } from 'src/modules/lists/models/district.model';
 
 @ObjectType()
 @KeySet(['id'])
-@OffsetConnection('region', () => Region, {
+@FilterableRelation('region', () => Region, {
     nullable: true,
     remove: { enabled: false },
     update: { enabled: false },
 })
-@OffsetConnection('district', () => District, {
+@FilterableRelation('district', () => District, {
     nullable: true,
     remove: { enabled: false },
     update: { enabled: false },
 })
-@OffsetConnection('transactions', () => Transaction, {
+@FilterableRelation('transactions', () => Transaction, {
     nullable: true,
     remove: { enabled: false },
     update: { enabled: false },
 })
-@OffsetConnection('policies', () => MotorPolicy, {
+@FilterableRelation('policies', () => MotorPolicy, {
     nullable: true,
     remove: { enabled: false },
     update: { enabled: false },
