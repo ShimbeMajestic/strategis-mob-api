@@ -10,14 +10,14 @@ export class MotorCoverNoteScheduler {
     @Cron(CronExpression.EVERY_30_SECONDS)
     async removeIncompleteRequests() {
         this.logger.log(
-            'Executing job for removing of incomplete cover requests',
+            'Executing job for removal of incomplete cover requests',
         );
 
         const requests = await MotorCoverRequest.find({
             where: {
                 minimumAmount: IsNull(),
             },
-            take: 30,
+            take: 100,
         });
 
         const requestsId = requests.map((request) => request.id);
