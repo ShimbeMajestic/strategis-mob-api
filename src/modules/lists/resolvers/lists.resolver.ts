@@ -7,7 +7,7 @@ export class ListResolver {
     constructor(private readonly listService: ListService) {}
 
     @Query(() => [District])
-    getDistrict(@Args('regionId') regionId: number): Promise<District[]> {
+    getDistricts(@Args('regionId') regionId: number): Promise<District[]> {
         return this.listService.getRegionsDistrict(regionId);
     }
 }

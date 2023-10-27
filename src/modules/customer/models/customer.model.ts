@@ -78,6 +78,25 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
     @Column({ nullable: true })
     lastName?: string;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    gender: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    dob: string;
+
+    @Field({ nullable: true })
+    @Column({
+        enum: IdType,
+        nullable: true,
+    })
+    identityType: IdType;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    identityNumber: string;
+
     @FilterableField(() => Int, { nullable: true })
     @Column({ type: 'int', unsigned: true, nullable: true })
     regionId?: number;
@@ -85,6 +104,10 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
     @FilterableField(() => Int, { nullable: true })
     @Column({ type: 'int', unsigned: true, nullable: true })
     districtId: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    address: string;
 
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
@@ -123,29 +146,6 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
     }
 
     @Field({ nullable: true })
-    @Column({
-        enum: IdType,
-        nullable: true,
-    })
-    identityType: IdType;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    identityNumber: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    location: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    dob: string;
-
-    @Field({ nullable: true })
     @Column({ nullable: true })
     token: string;
-
-    @Field({ nullable: true })
-    @Column({ nullable: true })
-    gender: string;
 }

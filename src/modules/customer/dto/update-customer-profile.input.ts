@@ -10,6 +10,9 @@ import { IsOldEnoughValidator } from '../enum/age-validator';
 @InputType()
 export class UpdateCustomerProfileInput {
     @Field({ nullable: true })
+    token?: string;
+
+    @Field({ nullable: true })
     email?: string;
 
     @Field({ nullable: true })
@@ -22,10 +25,11 @@ export class UpdateCustomerProfileInput {
     middleName?: string;
 
     @Field({ nullable: true })
-    regionId?: number;
+    @Validate(IsOldEnoughValidator)
+    dob?: string;
 
     @Field({ nullable: true })
-    token?: string;
+    gender?: string;
 
     @Field({ nullable: true })
     @Validate(IsValidEnumValue)
@@ -36,15 +40,11 @@ export class UpdateCustomerProfileInput {
     identityNumber?: string;
 
     @Field({ nullable: true })
-    @Validate(IsOldEnoughValidator)
-    dob?: string;
-
-    @Field({ nullable: true })
-    location?: string;
+    regionId?: number;
 
     @Field({ nullable: true })
     districtId?: number;
 
     @Field({ nullable: true })
-    gender?: string;
+    address?: string;
 }
