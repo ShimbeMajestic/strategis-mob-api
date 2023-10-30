@@ -43,7 +43,10 @@ export class VehicleDetailService {
         }
     }
 
-    async checkIfVehicleHasCover(registrationNumber: string) {
+    async checkIfVehicleHasCover(
+        registrationNumber: string,
+        coverStartDate: Date,
+    ) {
         try {
             const result = await this.httpService
                 .get(
@@ -69,7 +72,14 @@ export class VehicleDetailService {
                 };
             }
 
-            if (result.data.status === 'ACTIVE') {
+            const coverEndDate = new Date(
+                result.data?.policy?.coverNoteEndDate,
+            );
+
+            if (
+                result.data.status === 'ACTIVE' &&
+                coverStartDate <= coverEndDate
+            ) {
                 return {
                     success: true,
                     exists: true,

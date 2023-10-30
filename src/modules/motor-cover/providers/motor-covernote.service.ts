@@ -125,13 +125,16 @@ export class MotorCovernoteService {
 
         const response = await this.vehicleDetailService.checkIfVehicleHasCover(
             registrationNumber,
+            coverNoteStartDate,
         );
 
         if (response.success && response.exists) {
             return {
                 success: false,
                 activeCoverNote: true,
-                message: 'Vehicle has an exisiting active cover!',
+                message: `Vehicle has an exisiting active cover that ends in ${new Date(
+                    response.data.coverNoteEndDate,
+                )}`,
                 data: null,
             };
         }
@@ -150,22 +153,44 @@ export class MotorCovernoteService {
             };
         }
 
-        const vehicleDetails = new VehicleDetails();
-        Object.assign(vehicleDetails, result.data);
+        try {
+            let vehicleDetailsId: number;
+            let vehicleDetails;
 
-        await vehicleDetails.save();
+            const existingVehicleDetails = await VehicleDetails.findOne({
+                where: {
+                    RegistrationNumber: result.data?.RegistrationNumber,
+                },
+            });
 
-        motorCoverRequest.vehicleDetails = vehicleDetails;
-        motorCoverRequest.vehicleDetailsId = vehicleDetails.id;
-        motorCoverRequest.coverNoteStartDate = coverNoteStartDate;
+            if (!existingVehicleDetails) {
+                vehicleDetails = new VehicleDetails();
+                Object.assign(vehicleDetails, result.data);
 
-        await motorCoverRequest.save();
+                await vehicleDetails.save();
 
-        return {
-            success: true,
-            message: 'Successfully got vehicle details, proceed',
-            data: vehicleDetails,
-        };
+                vehicleDetailsId = vehicleDetails.id;
+            }
+
+            motorCoverRequest.vehicleDetails =
+                existingVehicleDetails || vehicleDetails;
+            motorCoverRequest.vehicleDetailsId = vehicleDetailsId;
+            motorCoverRequest.coverNoteStartDate = coverNoteStartDate;
+
+            await motorCoverRequest.save();
+
+            return {
+                success: true,
+                message: 'Successfully got vehicle details, proceed',
+                data: existingVehicleDetails || vehicleDetails,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: 'Error: ' + error.message,
+                data: null,
+            };
+        }
     }
 
     async setMotorUsageType(
