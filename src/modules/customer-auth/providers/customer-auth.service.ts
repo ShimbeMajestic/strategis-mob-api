@@ -163,7 +163,8 @@ export class CustomerAuthService {
         const response = new ValidateLoginOtpResponse();
         response.accessToken = accessToken;
         response.user = customer;
-        response.requiresProfileUpdate = customer.firstName ? false : true;
+        response.requiresProfileUpdate =
+            customer.firstName && customer.dob ? false : true;
 
         return response;
     }
