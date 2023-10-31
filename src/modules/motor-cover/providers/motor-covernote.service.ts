@@ -131,10 +131,9 @@ export class MotorCovernoteService {
         const expiryDate = new Date(
             response.data?.coverNoteEndDate,
         ).toLocaleDateString('en-us', {
-            weekday: 'long',
             year: 'numeric',
-            month: 'short',
-            day: 'numeric',
+            month: 'long',
+            day: '2-digit',
         });
 
         if (response.success && response.exists) {
