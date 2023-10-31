@@ -128,11 +128,18 @@ export class MotorCovernoteService {
             coverNoteStartDate,
         );
 
+        const date = new Date(
+            response.data?.coverNoteEndDate,
+        ).toLocaleDateString('en-us', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        });
+
         if (response.success && response.exists) {
             this.logger.log(
-                `Vehicle has an exisiting active cover that ends in ${new Date(
-                    response.data.coverNoteEndDate,
-                )}`,
+                `Vehicle has an exisiting active cover that ends in ${date}`,
             );
             return {
                 success: false,
