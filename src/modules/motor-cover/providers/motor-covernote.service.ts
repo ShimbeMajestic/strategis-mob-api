@@ -128,7 +128,7 @@ export class MotorCovernoteService {
             coverNoteStartDate,
         );
 
-        const date = new Date(
+        const expiryDate = new Date(
             response.data?.coverNoteEndDate,
         ).toLocaleDateString('en-us', {
             weekday: 'long',
@@ -141,7 +141,7 @@ export class MotorCovernoteService {
             return {
                 success: false,
                 activeCoverNote: true,
-                message: `Vehicle has an exisiting active cover that ends in ${date}`,
+                message: `Vehicle has an exisiting active cover that ends in ${expiryDate}`,
                 data: null,
             };
         }
