@@ -424,13 +424,22 @@ export class MotorCoverConsumer {
 
     getPolicyCode = (usageType: MotorUsageType) => {
         switch (usageType) {
-            case MotorUsageType.COMMERCIAL_LOGISTICS:
+            case MotorUsageType.GENERAL_GOODS:
                 return '1001';
 
-            case MotorUsageType.COMMERCIAL_PASSENGER:
+            case MotorUsageType.TRAILERS:
+                return '1001';
+
+            case MotorUsageType.TANKERS:
+                return '10001';
+
+            case MotorUsageType.PASSENGER_CARRYING:
                 return '1006';
 
-            case MotorUsageType.PRIVATE:
+            case MotorUsageType.PRIVATE_VEHICLE:
+                return '1002';
+
+            case MotorUsageType.MOTOR_CYCLE:
                 return '1002';
 
             case MotorUsageType.SPECIAL_TYPE:
@@ -443,13 +452,22 @@ export class MotorCoverConsumer {
 
     getVehicleUsage = (usageType: MotorUsageType) => {
         switch (usageType) {
-            case MotorUsageType.COMMERCIAL_LOGISTICS:
+            case MotorUsageType.GENERAL_GOODS:
                 return 'COMMERCIAL';
 
-            case MotorUsageType.COMMERCIAL_PASSENGER:
+            case MotorUsageType.TANKERS:
+                return 'COMMERCIAL';
+
+            case MotorUsageType.TRAILERS:
+                return 'COMMERCIAL';
+
+            case MotorUsageType.PASSENGER_CARRYING:
                 return 'PASSENGER';
 
-            case MotorUsageType.PRIVATE:
+            case MotorUsageType.PRIVATE_VEHICLE:
+                return 'PRIVATE';
+
+            case MotorUsageType.MOTOR_CYCLE:
                 return 'PRIVATE';
 
             case MotorUsageType.SPECIAL_TYPE:

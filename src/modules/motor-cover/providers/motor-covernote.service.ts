@@ -249,7 +249,7 @@ export class MotorCovernoteService {
 
             if (
                 motorRequest.motorCoverType.usage ===
-                MotorUsageType.COMMERCIAL_PASSENGER
+                MotorUsageType.PASSENGER_CARRYING
             ) {
                 calculateMinimumAmount +=
                     motorRequest.motorCoverType.perSeatAmount *
@@ -273,7 +273,7 @@ export class MotorCovernoteService {
 
             if (
                 motorRequest.motorCoverType.usage ===
-                MotorUsageType.COMMERCIAL_PASSENGER
+                MotorUsageType.PASSENGER_CARRYING
             ) {
                 motorRequest.minimumAmount +=
                     motorRequest.motorCoverType.perSeatAmount *
