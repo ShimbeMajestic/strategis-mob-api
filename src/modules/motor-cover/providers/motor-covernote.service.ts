@@ -138,15 +138,10 @@ export class MotorCovernoteService {
         });
 
         if (response.success && response.exists) {
-            this.logger.log(
-                `Vehicle has an exisiting active cover that ends in ${date}`,
-            );
             return {
                 success: false,
                 activeCoverNote: true,
-                message: `Vehicle has an exisiting active cover that ends in ${new Date(
-                    response.data.coverNoteEndDate,
-                )}`,
+                message: `Vehicle has an exisiting active cover that ends in ${date}`,
                 data: null,
             };
         }
