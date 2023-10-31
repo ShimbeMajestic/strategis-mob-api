@@ -129,6 +129,11 @@ export class MotorCovernoteService {
         );
 
         if (response.success && response.exists) {
+            this.logger.log(
+                `Vehicle has an exisiting active cover that ends in ${new Date(
+                    response.data.coverNoteEndDate,
+                )}`,
+            );
             return {
                 success: false,
                 activeCoverNote: true,
