@@ -54,6 +54,10 @@ export class MotorCoverType extends BaseEntity {
     @Field()
     minimumAmount: number;
 
+    @Column({ nullable: true })
+    @FilterableField({ nullable: true })
+    limitInKg: number;
+
     @ManyToOne(() => MotorCover, (cover) => cover.types)
     motorCover: MotorCover;
 
