@@ -140,7 +140,7 @@ export class MotorCovernoteService {
             return {
                 success: false,
                 activeCoverNote: true,
-                message: `Vehicle has an exisiting active cover that ends in ${expiryDate}`,
+                message: `Vehicle has an exisiting active cover that ends on ${expiryDate}`,
                 data: null,
             };
         }
