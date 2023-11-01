@@ -35,7 +35,7 @@ export class MotorCoverType extends BaseEntity {
     usage: MotorUsageType;
 
     @Column({ unique: true })
-    @Field()
+    @FilterableField({ nullable: true })
     riskCode: string;
 
     @Column()
