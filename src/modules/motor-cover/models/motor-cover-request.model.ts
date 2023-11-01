@@ -102,6 +102,18 @@ export class MotorCoverRequest extends BaseEntity {
     @Column({ nullable: true })
     statusDescription: string;
 
+    @Field({ nullable: true })
+    @Column({ default: 'PENDING' })
+    policySubmissionStatus: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    policySubmissionMessage: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    policySubmissionSentAt: Date;
+
     @FilterableField(() => GraphQLISODateTime, { nullable: true })
     @Column({ nullable: true })
     coverNoteStartDate: Date;

@@ -73,10 +73,10 @@ export class TransactionConsumer {
                 token: transaction.customer.token,
             });
 
-            await this.motorCoverQueue.add(
-                MOTOR_COVER_JOB,
-                transaction.motorCoverRequest,
-            );
+            // await this.motorCoverQueue.add(
+            //     MOTOR_COVER_JOB,
+            //     transaction.motorCoverRequest,
+            // );
         }
 
         if (result === 'FAIL') {
