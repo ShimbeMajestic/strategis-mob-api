@@ -52,6 +52,14 @@ export class PremiaDataProcessor {
 
                         request.status =
                             MotorCoverRequestStatus.STICKER_PROCESS_FAILED;
+
+                        const message = JSON.stringify(
+                            response?.data?.message,
+                        )?.slice(0, 99);
+
+                        request.policySubmissionStatus = 'FAILED';
+                        request.policySubmissionSentAt = new Date();
+                        request.policySubmissionMessage = message?.slice(0, 99);
                         await request.save();
 
                         return {
@@ -66,6 +74,8 @@ export class PremiaDataProcessor {
                     );
 
                     request.status = MotorCoverRequestStatus.WAIT_FOR_STICKER;
+                    request.policySubmissionStatus = 'SENT';
+                    request.policySubmissionSentAt = new Date();
                     await request.save();
 
                     return {
@@ -74,7 +84,14 @@ export class PremiaDataProcessor {
                     // Notify user, via sms & notification
                 });
         } catch (error) {
-            this.logger.error(error.message);
+
+            const message = error.message;
+
+            request.policySubmissionStatus = 'ERROR';
+            request.policySubmissionSentAt = new Date();
+            request.policySubmissionMessage = message?.slice(0, 99);
+            await request.save();
+
         }
     }
 
