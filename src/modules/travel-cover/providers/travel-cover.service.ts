@@ -24,6 +24,8 @@ export class TravelCoverService {
         try {
             const travelRequest = new TravelCoverRequest();
 
+
+
             travelRequest.customer = customer;
             travelRequest.planId = planId;
 
@@ -70,10 +72,31 @@ export class TravelCoverService {
             where: {
                 id: input.requestId,
             },
+            relations: ['plan', 'plan.destination'],
         });
 
         if (!travelRequest) {
             throw new NotFoundException('Travel cover request not found!');
+        }
+
+        const years = await this.calculateYears(dateOfBirth);
+        const months = await this.calculateMonths(dateOfBirth);
+
+        if (months > 2 && years < 18) {
+            travelRequest.premiumAmount = travelRequest.plan.price * 0.5;
+        }
+
+        if (years >= 66 && years <= 75) {
+            travelRequest.premiumAmount =
+                travelRequest.plan.price + travelRequest.plan.price * 0.5;
+        }
+
+        if (years >= 76 && years <= 80) {
+            travelRequest.premiumAmount = travelRequest.plan.price * 2;
+        }
+
+        if (travelRequest.plan.destination.name == 'Europe' && years > 80) {
+            travelRequest.premiumAmount = travelRequest.plan.price * 3;
         }
 
         travelRequest.departureDate = departureDate;
@@ -85,5 +108,25 @@ export class TravelCoverService {
         travelRequest.dateOfBirth = dateOfBirth;
 
         return travelRequest.save();
+    }
+
+    private calculateYears(dob: Date) {
+        const today = new Date();
+
+        const dateOfBirth = new Date(dob);
+
+        const date = today.getFullYear() - dateOfBirth.getFullYear();
+
+        return date;
+    }
+
+    private calculateMonths(dob: Date) {
+        const today = new Date();
+
+        const dateOfBirth = new Date(dob);
+
+        const months = today.getMonth() - dateOfBirth.getMonth();
+
+        return months;
     }
 }

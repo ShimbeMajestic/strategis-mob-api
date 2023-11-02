@@ -42,29 +42,11 @@ export class TransactionService {
             },
         });
 
-        const years = await this.calculateYears(traverRequest.dateOfBirth);
-        const months = await this.calculateMonths(traverRequest.dateOfBirth);
-
         const selcomData = new InitiateSelcomTransactionDto();
 
         const reference = 'SITLREQTRAV' + Str.randomFixedInteger(7);
 
-        if (months > 2 && years < 18) {
-            selcomData.amount = plan.price * 0.5;
-        }
-
-        if (years >= 66 && years <= 75) {
-            selcomData.amount = plan.price + plan.price * 0.5;
-        }
-
-        if (years >= 76 && years <= 80) {
-            selcomData.amount = plan.price * 2;
-        }
-
-        if (plan.destination.name == 'Europe' && years > 80) {
-            selcomData.amount = plan.price * 3;
-        }
-
+        selcomData.amount = traverRequest.premiumAmount;
         selcomData.buyerEmail = email;
         selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
         selcomData.buyerPhone = customer.phone.substring(1);
@@ -307,25 +289,5 @@ export class TransactionService {
             success: true,
             message: 'Success',
         };
-    }
-
-    private calculateYears(dob: Date) {
-        const today = new Date();
-
-        const dateOfBirth = new Date(dob);
-
-        const date = today.getFullYear() - dateOfBirth.getFullYear();
-
-        return date;
-    }
-
-    private calculateMonths(dob: Date) {
-        const today = new Date();
-
-        const dateOfBirth = new Date(dob);
-
-        const months = today.getMonth() - dateOfBirth.getMonth();
-
-        return months;
     }
 }
