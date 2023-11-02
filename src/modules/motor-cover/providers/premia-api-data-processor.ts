@@ -84,6 +84,7 @@ export class PremiaDataProcessor {
                     // Notify user, via sms & notification
                 });
         } catch (error) {
+            this.logger.debug(`Error: ${JSON.stringify(error)}`);
 
             const message = error.message;
 
