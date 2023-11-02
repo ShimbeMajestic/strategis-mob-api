@@ -84,18 +84,11 @@ export class TravelCoverService {
 
         if (months > 2 && years < 18) {
             travelRequest.amountAfterDiscount = travelRequest.plan.price * 0.5;
-        }
-
-        if (years >= 66 && years <= 75) {
-            travelRequest.amountAfterDiscount =
-                travelRequest.plan.price + travelRequest.plan.price * 0.5;
-        }
-
-        if (years >= 76 && years <= 80) {
+        }else if (years > 65 && years < 76) {
+            travelRequest.amountAfterDiscount = travelRequest.plan.price * 1.5;
+        }else if (years > 75 && years < 81) {
             travelRequest.amountAfterDiscount = travelRequest.plan.price * 2;
-        }
-
-        if (travelRequest.plan.destination.name == 'Europe' && years > 80) {
+        }else if (travelRequest.plan.destination.name == 'Europe' && years > 80) {
             travelRequest.amountAfterDiscount = travelRequest.plan.price * 3;
         } else {
             travelRequest.amountAfterDiscount = travelRequest.plan.price;
