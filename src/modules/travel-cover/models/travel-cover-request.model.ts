@@ -82,7 +82,7 @@ export class TravelCoverRequest extends BaseEntity {
     @Field({ nullable: true })
     passportNo: string;
 
-    @Column({ nullable: true, type: 'float64' })
+    @Column({ nullable: true, type: 'decimal' })
     @Field({ nullable: true })
     premiumAmount: number;
 
