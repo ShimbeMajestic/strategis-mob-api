@@ -84,7 +84,7 @@ export class TravelCoverRequest extends BaseEntity {
 
     @Column({ nullable: true, type: 'decimal' })
     @Field({ nullable: true })
-    premiumAmount: number;
+    amountAfterDiscount: number;
 
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()

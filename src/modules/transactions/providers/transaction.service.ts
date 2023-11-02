@@ -46,7 +46,7 @@ export class TransactionService {
 
         const reference = 'SITLREQTRAV' + Str.randomFixedInteger(7);
 
-        selcomData.amount = traverRequest.premiumAmount;
+        selcomData.amount = traverRequest.amountAfterDiscount;
         selcomData.buyerEmail = email;
         selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
         selcomData.buyerPhone = customer.phone.substring(1);

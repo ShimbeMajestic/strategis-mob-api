@@ -83,20 +83,22 @@ export class TravelCoverService {
         const months = await this.calculateMonths(dateOfBirth);
 
         if (months > 2 && years < 18) {
-            travelRequest.premiumAmount = travelRequest.plan.price * 0.5;
+            travelRequest.amountAfterDiscount = travelRequest.plan.price * 0.5;
         }
 
         if (years >= 66 && years <= 75) {
-            travelRequest.premiumAmount =
+            travelRequest.amountAfterDiscount =
                 travelRequest.plan.price + travelRequest.plan.price * 0.5;
         }
 
         if (years >= 76 && years <= 80) {
-            travelRequest.premiumAmount = travelRequest.plan.price * 2;
+            travelRequest.amountAfterDiscount = travelRequest.plan.price * 2;
         }
 
         if (travelRequest.plan.destination.name == 'Europe' && years > 80) {
-            travelRequest.premiumAmount = travelRequest.plan.price * 3;
+            travelRequest.amountAfterDiscount = travelRequest.plan.price * 3;
+        } else {
+            travelRequest.amountAfterDiscount = travelRequest.plan.price;
         }
 
         travelRequest.departureDate = departureDate;
