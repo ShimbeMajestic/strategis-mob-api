@@ -41,7 +41,7 @@ export class TravelCoverService {
 
         const travelRequest = await TravelCoverRequest.findOne({
             where: { id: travelCoverRequestId },
-            relations: ['plan'],
+            relations: ['plan', 'plan.destination'],
         });
 
         if (!travelRequest) {

@@ -18,6 +18,7 @@ import {
 } from 'src/shared/sms/constants';
 import { Queue } from 'bull';
 import { Str } from 'src/shared';
+import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover-request.model';
 
 @Injectable()
 export class TransactionService {
@@ -35,11 +36,35 @@ export class TransactionService {
         customer: Customer,
         email: string,
     ): Promise<TransactionPaymentResultDto> {
+        const traverRequest = await TravelCoverRequest.findOne({
+            where: {
+                id: travelCoverRequestId,
+            },
+        });
+
+        const years = await this.calculateYears(traverRequest.dateOfBirth);
+        const months = await this.calculateMonths(traverRequest.dateOfBirth);
+
         const selcomData = new InitiateSelcomTransactionDto();
 
         const reference = 'SITLREQTRAV' + Str.randomFixedInteger(7);
 
-        selcomData.amount = plan.price;
+        if (months > 2 && years < 18) {
+            selcomData.amount = plan.price * 0.5;
+        }
+
+        if (years >= 66 && years <= 75) {
+            selcomData.amount = plan.price + plan.price * 0.5;
+        }
+
+        if (years >= 76 && years <= 80) {
+            selcomData.amount = plan.price * 2;
+        }
+
+        if (plan.destination.name == 'Europe' && years > 80) {
+            selcomData.amount = plan.price * 3;
+        }
+
         selcomData.buyerEmail = email;
         selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
         selcomData.buyerPhone = customer.phone.substring(1);
@@ -95,7 +120,7 @@ export class TransactionService {
         const reference = 'SITLREQMOT' + Str.randomFixedInteger(7);
 
         selcomData.amount = motorCoverRequest.minimumAmountIncTax;
-            (selcomData.buyerEmail = email);
+        selcomData.buyerEmail = email;
         selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
         selcomData.buyerPhone = customer.phone.substring(1);
         selcomData.currency = motorCoverRequest.currency;
@@ -282,5 +307,25 @@ export class TransactionService {
             success: true,
             message: 'Success',
         };
+    }
+
+    private calculateYears(dob: Date) {
+        const today = new Date();
+
+        const dateOfBirth = new Date(dob);
+
+        const date = today.getFullYear() - dateOfBirth.getFullYear();
+
+        return date;
+    }
+
+    private calculateMonths(dob: Date) {
+        const today = new Date();
+
+        const dateOfBirth = new Date(dob);
+
+        const months = today.getMonth() - dateOfBirth.getMonth();
+
+        return months;
     }
 }
