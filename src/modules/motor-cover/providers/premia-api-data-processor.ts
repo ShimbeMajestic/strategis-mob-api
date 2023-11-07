@@ -52,78 +52,102 @@ export class PremiaDataProcessor {
     }
 
     async processToPremia(request: MotorCoverRequest) {
-        const insuredPayload = this.prepareInsuredRequestToPremia(request);
-
-        this.logger.log(
-            `Request to Premia 1: ${JSON.stringify(insuredPayload)}`,
-        );
-
-        this.httpService
-            .post(premiaConfig.insuredCreationUrl, insuredPayload)
-            .subscribe((response) => {
-                this.logger.log(
-                    `Status from Premia for Insured details Postage: ${response.statusText}`,
-                );
-
-                this.logger.log(
-                    `Response from Premia for Insured details Postage: ${JSON.stringify(
-                        response.data,
-                    )}`,
-                );
-                if (response.data.P_STATUS !== 'Success') {
-                    throw new InternalServerErrorException(response.data);
-                }
-
-                const P_ASSR_CODE = response.data.P_ASSR_CODE;
-
-                const policyPayload = this.preparePolicyCreationRequestToPremia(
-                    request,
-                    request.motorPolicy.eSticker,
-                    request.motorPolicy.coverNoteReferenceNumber,
-                    P_ASSR_CODE,
-                    request.transactions[0].operatorReferenceId,
-                );
-
-                this.logger.log(
-                    `Request to Premia 2: ${JSON.stringify(policyPayload)}`,
-                );
-
-                this.httpService
-                    .post(premiaConfig.insuredCreationUrl, policyPayload)
-                    .subscribe(async (result) => {
-                        this.logger.log(
-                            `Status from Premia regarding policy creation: ${result.statusText}`,
-                        );
-
-                        this.logger.log(
-                            `Response from Premia regarding policy creation: ${JSON.stringify(
-                                result.data,
-                            )}`,
-                        );
-                        if (result.data.P_STATUS !== 'Success') {
-                            throw new InternalServerErrorException(result.data);
-                        }
-
-                        const {
-                            POLICY_NUMBER,
-                            INVOICE_NUMBER,
-                            INVOICE_DATE,
-                            TRA_SIGNATURE,
-                        } = result.data.P_DATA;
-
-                        request.motorPolicy.premiaPolicyNumber = POLICY_NUMBER;
-                        request.motorPolicy.invoiceNumber = INVOICE_NUMBER;
-                        request.motorPolicy.invoiceDate = INVOICE_DATE;
-                        request.motorPolicy.traSignature = TRA_SIGNATURE;
-
-                        await request.motorPolicy.save();
-                        return;
-                    });
-            });
-
         try {
+            request.policySubmissionStatus = 'PROCESSING';
+            await request.save();
+
+            const insuredPayload = this.prepareInsuredRequestToPremia(request);
+
+            this.logger.log(
+                `Request to Premia 1: ${JSON.stringify(insuredPayload)}`,
+            );
+
+            this.httpService
+                .post(premiaConfig.insuredCreationUrl, insuredPayload)
+                .subscribe((response) => {
+                    this.logger.log(
+                        `Status from Premia for Insured details Postage: ${response.statusText}`,
+                    );
+
+                    this.logger.log(
+                        `Response from Premia for Insured details Postage: ${JSON.stringify(
+                            response.data,
+                        )}`,
+                    );
+                    if (response.data.P_STATUS !== 'Success') {
+                        request.policySubmissionStatus = 'FAILED';
+                        request.save();
+                        throw new InternalServerErrorException(response.data);
+                    }
+
+                    const P_ASSR_CODE = response.data.P_ASSR_CODE;
+
+                    const policyPayload =
+                        this.preparePolicyCreationRequestToPremia(
+                            request,
+                            request.motorPolicy.eSticker,
+                            request.motorPolicy.coverNoteReferenceNumber,
+                            P_ASSR_CODE,
+                            request.transactions[0].operatorReferenceId,
+                        );
+
+                    this.logger.log(
+                        `Request to Premia 2: ${JSON.stringify(policyPayload)}`,
+                    );
+
+                    this.httpService
+                        .post(premiaConfig.insuredCreationUrl, policyPayload)
+                        .subscribe(async (result) => {
+                            this.logger.log(
+                                `Status from Premia regarding policy creation: ${result.statusText}`,
+                            );
+
+                            this.logger.log(
+                                `Response from Premia regarding policy creation: ${JSON.stringify(
+                                    result.data,
+                                )}`,
+                            );
+                            if (result.data.P_STATUS !== 'Success') {
+                                request.policySubmissionStatus = 'FAILED';
+                                await request.save();
+                                throw new InternalServerErrorException(
+                                    result.data,
+                                );
+                            }
+
+                            const {
+                                POLICY_NUMBER,
+                                INVOICE_NUMBER,
+                                INVOICE_DATE,
+                                TRA_SIGNATURE,
+                            } = result.data.P_DATA;
+
+                            request.policySubmissionStatus = 'PROCESSED';
+                            request.policySubmissionSentAt = new Date();
+                            request.policySubmissionMessage =
+                                result.data?.message;
+                            request.motorPolicy.premiaPolicyNumber =
+                                POLICY_NUMBER;
+                            request.motorPolicy.invoiceNumber = INVOICE_NUMBER;
+                            request.motorPolicy.invoiceDate = INVOICE_DATE;
+                            request.motorPolicy.traSignature = TRA_SIGNATURE;
+
+                            await request.save();
+                            await request.motorPolicy.save();
+                            return;
+                        });
+                });
         } catch (error) {
             this.logger.error(error.message);
+
+            const message =
+                error.message +
+                ': ' +
+                JSON.stringify(error?.result?.data?.message)?.slice(0, 99);
+            request.policySubmissionStatus = 'PROCESSED';
+            request.policySubmissionSentAt = new Date();
+            request.policySubmissionMessage = message?.slice(0, 99);
+            await request.save();
         }
     }
 
