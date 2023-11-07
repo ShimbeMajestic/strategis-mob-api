@@ -9,6 +9,8 @@ import { PaymentModeEnum } from '../enums/payment-mode.enum';
 import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { response } from 'express';
+import { Region } from 'src/modules/lists/models/region.model';
+import { District } from 'src/modules/lists/models/district.model';
 
 @Injectable()
 export class PremiaDataProcessor {
@@ -42,9 +44,9 @@ export class PremiaDataProcessor {
 
     async submitMotorRequest(request: MotorCoverRequest) {
         try {
-            const payload = this.prepareTiraRequest(request);
+            const payload = await this.prepareTiraRequest(request);
 
-            const response = this.httpService
+            this.httpService
                 .post(appConfig.tiraApiUrl + '/motor/policy/create', payload)
                 .subscribe(async (response) => {
                     if (!response.data.success) {
@@ -85,8 +87,6 @@ export class PremiaDataProcessor {
                     };
                     // Notify user, via sms & notification
                 });
-
-            this.logger.log(JSON.stringify(response));
         } catch (error) {
             this.logger.debug(`Error: ${error.message}`);
 
@@ -99,7 +99,18 @@ export class PremiaDataProcessor {
         }
     }
 
-    prepareTiraRequest = (request: MotorCoverRequest) => {
+    async prepareTiraRequest(request: MotorCoverRequest) {
+        const region = await Region.findOne({
+            where: {
+                id: request.customer.regionId,
+            },
+        });
+        const district = await District.findOne({
+            where: {
+                id: request.customer.districtId,
+            },
+        });
+
         return {
             requestId: request.requestId,
             coverNoteStartDate: moment(request.coverNoteStartDate).format(
@@ -141,10 +152,8 @@ export class PremiaDataProcessor {
             ),
             gender: request.customer.gender.toUpperCase().substring(0, 1),
             countryCode: 'TZA',
-            region: request.customer.region.name,
-            district: request.customer.district.name
-                ? request.customer.district.name
-                : 'ilala',
+            region: region?.name.trim(),
+            district: district?.name.trim() ? district?.name.trim() : 'ilala',
             policyHolderPhoneNumber: request.customer.phone.substring(
                 1,
                 request.customer.phone.length,
@@ -184,7 +193,7 @@ export class PremiaDataProcessor {
             sittingCapacity: request.vehicleDetails.SittingCapacity,
             callbackUrl: appConfig.appCallbackUrl + '/api/motor-cover/callback',
         };
-    };
+    }
 
     getIdTypeToTira(idType: string) {
         switch (idType) {
