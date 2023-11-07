@@ -29,10 +29,7 @@ export class PremiaDataProcessor {
         const requests = await MotorCoverRequest.find({
             where: {
                 policySubmissionStatus: 'PENDING',
-                status: In([
-                    MotorCoverRequestStatus.PAID,
-                    MotorCoverRequestStatus.SUCCESS,
-                ]),
+                status: MotorCoverRequestStatus.PAID,
             },
             order: { id: 'DESC' },
             relations: [
