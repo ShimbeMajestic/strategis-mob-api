@@ -111,6 +111,9 @@ export class PremiaDataProcessor {
             },
         });
 
+        this.logger.log(`Region: ${region.name}`);
+        this.logger.log(`District: ${district.name}`);
+
         return {
             requestId: request.requestId,
             coverNoteStartDate: moment(request.coverNoteStartDate).format(
