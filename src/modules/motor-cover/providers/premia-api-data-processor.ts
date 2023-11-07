@@ -1,7 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import {
+    Injectable,
+    InternalServerErrorException,
+    Logger,
+} from '@nestjs/common';
 import * as moment from 'moment';
-import { MotorUsage } from '../enums/motor-usage.enum';
+import { MotorUsage, MotorUsageType } from '../enums/motor-usage.enum';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
 import { appConfig } from 'src/config/app.config';
 import { OwnerCategory } from '../enums/motor-owner-category.enum';
@@ -11,6 +15,9 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { response } from 'express';
 import { Region } from 'src/modules/lists/models/region.model';
 import { District } from 'src/modules/lists/models/district.model';
+import { premiaConfig } from 'src/config/premia.config';
+import { MotorPolicy } from '../models/motor-policy.model';
+import { In } from 'typeorm';
 
 @Injectable()
 export class PremiaDataProcessor {
@@ -22,7 +29,10 @@ export class PremiaDataProcessor {
         const requests = await MotorCoverRequest.find({
             where: {
                 policySubmissionStatus: 'PENDING',
-                status: MotorCoverRequestStatus.PAID,
+                status: In([
+                    MotorCoverRequestStatus.PAID,
+                    MotorCoverRequestStatus.SUCCESS,
+                ]),
             },
             order: { id: 'DESC' },
             relations: [
@@ -30,181 +40,283 @@ export class PremiaDataProcessor {
                 'motorCoverType',
                 'motorCoverDuration',
                 'vehicleDetails',
+                'motorPolicy',
                 'customer',
                 'customer.region',
                 'customer.district',
+                'transactions',
             ],
             take: 10,
         });
 
         for (const request of requests) {
-            await this.submitMotorRequest(request);
+            await this.processToPremia(request);
         }
     }
 
-    async submitMotorRequest(request: MotorCoverRequest) {
-        try {
-            const payload = this.prepareTiraRequest(request);
+    async processToPremia(request: MotorCoverRequest) {
+        const insuredPayload = this.prepareInsuredRequestToPremia(request);
 
-            const response = this.httpService
-                .post(appConfig.tiraApiUrl + '/motor/policy/create', payload)
-                .subscribe(async (response) => {
-                    if (!response.data.success) {
+        this.logger.log(
+            `Request to Premia 1: ${JSON.stringify(insuredPayload)}`,
+        );
+
+        this.httpService
+            .post(premiaConfig.insuredCreationUrl, insuredPayload)
+            .subscribe((response) => {
+                this.logger.log(
+                    `Status from Premia for Insured details Postage: ${response.statusText}`,
+                );
+
+                this.logger.log(
+                    `Response from Premia for Insured details Postage: ${JSON.stringify(
+                        response.data,
+                    )}`,
+                );
+                if (response.data.P_STATUS !== 'Success') {
+                    throw new InternalServerErrorException(response.data);
+                }
+
+                const P_ASSR_CODE = response.data.P_ASSR_CODE;
+
+                const policyPayload = this.preparePolicyCreationRequestToPremia(
+                    request,
+                    request.motorPolicy.eSticker,
+                    request.motorPolicy.coverNoteReferenceNumber,
+                    P_ASSR_CODE,
+                    request.transactions[0].operatorReferenceId,
+                );
+
+                this.logger.log(
+                    `Request to Premia 2: ${JSON.stringify(policyPayload)}`,
+                );
+
+                this.httpService
+                    .post(premiaConfig.insuredCreationUrl, policyPayload)
+                    .subscribe(async (result) => {
                         this.logger.log(
-                            `Failed to initiate process of acquiring an esticker`,
+                            `Status from Premia regarding policy creation: ${result.statusText}`,
                         );
 
-                        request.status =
-                            MotorCoverRequestStatus.STICKER_PROCESS_FAILED;
+                        this.logger.log(
+                            `Response from Premia regarding policy creation: ${JSON.stringify(
+                                result.data,
+                            )}`,
+                        );
+                        if (result.data.P_STATUS !== 'Success') {
+                            throw new InternalServerErrorException(result.data);
+                        }
 
-                        const message = JSON.stringify(
-                            response?.data?.message,
-                        )?.slice(0, 99);
+                        const {
+                            POLICY_NUMBER,
+                            INVOICE_NUMBER,
+                            INVOICE_DATE,
+                            TRA_SIGNATURE,
+                        } = result.data.P_DATA;
 
-                        request.policySubmissionStatus = 'FAILED';
-                        request.policySubmissionSentAt = new Date();
-                        request.policySubmissionMessage = message?.slice(0, 99);
-                        await request.save();
+                        request.motorPolicy.premiaPolicyNumber = POLICY_NUMBER;
+                        request.motorPolicy.invoiceNumber = INVOICE_NUMBER;
+                        request.motorPolicy.invoiceDate = INVOICE_DATE;
+                        request.motorPolicy.traSignature = TRA_SIGNATURE;
 
-                        return {
-                            success: false,
-                        };
+                        await request.motorPolicy.save();
+                        return;
+                    });
+            });
 
-                        // Notify user, via sms & notification
-                    }
-
-                    this.logger.log(
-                        `Successfully initiated acquiring sticker from TIRA`,
-                    );
-
-                    request.status = MotorCoverRequestStatus.WAIT_FOR_STICKER;
-                    request.policySubmissionStatus = 'SENT';
-                    request.policySubmissionSentAt = new Date();
-                    await request.save();
-
-                    return {
-                        success: true,
-                    };
-                    // Notify user, via sms & notification
-                });
-
-            this.logger.log(JSON.stringify(response));
+        try {
         } catch (error) {
-            this.logger.debug(`Error: ${error.message}`);
-
-            const message = error.message;
-
-            request.policySubmissionStatus = 'ERROR';
-            request.policySubmissionSentAt = new Date();
-            request.policySubmissionMessage = message?.slice(0, 99);
-            await request.save();
+            this.logger.error(error.message);
         }
     }
 
-    async prepareTiraRequest(request: MotorCoverRequest) {
-        this.logger.log(`region: ${request.customer.region.name}`);
-        this.logger.log(`district: ${request.customer.district.name}`);
-        this.logger.log(`motorCover name: ${request.motorCover.name}`);
-
+    prepareInsuredRequestToPremia = (request: MotorCoverRequest) => {
         return {
-            requestId: request.requestId,
-            coverNoteStartDate: moment(request.coverNoteStartDate).format(
-                'YYYY-MM-DDTHH:mm:ss',
-            ),
-            coverNoteEndDate: moment(request.coverNoteEndDate).format(
-                'YYYY-MM-DDTHH:mm:ss',
-            ),
-            coverNoteType: 1,
-            coverNoteNumber: request.coverNoteNumber,
-            coverNoteReferenceNumber: request.coverNoteReferenceNumber,
-            policyNumber: request.policyNumber,
-            covernoteDescription: request.motorCoverType.riskName,
-            operativeClause: request.motorCover.name,
-            currencyCode: request.currency,
-            exchangeRate: 1,
-            premiumIncludingTax: request.minimumAmountIncTax,
-            premiumExcludingTax: request.minimumAmount,
-            productCode: request.motorCoverType.productCode,
-            riskCode: request.motorCoverType.riskCode,
-            sumInsured: request.vehicleDetails.value,
-            sumInsuredEquivalent: request.vehicleDetails.value,
-            premiumRate: request.motorCoverType.rate / 100,
-            premiumExcludingDiscount: request.minimumAmount,
-            premiumIncludingDiscount: request.minimumAmount,
-            premiumAfterDiscount: request.minimumAmount,
-            premiumExcludingTaxEquivalent: request.minimumAmount,
-            discount: 0,
-            taxCode: 'VAT-MAINLAND',
-            taxRate: 0.18,
-            taxAmount: request.minimumAmountIncTax - request.minimumAmount,
-            isTaxExempted: 'N',
-            policyHolderName: `${request.customer.firstName} ${request.customer.lastName}`,
-            policyHolderBirthDate: request.customer.dob,
-            policyHolderType: 1,
-            policyHolderIdNumber: request.customer.identityNumber,
-            policyHolderIdType: this.getIdTypeToTira(
-                request.customer.identityType,
-            ),
-            gender: request.customer.gender.toUpperCase().substring(0, 1),
-            countryCode: 'TZA',
-            region: request.customer.region.name,
-            district: request.customer.district.name
-                ? request.customer.district.name
-                : 'ilala',
-            policyHolderPhoneNumber: request.customer.phone.substring(
-                1,
-                request.customer.phone.length,
-            ),
-            paymentMode: PaymentModeEnum.EFT,
-            street: request.customer.district.name
-                ? request.customer.district.name
-                : 'ilala',
-            emailAddress: request.customer.email,
-            motorCategory: request.vehicleDetails.MotorCategory,
-            registrationNumber: request.vehicleDetails.RegistrationNumber,
-            bodyType: request.vehicleDetails.BodyType,
-            chassisNumber: request.vehicleDetails.ChassisNumber,
-            make: request.vehicleDetails.Make,
-            model: request.vehicleDetails.Model,
-            modelNumber: request.vehicleDetails.ModelNumber,
-            color: request.vehicleDetails.Color,
-            engineNumber: request.vehicleDetails.EngineNumber,
-            engineCapacity: request.vehicleDetails.EngineCapacity,
-            fuelUsed: request.vehicleDetails.FuelUsed,
-            yearOfManufacture: request.vehicleDetails.YearOfManufacture,
-            tareWeight: request.vehicleDetails.TareWeight,
-            grossWeight: request.vehicleDetails.GrossWeight,
-            commissionPaid: 0,
-            commissionRate: 0,
-            isFleet: 'N',
-            motorUsage:
-                request.vehicleDetails.MotorUsage === 'Private or Normal'
-                    ? MotorUsage.PRIVATE
-                    : MotorUsage.COMMERCIAL,
-            ownerName: request.vehicleDetails.OwnerName,
-            ownerCategory:
-                request.vehicleDetails.OwnerCategory === 'Sole Proprietor'
-                    ? OwnerCategory.SOLE_PROPRIETOR
-                    : OwnerCategory.CORPORATE,
-            ownerAddress: request.vehicleDetails.OwnerAddress,
-            sittingCapacity: request.vehicleDetails.SittingCapacity,
-            callbackUrl: appConfig.appCallbackUrl + '/api/motor-cover/callback',
+            PCOM_ASSURED: {
+                ASSR_NAME:
+                    request.customer.firstName + request.customer.lastName,
+                ASSR_DOB: request.customer.dob,
+                ASSR_PHONE: request.customer.phone,
+                ASSR_TYPE: '01',
+                ASSR_PAN_NO: request.customer.identityNumber,
+                ASSR_ADDR_01: request.customer.region.name,
+                ASSR_CUST_CODE: 'DC0010895',
+                ASSR_CIVIL_ID: request.requestId,
+                ASSR_SSN_NO: request.customer.identityNumber,
+                ASSR_EMAIL_1: request.customer.email,
+            },
         };
-    }
+    };
 
-    getIdTypeToTira(idType: string) {
-        switch (idType) {
-            case 'NIN':
-                return 1;
-            case 'VOTERS_REG_NUM':
-                return 2;
-            case 'PASSPORT_NUM':
-                return 3;
-            case 'TIN_NUM':
-                return 6;
+    preparePolicyCreationRequestToPremia = (
+        request: MotorCoverRequest,
+        stickerNumber: string,
+        coverNoteReferenceNumber: string,
+        policyAssrCode: string,
+        reference: string,
+    ) => {
+        return {
+            PGIT_POL_RISK_ADDL_INFO: {
+                PGIT_POL_RISK_ADDL_INFO_01: [
+                    {
+                        RISKINFO: [
+                            {
+                                PRAI_EFF_FM_DT: moment(
+                                    request.coverNoteStartDate,
+                                )
+                                    .format('DD MMM YYYY')
+                                    .toUpperCase(),
+
+                                PRAI_EFF_TO_DT: moment(request.coverNoteEndDate)
+                                    .format('DD MMM YYYY')
+                                    .toUpperCase(),
+
+                                PRAI_RISK_ID: '1',
+
+                                PRAI_CODE_21: request.motorCover.code,
+
+                                PRAI_CODE_03:
+                                    request.vehicleDetails.MotorUsage ===
+                                    'Private or Normal'
+                                        ? `00` + MotorUsage.PRIVATE
+                                        : `00` + MotorUsage.COMMERCIAL,
+
+                                PRAI_CODE_04: request.vehicleDetails.Make,
+
+                                PRAI_DATA_01:
+                                    request.vehicleDetails.ChassisNumber,
+
+                                PRAI_NUM_09:
+                                    request.vehicleDetails.SittingCapacity,
+
+                                PRAI_NUM_03: coverNoteReferenceNumber,
+
+                                PRAI_CODE_01:
+                                    request.vehicleDetails.MotorCategory,
+
+                                PRAI_NUM_01:
+                                    request.vehicleDetails.YearOfManufacture,
+
+                                PRAI_DATA_05: stickerNumber,
+
+                                PRAI_CODE_13: request.vehicleDetails.BodyType,
+
+                                PRAI_DATA_03:
+                                    request.vehicleDetails.RegistrationNumber,
+
+                                PRAI_DATA_02:
+                                    request.vehicleDetails.EngineNumber,
+
+                                PRAI_NUM_02: request.vehicleDetails.value,
+
+                                PRAI_NUM_04: '100',
+
+                                PRAI_CODE_05: request.vehicleDetails.Model,
+
+                                PRAI_PREM_FC: request.minimumAmountIncTax,
+                            },
+                        ],
+                    },
+                ],
+            },
+
+            PGIT_POLICY: {
+                POL_DIVN_CODE: '100',
+
+                POL_PROD_CODE: this.getPolicyCode(request.usageType),
+
+                POL_CUST_CODE: premiaConfig.policyCustomerCode,
+
+                POL_ASSR_CODE: policyAssrCode,
+
+                POL_SRC_CODE: 'Mobile Application',
+
+                POL_ISSUE_DT: moment(request.updatedAt)
+                    .format('DD MMM YYYY')
+                    .toUpperCase(),
+
+                POL_SRC_TYPE: '5',
+
+                POL_FLEX_14: '01',
+
+                POL_FLEX_13: 'test',
+
+                POL_FLEX_17: this.getVehicleUsage(request.usageType),
+
+                POL_PREM_CURR_CODE: '001',
+
+                POL_DFLT_SI_CURR_CODE: '001',
+
+                POL_FM_DT: moment(request.coverNoteStartDate)
+                    .format('DD MMM YYYY')
+                    .toUpperCase(),
+
+                POL_TO_DT: moment(request.coverNoteEndDate)
+                    .format('DD MMM YYYY')
+                    .toUpperCase(),
+            },
+            RECEIPT: {
+                RECEIPT_MODE: 'BANK',
+                BANK_CODE: premiaConfig.bankDetails.code,
+                BANK_NAME: premiaConfig.bankDetails.name,
+                RECEIPT_REF_NO: reference,
+            },
+        };
+    };
+
+    getPolicyCode = (usageType: MotorUsageType) => {
+        switch (usageType) {
+            case MotorUsageType.GENERAL_GOODS:
+                return '1001';
+
+            case MotorUsageType.TRAILERS:
+                return '1001';
+
+            case MotorUsageType.TANKERS:
+                return '10001';
+
+            case MotorUsageType.PASSENGER_CARRYING:
+                return '1006';
+
+            case MotorUsageType.PRIVATE_VEHICLE:
+                return '1002';
+
+            case MotorUsageType.MOTOR_CYCLE:
+                return '1002';
+
+            case MotorUsageType.SPECIAL_TYPE:
+                return;
 
             default:
-                return 1;
+                return '1006';
         }
-    }
+    };
+
+    getVehicleUsage = (usageType: MotorUsageType) => {
+        switch (usageType) {
+            case MotorUsageType.GENERAL_GOODS:
+                return 'COMMERCIAL';
+
+            case MotorUsageType.TANKERS:
+                return 'COMMERCIAL';
+
+            case MotorUsageType.TRAILERS:
+                return 'COMMERCIAL';
+
+            case MotorUsageType.PASSENGER_CARRYING:
+                return 'PASSENGER';
+
+            case MotorUsageType.PRIVATE_VEHICLE:
+                return 'PRIVATE';
+
+            case MotorUsageType.MOTOR_CYCLE:
+                return 'PRIVATE';
+
+            case MotorUsageType.SPECIAL_TYPE:
+                return 'SPECIAL TYPE';
+
+            default:
+                return 'PRIVATE';
+        }
+    };
 }
