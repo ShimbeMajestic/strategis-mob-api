@@ -17,6 +17,8 @@ import {
 } from 'typeorm';
 import { Country } from './country.model';
 import { District } from './district.model';
+import { Customer } from 'src/modules/customer/models/customer.model';
+import { User } from 'src/modules/user/models/user.model';
 
 @ObjectType()
 @KeySet(['id'])
@@ -59,4 +61,7 @@ export class Region extends BaseEntity {
 
     @OneToMany(() => District, (district) => district.region)
     districts: District[];
+
+    @OneToMany(() => User, (user) => user.region)
+    users: User[];
 }

@@ -10,6 +10,7 @@ import {
     JoinTable,
     BeforeInsert,
     ManyToOne,
+    OneToMany,
 } from 'typeorm';
 import { Permission } from 'src/modules/permission/models/permission.model';
 import {
@@ -23,6 +24,7 @@ import { Country } from 'src/modules/lists/models/country.model';
 import { Role } from 'src/modules/permission/models/role.model';
 import { Person } from 'src/modules/lists/models/person.model';
 import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.interface';
+import { MotorCoverRequest } from 'src/modules/motor-cover/models/motor-cover-request.model';
 
 @ObjectType()
 @KeySet(['id'])

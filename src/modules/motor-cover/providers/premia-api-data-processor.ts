@@ -88,7 +88,7 @@ export class PremiaDataProcessor {
 
             this.logger.log(JSON.stringify(response));
         } catch (error) {
-            this.logger.debug(`Error: ${JSON.stringify(response)}`);
+            this.logger.debug(`Error: ${error.message}`);
 
             const message = error.message;
 
