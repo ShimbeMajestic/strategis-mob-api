@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
+import * as moment from 'moment';
 import { MotorUsage } from '../enums/motor-usage.enum';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
 import { appConfig } from 'src/config/app.config';
@@ -8,6 +8,7 @@ import { OwnerCategory } from '../enums/motor-owner-category.enum';
 import { PaymentModeEnum } from '../enums/payment-mode.enum';
 import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { response } from 'express';
 
 @Injectable()
 export class PremiaDataProcessor {
@@ -43,7 +44,7 @@ export class PremiaDataProcessor {
         try {
             const payload = this.prepareTiraRequest(request);
 
-            this.httpService
+            const response = this.httpService
                 .post(appConfig.tiraApiUrl + '/motor/policy/create', payload)
                 .subscribe(async (response) => {
                     if (!response.data.success) {
@@ -84,8 +85,10 @@ export class PremiaDataProcessor {
                     };
                     // Notify user, via sms & notification
                 });
+
+            this.logger.log(JSON.stringify(response));
         } catch (error) {
-            this.logger.debug(`Error: ${JSON.stringify(error)}`);
+            this.logger.debug(`Error: ${JSON.stringify(response)}`);
 
             const message = error.message;
 
@@ -93,7 +96,6 @@ export class PremiaDataProcessor {
             request.policySubmissionSentAt = new Date();
             request.policySubmissionMessage = message?.slice(0, 99);
             await request.save();
-
         }
     }
 
