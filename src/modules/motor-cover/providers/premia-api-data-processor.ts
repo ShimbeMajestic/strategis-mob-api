@@ -144,7 +144,7 @@ export class PremiaDataProcessor {
                 error.message +
                 ': ' +
                 JSON.stringify(error?.result?.data?.message)?.slice(0, 99);
-            request.policySubmissionStatus = 'PROCESSED';
+            request.policySubmissionStatus = 'ERROR';
             request.policySubmissionSentAt = new Date();
             request.policySubmissionMessage = message?.slice(0, 99);
             await request.save();
@@ -160,7 +160,7 @@ export class PremiaDataProcessor {
                 ASSR_PHONE: request.customer.phone,
                 ASSR_TYPE: '01',
                 ASSR_PAN_NO: request.customer.identityNumber,
-                ASSR_ADDR_01: request.customer.region.name,
+                ASSR_ADDR_01: request.customer.region.name.trim(),
                 ASSR_CUST_CODE: 'DC0010895',
                 ASSR_CIVIL_ID: request.requestId,
                 ASSR_SSN_NO: request.customer.identityNumber,
