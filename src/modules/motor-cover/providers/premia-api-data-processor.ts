@@ -44,9 +44,9 @@ export class PremiaDataProcessor {
 
     async submitMotorRequest(request: MotorCoverRequest) {
         try {
-            const payload = await this.prepareTiraRequest(request);
+            const payload = this.prepareTiraRequest(request);
 
-            this.httpService
+            const response = this.httpService
                 .post(appConfig.tiraApiUrl + '/motor/policy/create', payload)
                 .subscribe(async (response) => {
                     if (!response.data.success) {
@@ -87,6 +87,8 @@ export class PremiaDataProcessor {
                     };
                     // Notify user, via sms & notification
                 });
+
+            this.logger.log(JSON.stringify(response));
         } catch (error) {
             this.logger.debug(`Error: ${error.message}`);
 
@@ -100,19 +102,9 @@ export class PremiaDataProcessor {
     }
 
     async prepareTiraRequest(request: MotorCoverRequest) {
-        const region = await Region.findOne({
-            where: {
-                id: request.customer.regionId,
-            },
-        });
-        const district = await District.findOne({
-            where: {
-                id: request.customer.districtId,
-            },
-        });
-
-        this.logger.log(`Region: ${region.name}`);
-        this.logger.log(`District: ${district.name}`);
+        this.logger.log(`region: ${request.customer.region.name}`);
+        this.logger.log(`district: ${request.customer.district.name}`);
+        this.logger.log(`motorCover name: ${request.motorCover.name}`);
 
         return {
             requestId: request.requestId,
@@ -155,8 +147,10 @@ export class PremiaDataProcessor {
             ),
             gender: request.customer.gender.toUpperCase().substring(0, 1),
             countryCode: 'TZA',
-            region: region?.name.trim(),
-            district: district?.name.trim() ? district?.name.trim() : 'ilala',
+            region: request.customer.region.name,
+            district: request.customer.district.name
+                ? request.customer.district.name
+                : 'ilala',
             policyHolderPhoneNumber: request.customer.phone.substring(
                 1,
                 request.customer.phone.length,
