@@ -140,6 +140,10 @@ export class MotorCoverRequest extends BaseEntity {
     @Column({ nullable: true })
     minimumAmountIncTax: number;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    motorPolicyId: number;
+
     @Field()
     @Column({ default: 'TZS' })
     currency: string;
