@@ -31,6 +31,7 @@ export class PremiaDataProcessor {
                 'customer.region',
                 'customer.district',
             ],
+            take: 10,
         });
 
         for (const request of requests) {
