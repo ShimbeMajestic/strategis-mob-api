@@ -54,7 +54,13 @@ export class CustomerResolver extends CRUDResolver(Customer, {
     // Get all customers
     @Query(() => [Customer])
     @AllowUserType(UserTypeEnum.ADMIN)
-    allCustomers(): Promise<Customer[]> {
-        return this.service.getAllCustomers();
+    async allCustomers(): Promise<Customer[]> {
+        const customers = await Customer.find({
+            order: {
+                id: 'DESC',
+            },
+        });
+
+        return customers;
     }
 }
