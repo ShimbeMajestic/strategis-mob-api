@@ -10,4 +10,8 @@ export class CustomerService extends TypeOrmQueryService<Customer> {
         // pass the use soft delete option to the service.
         super(repo, { useSoftDelete: true });
     }
+
+    async getAllCustomers(): Promise<Customer[]> {
+        return this.repo.find();
+    }
 }
