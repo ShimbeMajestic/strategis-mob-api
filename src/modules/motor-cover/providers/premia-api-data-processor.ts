@@ -248,9 +248,9 @@ export class PremiaDataProcessor {
 
                 POL_CUST_CODE: premiaConfig.policyCustomerCode,
 
-                POL_ASSR_CODE: premiaConfig.policyCustomerCode,
+                POL_ASSR_CODE: policyAssrCode,
 
-                POL_SRC_CODE: 'MOB APP',
+                POL_SRC_CODE: 'MOBILE APP',
 
                 POL_ISSUE_DT: moment(request.updatedAt)
                     .format('DD MMM YYYY')
