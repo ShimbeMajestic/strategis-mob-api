@@ -161,7 +161,7 @@ export class PremiaDataProcessor {
                 ASSR_TYPE: '01',
                 ASSR_PAN_NO: request.customer.identityNumber,
                 ASSR_ADDR_01: request.customer.region.name.trim(),
-                ASSR_CUST_CODE: 'DC0010895',
+                ASSR_CUST_CODE: 'DC0025802',
                 ASSR_CIVIL_ID: request.requestId,
                 ASSR_SSN_NO: request.customer.identityNumber,
                 ASSR_EMAIL_1: request.customer.email,
