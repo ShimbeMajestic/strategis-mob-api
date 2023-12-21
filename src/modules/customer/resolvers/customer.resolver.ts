@@ -6,6 +6,7 @@ import {
     Parent,
     Mutation,
     Args,
+    Query,
 } from '@nestjs/graphql';
 import { CurrentUser } from 'src/modules/auth/auth-user.decorator';
 import { GqlAuthGuard } from 'src/modules/auth/auth.guard';
@@ -48,5 +49,18 @@ export class CustomerResolver extends CRUDResolver(Customer, {
         @CurrentUser() user: User,
     ) {
         return this.service.updateOne(user.id, input);
+    }
+
+    // Get all customers
+    @Query(() => [Customer])
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async allCustomers(): Promise<Customer[]> {
+        const customers = await Customer.find({
+            order: {
+                id: 'DESC',
+            },
+        });
+
+        return customers;
     }
 }
