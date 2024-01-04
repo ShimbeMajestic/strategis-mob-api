@@ -16,6 +16,7 @@ import { TransactionConsumer } from './consumers/transaction.consumer';
 import { TransactionService } from './providers/transaction.service';
 import { SharedModule } from 'src/shared/shared.module';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { TransactionResolver } from './resolvers/transaction.resolver';
 
 @Module({
     imports: [
@@ -72,7 +73,7 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
         }),
     ],
     controllers: [TransactionController],
-    providers: [TransactionConsumer, TransactionService],
+    providers: [TransactionConsumer, TransactionService, TransactionResolver],
     exports: [TransactionService, BullModule],
 })
 export class TransactionsModule {}

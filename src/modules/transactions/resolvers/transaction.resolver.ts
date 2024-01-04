@@ -1,22 +1,25 @@
-import { CRUDResolver, QueryArgsType } from '@ptc-org/nestjs-query-graphql';
-import { UseGuards } from '@nestjs/common';
+import { QueryArgsType } from '@ptc-org/nestjs-query-graphql';
 import { ArgsType, Query, Resolver } from '@nestjs/graphql';
-import { UserTypeGuard } from 'src/modules/permission/guards/user-type.guard';
 import { Transaction } from '../models/transaction.model';
-import { TransactionCrudService } from '../providers/transaction-crud.service';
+import { AllowUserType } from 'src/modules/permission/decorators/user-type.decorator';
+import { UserTypeEnum } from 'src/modules/permission/enums/user-type.enum';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/modules/auth/auth.guard';
 
 @ArgsType()
 export class TransactionQuery extends QueryArgsType(Transaction) {}
 export const TransactionConnection = TransactionQuery.ConnectionType;
 
 @Resolver(() => Transaction)
-export class TransactionResolver extends CRUDResolver(Transaction) {
-    constructor(readonly transactionCrudService: TransactionCrudService) {
-        super(transactionCrudService);
-    }
-
+@UseGuards(GqlAuthGuard)
+export class TransactionResolver {
     @Query(() => [Transaction])
-    @UseGuards(UserTypeGuard)
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    transactions() {}
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async allTransactions(): Promise<Transaction[]> {
+        return await Transaction.find({
+            order: {
+                id: 'DESC',
+            },
+        });
+    }
 }
