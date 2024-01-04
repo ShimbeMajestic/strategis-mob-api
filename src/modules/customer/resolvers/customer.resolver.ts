@@ -63,4 +63,9 @@ export class CustomerResolver extends CRUDResolver(Customer, {
 
         return customers;
     }
+
+    @ResolveField(() => Boolean)
+    async profileCompleted(@Parent() customer: Customer): Promise<boolean> {
+        return this.service.checkProfileCompletion(customer.id);
+    }
 }
