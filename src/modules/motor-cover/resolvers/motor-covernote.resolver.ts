@@ -23,6 +23,7 @@ import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
 import { MotorCovernoteService } from '../providers/motor-covernote.service';
+import { MotorPolicy } from '../models/motor-policy.model';
 
 @Resolver(() => MotorCoverRequest)
 @UseGuards(GqlAuthGuard)
@@ -115,5 +116,15 @@ export class MotorCovernoteResolver {
         @Args('input') input: ApprovalDto,
     ) {
         return this.motorCovernoteService.approveCoverRequest(user, input);
+    }
+
+    @Query(() => [MotorPolicy])
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async allMotorPolicies(): Promise<MotorPolicy[]> {
+        return await MotorPolicy.find({
+            order: {
+                id: 'DESC',
+            },
+        });
     }
 }
