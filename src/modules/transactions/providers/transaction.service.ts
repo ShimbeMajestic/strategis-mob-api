@@ -18,6 +18,7 @@ import {
 } from 'src/shared/sms/constants';
 import { Queue } from 'bull';
 import { Str } from 'src/shared';
+import { TravelCoverRequest } from 'src/modules/travel-cover/models/travel-cover-request.model';
 
 @Injectable()
 export class TransactionService {
@@ -35,11 +36,17 @@ export class TransactionService {
         customer: Customer,
         email: string,
     ): Promise<TransactionPaymentResultDto> {
+        const traverRequest = await TravelCoverRequest.findOne({
+            where: {
+                id: travelCoverRequestId,
+            },
+        });
+
         const selcomData = new InitiateSelcomTransactionDto();
 
         const reference = 'SITLREQTRAV' + Str.randomFixedInteger(7);
 
-        selcomData.amount = plan.price;
+        selcomData.amount = traverRequest.amountAfterDiscount;
         selcomData.buyerEmail = email;
         selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
         selcomData.buyerPhone = customer.phone.substring(1);
@@ -95,7 +102,7 @@ export class TransactionService {
         const reference = 'SITLREQMOT' + Str.randomFixedInteger(7);
 
         selcomData.amount = motorCoverRequest.minimumAmountIncTax;
-            (selcomData.buyerEmail = email);
+        selcomData.buyerEmail = email;
         selcomData.buyerName = `${customer.firstName} ${customer.lastName}`;
         selcomData.buyerPhone = customer.phone.substring(1);
         selcomData.currency = motorCoverRequest.currency;

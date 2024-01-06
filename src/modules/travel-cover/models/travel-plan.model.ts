@@ -19,8 +19,8 @@ import { TravelProduct } from './travel-product.model';
 
 @Entity()
 @ObjectType()
-@FilterableRelation('travelEntity', () => TravelEntity)
-@FilterableRelation('destination', () => TravelDestination)
+@FilterableRelation('travelEntity', () => TravelEntity, { nullable: true })
+@FilterableRelation('destination', () => TravelDestination, { nullable: true })
 @FilterableRelation('travelProduct', () => TravelProduct, { nullable: true })
 export class TravelPlan extends BaseEntity {
     @PrimaryGeneratedColumn()

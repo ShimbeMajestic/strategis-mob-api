@@ -82,6 +82,10 @@ export class TravelCoverRequest extends BaseEntity {
     @Field({ nullable: true })
     passportNo: string;
 
+    @Column({ nullable: true, type: 'decimal' })
+    @Field({ nullable: true })
+    amountAfterDiscount: number;
+
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
     createdAt: Date;
