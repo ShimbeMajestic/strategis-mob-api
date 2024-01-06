@@ -13,11 +13,14 @@ import {
     DeleteDateColumn,
     Entity,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
 import { ClaimAuthorizer } from '../authorizers/claim.authorizer';
 import { ClaimEnum } from '../enums/claim.enum';
+import { ClaimPhoto } from './claim-photo.model';
+import { VehiclePhoto } from 'src/modules/motor-cover/models/vehicle-photo.model';
 
 @Entity()
 @ObjectType()
@@ -63,9 +66,10 @@ export class Claim extends BaseEntity {
     @Column({ nullable: true })
     alternatePhoneNumber: string;
 
-    @Field(() => [String], { nullable: true })
-    @Column('text', { array: true, nullable: true })
-    imageUrls: string[];
+    @OneToMany(() => ClaimPhoto, (photo) => photo.claim, {
+        cascade: true,
+    })
+    claimPhotos: ClaimPhoto[];
 
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()

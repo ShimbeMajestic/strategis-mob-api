@@ -48,6 +48,7 @@ export class MotorCoverConsumer {
                     'vehicleDetails',
                     'customer',
                     'customer.region',
+                    'customer.district',
                 ],
             });
 

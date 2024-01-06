@@ -30,6 +30,7 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { VehiclePhoto } from './models/vehicle-photo.model';
 import { Upload } from 'src/shared/uploads/models/upload.model';
 import { MotorCoverNoteScheduler } from './providers/motor-covernote-scheduler.service';
+import { PremiaDataProcessor } from './providers/premia-api-data-processor';
 
 @Module({
     imports: [
@@ -196,6 +197,7 @@ import { MotorCoverNoteScheduler } from './providers/motor-covernote-scheduler.s
         MotorCovernoteService,
         MotorCoverConsumer,
         MotorCoverNoteScheduler,
+        PremiaDataProcessor,
     ],
     exports: [VehicleDetailService, MotorCovernoteService],
 })

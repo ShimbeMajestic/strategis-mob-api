@@ -16,8 +16,10 @@ import {
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
+    JoinColumn,
     ManyToOne,
     OneToMany,
+    OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
@@ -29,6 +31,7 @@ import { MotorCoverType } from './motor-cover-type.model';
 import { MotorCover } from './motor-cover.model';
 import { VehicleDetails } from './vehicle-details.model';
 import { VehiclePhoto } from './vehicle-photo.model';
+import { MotorPolicy } from './motor-policy.model';
 
 @Entity()
 @ObjectType()
@@ -39,6 +42,7 @@ import { VehiclePhoto } from './vehicle-photo.model';
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
 @Relation('approvedBy', () => User, { nullable: true })
+@Relation('motorPolicy', () => MotorPolicy)
 @OffsetConnection('transactions', () => Transaction, {
     nullable: true,
     pagingStrategy: PagingStrategies.NONE,
@@ -102,6 +106,18 @@ export class MotorCoverRequest extends BaseEntity {
     @Column({ nullable: true })
     statusDescription: string;
 
+    @Field({ nullable: true })
+    @Column({ default: 'PENDING' })
+    policySubmissionStatus: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    policySubmissionMessage: string;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    policySubmissionSentAt: Date;
+
     @FilterableField(() => GraphQLISODateTime, { nullable: true })
     @Column({ nullable: true })
     coverNoteStartDate: Date;
@@ -123,6 +139,10 @@ export class MotorCoverRequest extends BaseEntity {
     @Field({ nullable: true })
     @Column({ nullable: true })
     minimumAmountIncTax: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    motorPolicyId: number;
 
     @Field()
     @Column({ default: 'TZS' })
@@ -191,6 +211,10 @@ export class MotorCoverRequest extends BaseEntity {
     @Field(() => GraphQLISODateTime, { nullable: true })
     @DeleteDateColumn()
     deletedAt: Date;
+
+    @OneToOne(() => MotorPolicy)
+    @JoinColumn()
+    motorPolicy: MotorPolicy;
 
     @OneToMany(() => VehiclePhoto, (photo) => photo.motorCoverRequest, {
         cascade: true,

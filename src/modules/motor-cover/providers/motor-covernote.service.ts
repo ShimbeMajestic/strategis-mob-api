@@ -522,6 +522,10 @@ export class MotorCovernoteService {
 
                 await policy.save();
 
+                request.motorPolicyId = policy.id;
+
+                await request.save();
+
                 // Notify user via sms & push notification
                 await this.notificationService.sendNotificationToDevice({
                     title: 'Successfully Proccessed e-Sticker',
