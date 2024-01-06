@@ -5,6 +5,9 @@ import { GqlAuthGuard } from '../auth/auth.guard';
 import { CreateClaimDto } from './dtos/create-claim.dto';
 import { Claim } from './models/claim.model';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { ClaimService } from './providers/claim.service';
+import { ClaimsController } from './controllers/claim.controller';
+import { UploadsService } from 'src/shared/uploads/providers/uploads.service';
 
 @Module({
     imports: [
@@ -32,6 +35,7 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
             ],
         }),
     ],
-    providers: [],
+    providers: [ClaimService, UploadsService],
+    controllers: [ClaimsController],
 })
 export class ClaimModule {}

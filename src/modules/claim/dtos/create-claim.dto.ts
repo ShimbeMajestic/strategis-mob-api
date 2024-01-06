@@ -16,7 +16,4 @@ export class CreateClaimDto {
 
     @Field()
     alternatePhoneNumber: string;
-
-    @Field(() => [String])
-    imageUrls: string[];
 }
