@@ -1,6 +1,7 @@
 import {
     Authorize,
     FilterableField,
+    FilterableRelation,
     FilterableUnPagedRelation,
     OffsetConnection,
     PagingStrategies,
@@ -42,7 +43,9 @@ import { MotorPolicy } from './motor-policy.model';
 @Relation('vehicleDetails', () => VehicleDetails, { nullable: true })
 @Relation('customer', () => Customer, { nullable: true })
 @Relation('approvedBy', () => User, { nullable: true })
-@Relation('motorPolicy', () => MotorPolicy)
+@FilterableRelation('motorPolicy', () => MotorPolicy, {
+    nullable: true,
+})
 @OffsetConnection('transactions', () => Transaction, {
     nullable: true,
     pagingStrategy: PagingStrategies.NONE,
@@ -212,7 +215,7 @@ export class MotorCoverRequest extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date;
 
-    @OneToOne(() => MotorPolicy)
+    @OneToOne(() => MotorPolicy, (policy) => policy.motorCoverRequest)
     @JoinColumn()
     motorPolicy: MotorPolicy;
 

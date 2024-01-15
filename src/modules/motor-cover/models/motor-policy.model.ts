@@ -46,7 +46,7 @@ export class MotorPolicy extends BaseEntity {
     @Field()
     coverNoteEndDate: Date;
 
-    @OneToOne(() => MotorCoverRequest)
+    @OneToOne(() => MotorCoverRequest, (request) => request.motorPolicy)
     @JoinColumn()
     motorCoverRequest: MotorCoverRequest;
 
