@@ -7,17 +7,9 @@ import {
 import * as moment from 'moment';
 import { MotorUsage, MotorUsageType } from '../enums/motor-usage.enum';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
-import { appConfig } from 'src/config/app.config';
-import { OwnerCategory } from '../enums/motor-owner-category.enum';
-import { PaymentModeEnum } from '../enums/payment-mode.enum';
 import { MotorCoverRequestStatus } from '../enums/motor-cover-req-status.enum';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { response } from 'express';
-import { Region } from 'src/modules/lists/models/region.model';
-import { District } from 'src/modules/lists/models/district.model';
 import { premiaConfig } from 'src/config/premia.config';
-import { MotorPolicy } from '../models/motor-policy.model';
-import { In } from 'typeorm';
 
 @Injectable()
 export class PremiaDataProcessor {
@@ -79,6 +71,12 @@ export class PremiaDataProcessor {
                         request.save();
                         throw new InternalServerErrorException(response.data);
                     }
+
+                    this.logger.log(
+                        `the motor policy: ${JSON.stringify(
+                            request.motorPolicy,
+                        )}`,
+                    );
 
                     const P_ASSR_CODE = response.data.P_ASSR_CODE;
 
