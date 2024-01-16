@@ -102,7 +102,7 @@ export class PremiaDataProcessor {
 
                             this.logger.log(
                                 `Response from Premia regarding policy creation: ${JSON.stringify(
-                                    result.data.data,
+                                    result.data,
                                 )}`,
                             );
                             if (result.data.P_STATUS !== 'Success') {
