@@ -8,9 +8,11 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { ClaimService } from './providers/claim.service';
 import { ClaimsController } from './controllers/claim.controller';
 import { UploadsService } from 'src/shared/uploads/providers/uploads.service';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
     imports: [
+        SharedModule,
         NestjsQueryGraphQLModule.forFeature({
             imports: [NestjsQueryTypeOrmModule.forFeature([Claim])],
             resolvers: [

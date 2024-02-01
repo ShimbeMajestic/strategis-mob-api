@@ -9,7 +9,7 @@ export class ClaimService {
 
     constructor(private readonly uploadService: UploadsService) {}
 
-    async uploadClaimPhotos(claimId: number, uploadedFiles: any[]) {
+    async uploadClaimPhotos(claimId: number, uploadedFile: any) {
         const claim = await Claim.findOne({
             where: {
                 id: claimId,
@@ -18,21 +18,15 @@ export class ClaimService {
 
         if (!claim) throw new NotFoundException('Claim not found');
 
-        const uploadedArray = [];
+        const upload = await this.uploadService.uploadFile(uploadedFile);
 
-        for (const uploadedFile of uploadedFiles) {
-            const upload = await this.uploadService.uploadFile(uploadedFile);
+        const claimPhoto = await ClaimPhoto.create({
+            claimId,
+            uploadId: upload.id,
+        });
 
-            const claimPhoto = await ClaimPhoto.create({
-                claimId,
-                uploadId: upload.id,
-            });
+        await claimPhoto.save();
 
-            await claimPhoto.save();
-
-            uploadedArray.push(upload);
-        }
-
-        return uploadedArray;
+        return upload;
     }
 }
