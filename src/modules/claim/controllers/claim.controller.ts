@@ -13,10 +13,10 @@ export class ClaimsController {
     constructor(private readonly service: ClaimService) {}
 
     @Post(':claimId/upload-photo')
-    @UseInterceptors(FilesInterceptor('files'))
+    @UseInterceptors(FilesInterceptor('file'))
     async uploadClaimPhotos(
         @Param('claimId') claimId: number,
-        @UploadedFiles() uploadedFiles,
+        @UploadedFiles() uploadedFiles: any[],
     ) {
         return this.service.uploadClaimPhotos(claimId, uploadedFiles);
     }

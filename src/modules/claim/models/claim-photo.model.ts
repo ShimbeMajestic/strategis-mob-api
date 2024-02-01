@@ -55,6 +55,8 @@ export class ClaimPhoto extends BaseEntity {
     })
     claim: Claim;
 
-    @ManyToOne(() => Upload)
+    @ManyToOne(() => Upload, {
+        nullable: true,
+    })
     upload: Upload;
 }

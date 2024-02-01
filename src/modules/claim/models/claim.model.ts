@@ -1,6 +1,7 @@
 import {
     Authorize,
     FilterableField,
+    FilterableRelation,
     Relation,
 } from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
@@ -26,6 +27,9 @@ import { VehiclePhoto } from 'src/modules/motor-cover/models/vehicle-photo.model
 @ObjectType()
 @Relation('policy', () => MotorPolicy)
 @Relation('customer', () => Customer)
+@FilterableRelation('claimPhotos', () => ClaimPhoto, {
+    nullable: true,
+})
 @Authorize(ClaimAuthorizer)
 export class Claim extends BaseEntity {
     @PrimaryGeneratedColumn()

@@ -87,32 +87,42 @@ export class UploadsService implements OnModuleInit {
         }
 
         const fileNameOnDisk = Str.uuid() + '.' + extension;
-        return await this.dataSource.manager.transaction(
-            async (transactionalEntityManager) => {
-                const fileModel = new Upload();
-                fileModel.name = options?.fileName ?? fileNameOnDisk;
-                fileModel.fileName = options?.fileName ?? fileNameOnDisk;
-                fileModel.mimeType = mimeType;
-                fileModel.size = size;
-                fileModel.key = fileNameOnDisk;
 
-                // Save file to database
-                await transactionalEntityManager.save(fileModel);
+        try {
+            return await this.dataSource.manager.transaction(
+                async (transactionalEntityManager) => {
+                    const fileModel = new Upload();
+                    fileModel.name = options?.fileName ?? fileNameOnDisk;
+                    fileModel.fileName = options?.fileName ?? fileNameOnDisk;
+                    fileModel.mimeType = mimeType;
+                    fileModel.size = size;
+                    fileModel.key = fileNameOnDisk;
 
-                // Create Subdirectory for this media
-                const thisMediaSubFolder = path.join(
-                    appConfig.uploadsDir,
-                    String(fileModel.id),
-                );
-                await this.createDirectory(thisMediaSubFolder);
+                    // Save file to database
+                    await transactionalEntityManager.save(fileModel);
 
-                const location = path.join(thisMediaSubFolder, fileNameOnDisk);
-                // Save file to disk
-                await fs.writeFile(location, fileBuffer, { flag: 'wx' });
+                    // Create Subdirectory for this media
+                    const thisMediaSubFolder = path.join(
+                        appConfig.uploadsDir,
+                        String(fileModel.id),
+                    );
+                    await this.createDirectory(thisMediaSubFolder);
 
-                return fileModel;
-            },
-        );
+                    const location = path.join(
+                        thisMediaSubFolder,
+                        fileNameOnDisk,
+                    );
+                    // Save file to disk
+                    await fs.writeFile(location, fileBuffer, { flag: 'wx' });
+
+                    return fileModel;
+                },
+            );
+        } catch (error) {
+            this.logger.log(`error: ${JSON.stringify(error)}`);
+            throw new Error('Unable to upload file');
+        }
+        
     }
 
     async download(uploadId: number, res: Response, download: boolean) {
