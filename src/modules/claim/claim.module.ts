@@ -9,12 +9,13 @@ import { ClaimService } from './providers/claim.service';
 import { ClaimsController } from './controllers/claim.controller';
 import { UploadsService } from 'src/shared/uploads/providers/uploads.service';
 import { SharedModule } from 'src/shared/shared.module';
+import { ClaimPhoto } from './models/claim-photo.model';
 
 @Module({
     imports: [
         SharedModule,
         NestjsQueryGraphQLModule.forFeature({
-            imports: [NestjsQueryTypeOrmModule.forFeature([Claim])],
+            imports: [NestjsQueryTypeOrmModule.forFeature([Claim, ClaimPhoto])],
             resolvers: [
                 {
                     guards: [GqlAuthGuard],
