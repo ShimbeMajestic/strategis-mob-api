@@ -109,6 +109,10 @@ export class Customer extends BaseEntity implements AuthenticatedUser {
     @Column({ nullable: true })
     address: string;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    termsAccepted: boolean;
+
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
     createdAt: Date;
