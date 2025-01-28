@@ -6,7 +6,11 @@ import {
 
 @ValidatorConstraint({ name: 'isOldEnough', async: false })
 export class IsOldEnoughValidator implements ValidatorConstraintInterface {
-    validate(dob: Date, args: ValidationArguments) {
+    validate(dob: string, args: ValidationArguments) {
+        if (!dob) {
+            // Skip validation if dob is not provided
+            return true;
+        }
         const today = new Date();
 
         const dateOfBirth = new Date(dob);
