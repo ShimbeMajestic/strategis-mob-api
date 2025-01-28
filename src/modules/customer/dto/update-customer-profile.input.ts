@@ -47,4 +47,7 @@ export class UpdateCustomerProfileInput {
 
     @Field({ nullable: true })
     address?: string;
+
+    @Field({ nullable: true })
+    termsAccepted?: boolean;
 }
