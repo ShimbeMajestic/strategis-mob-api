@@ -9,8 +9,7 @@ type ConnectionOptions = BaseConnectionOptions & {
 export const getConnections = (): ConnectionOptions[] => [
     {
         name: DEFAULT_CONNECTION,
-
-        type: process.env.DB_CONNECTION as 'mysql',
+        type: process.env.DB_CONNECTION as 'postgres',  // i have changed 'mysql' to 'postgres'
         host: process.env.DB_HOST,
         port: parseInt(process.env.DB_PORT, 10),
         username: process.env.DB_USERNAME,
@@ -18,7 +17,6 @@ export const getConnections = (): ConnectionOptions[] => [
         database: process.env.DB_DATABASE,
         entities: [__dirname + '/../**/*.model.{js,ts}'],
         synchronize: process.env.DB_SYNCHRONIZE === 'true',
-
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         seeds: [__dirname + '/seeds/**/*{.ts,.js}'],
         factories: [__dirname + '/factories/**/*{.ts,.js}'],

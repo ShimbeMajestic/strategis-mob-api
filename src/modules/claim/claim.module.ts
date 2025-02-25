@@ -17,7 +17,7 @@ import { ClaimResolver } from './resolvers/claim.resolver';
           EntityClass: Claim,
           CreateDTOClass: CreateClaimDto,
           //   create: {},
-          update: { disabled: true },
+          update: { disabled: true },/* disables claims updates because claims should not be edited after creation*/
           enableAggregate: true,
           enableTotalCount: true,
           enableSubscriptions: true,

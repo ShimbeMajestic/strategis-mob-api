@@ -1,51 +1,34 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
-import { 
-  IsBoolean, 
-  IsDate, 
-  IsInt, 
-  IsOptional, 
-  IsString, 
-  IsUUID, 
-  IsArray, 
-  ArrayMinSize 
-} from 'class-validator';
+import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
+import { IsBoolean, IsDate, IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
+import { CreateClaimDto } from './create-claim.dto';
 
 /**
- * DTO for creating a new insurance claim.
- * Defines the structure of the data when creating a claim.
+ * DTO for stepwise updates of claim data
  */
 @InputType()
-export class CreateClaimDto {
+export class UpdateClaimDto extends PartialType(CreateClaimDto) {
   @Field(() => String)
   @IsUUID()
-  claimId: string; // Ensures each claim has a unique identifier
+  claimId: string; // Ensures claim updates are targeted correctly
 
-  @Field(() => Int)
-  @IsInt({ message: 'Customer ID must be an integer' })
-  customerId: number; // ID of the customer submitting the claim
-
-  @Field(() => Int)
-  @IsInt({ message: 'Policy ID must be an integer' })
-  policyId: number; // ID of the insurance policy related to the claim
-
-  @Field()
+  @Field({ nullable: true })
+  @IsOptional()
   @IsDate({ message: 'Invalid date format for dateOfAccident' })
-  dateOfAccident: Date; // Date when the accident occurred
+  dateOfAccident?: Date;
 
-  @Field()
-  @IsString({ message: 'Location must be a string' })
-  locationOfAccident: string; // Location where the accident took place
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString({ message: 'Location of accident must be a string' })
+  locationOfAccident?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsString({ message: 'Alternate phone number must be a valid string' })
-  alternatePhoneNumber?: string; // Alternate phone number for contacting the claimant
+  alternatePhoneNumber?: string;
 
   @Field(() => [String], { nullable: true })
   @IsOptional()
-  @IsArray({ message: 'Image URLs must be an array' })
-  @ArrayMinSize(1, { message: 'At least one image URL is required' })
-  imageUrls?: string[]; // List of image URLs documenting the accident
+  imageUrls?: string[];
 
   @Field({ nullable: true })
   @IsOptional()
