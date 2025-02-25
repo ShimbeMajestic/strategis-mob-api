@@ -1,32 +1,46 @@
-<<<<<<< HEAD
-/* defines a graphql resolver for handling insurance claims while enforcing authentication using authentication guard*/
 import { UseGuards } from '@nestjs/common';
-import { Mutation, Resolver } from '@nestjs/graphql';
+import { Mutation, Resolver, Args, Query } from '@nestjs/graphql';
 import { GqlAuthGuard } from 'src/modules/auth/auth.guard';
-=======
-import { Query, Resolver } from '@nestjs/graphql';
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 import { Claim } from '../models/claim.model';
+import { ClaimService } from './claim.service';
 import { AllowUserType } from 'src/modules/permission/decorators/user-type.decorator';
 import { UserTypeEnum } from 'src/modules/permission/enums/user-type.enum';
 
-<<<<<<< HEAD
-@Resolver(() => Claim)/* tells netsjs that this class handles graphql operations for claim entity*/
-@UseGuards(GqlAuthGuard)/* only authorized users can access resolver's functions*/
-export class ClaimResolver {/* This class is currently empty but will later include mutations (for creating/updating claims) and queries (for fetching claims).
-*/
-  constructor() {} 
-=======
-@Resolver()
+// Resolver for handling GraphQL operations related to Claims
+@Resolver(() => Claim)
+@UseGuards(GqlAuthGuard) // Ensure only authorized users can access resolver methods
 export class ClaimResolver {
+    constructor(private readonly claimService: ClaimService) {} // Injecting ClaimService
+
+    // Query to get all claims, accessible only by admins
     @Query(() => [Claim])
     @AllowUserType(UserTypeEnum.ADMIN)
     async allClaims(): Promise<Claim[]> {
-        return await Claim.find({
-            order: {
-                id: 'DESC',
-            },
-        });
+        return await this.claimService.allClaims(); // Retrieve all claims from the service
     }
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
+
+    // Mutation to create a new claim, accessible only by admins
+    @Mutation(() => Claim)
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async createClaim(@Args('claimData') claimData: Partial<Claim>): Promise<Claim> {
+        return await this.claimService.createClaim(claimData); // Create and return the new claim
+    }
+
+    // Mutation to update an existing claim, accessible only by admins
+    @Mutation(() => Claim)
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async updateClaim(
+        @Args('claimId') claimId: number, // Claim ID to update
+        @Args('updateData') updateData: Partial<Claim>, // New data for the claim
+    ): Promise<Claim> {
+        return await this.claimService.updateClaim(claimId, updateData); // Update and return the claim
+    }
+
+    // Mutation to delete a claim, accessible only by admins
+    @Mutation(() => String)
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async deleteClaim(@Args('claimId') claimId: number): Promise<string> {
+        const result = await this.claimService.deleteClaim(claimId); // Delete the claim
+        return result.message; // Return success message
+    }
 }
