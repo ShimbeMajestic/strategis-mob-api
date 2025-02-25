@@ -1,4 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Claim } from '../models/claim.model';
 import { ClaimPhoto } from '../models/claim-photo.model';
 import { UploadsService } from 'src/shared/uploads/providers/uploads.service';
@@ -7,10 +9,14 @@ import { UploadsService } from 'src/shared/uploads/providers/uploads.service';
 export class ClaimService {
     private readonly logger = new Logger(ClaimService.name);
 
-    constructor(private readonly uploadService: UploadsService) {}
+    constructor(
+        @InjectRepository(Claim)
+        private readonly claimRepository: Repository<Claim>,
+        private readonly uploadService: UploadsService,
+    ) {}
 
-    async uploadClaimPhotos(claimId: number, uploadedFile: any) {
-        const claim = await Claim.findOne({
+    async uploadClaimPhotos(claimId: number, uploadedFile: any, attachmentType: string) {
+        const claim = await this.claimRepository.findOne({
             where: {
                 id: claimId,
             },
@@ -20,9 +26,10 @@ export class ClaimService {
 
         const upload = await this.uploadService.uploadFile(uploadedFile);
 
-        const claimPhoto = await ClaimPhoto.create({
+        const claimPhoto = ClaimPhoto.create({
             claimId,
             uploadId: upload.id,
+            attachmentType, // Store the attachment type
         });
 
         await claimPhoto.save();

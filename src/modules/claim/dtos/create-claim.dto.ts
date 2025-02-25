@@ -16,7 +16,6 @@ import {
  */
 @InputType()
 export class CreateClaimDto {
-<<<<<<< HEAD
   @Field(() => String)
   @IsUUID()
   claimId: string; // Ensures each claim has a unique identifier
@@ -117,20 +116,4 @@ export class CreateClaimDto {
   @IsOptional()
   @IsInt({ message: 'Number of deaths must be an integer' })
   numberOfDeaths?: number;
-=======
-    @Field()
-    customerId: number;
-
-    @Field()
-    policyId: number;
-
-    @Field()
-    dateOfAccident: Date;
-
-    @Field()
-    locationOfAccident: string;
-
-    @Field()
-    alternatePhoneNumber: string;
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 }

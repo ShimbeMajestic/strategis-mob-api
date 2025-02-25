@@ -30,22 +30,19 @@ export class ClaimPhoto extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @FilterableField(() => Int, { nullable: true })
-    @Column({ nullable: true })
-    claimId: number;
+    @FilterableField(() => Int)
+    @Column()
+    claimId: number; // Made non-nullable as it is required
 
     @FilterableField(() => Int)
-    @Column({ nullable: true })
-    uploadId: number;
+    @Column()
+    uploadId: number; // Made non-nullable as it is required
 
     @FilterableField()
-<<<<<<< HEAD
     @Column({ nullable: true })
-    attachmentType: string;
+    attachmentType: string; // Consider using an enum for predefined attachment types
 
     @FilterableField()
-=======
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
     @CreateDateColumn()
     createdAt: Date;
 
@@ -57,17 +54,13 @@ export class ClaimPhoto extends BaseEntity {
     deletedAt: Date;
 
     @ManyToOne(() => Claim, (claim) => claim.claimPhotos, {
-        nullable: true,
+        nullable: false,
         onDelete: 'CASCADE',
-<<<<<<< HEAD
     })  
-=======
-    })
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
     claim: Claim;
 
     @ManyToOne(() => Upload, {
-        nullable: true,
+        nullable: false,
     })
     upload: Upload;
 }

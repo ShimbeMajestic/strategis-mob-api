@@ -23,7 +23,6 @@ import { ClaimEnum } from '../enums/claim.enum';
 import { ClaimPhoto } from './claim-photo.model';
 import { VehiclePhoto } from 'src/modules/motor-cover/models/vehicle-photo.model';
 
-<<<<<<< HEAD
 @Entity()/*marks the class as TypeORM entity */
 @ObjectType()/* exposes the class as a GraphQl object*/
 @Relation('policy', () => MotorPolicy)/* defines a relation to motor policy entity*/
@@ -38,7 +37,6 @@ export class Claim extends BaseEntity {
   @Column()
   @Field()
   policyId: number;/* policy id is stored as a column (foreign key)*/
-=======
 @Entity()
 @ObjectType()
 @Relation('policy', () => MotorPolicy)
@@ -55,25 +53,20 @@ export class Claim extends BaseEntity {
     @Column()
     @Field()
     policyId: number;
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 
     @ManyToOne(() => MotorPolicy)
     policy: MotorPolicy;
 
-<<<<<<< HEAD
   @Column()
   @Field()
   customerId: number;/* stores the customer making the claim*/
-=======
     @Column()
     @Field()
     customerId: number;
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 
     @ManyToOne(() => Customer)
     customer: Customer;
 
-<<<<<<< HEAD
   @Column({/* manages claim statuses*/
     default: ClaimEnum.PENDING,/* set to pending(as default) once a new claim is created*/
     enum: ClaimEnum,
@@ -86,7 +79,6 @@ export class Claim extends BaseEntity {
   @FilterableField(() => GraphQLISODateTime, { nullable: true })
   @Column({ nullable: true })
   dateOfAccident: Date;
-=======
     @Column({
         default: ClaimEnum.PENDING,
         enum: ClaimEnum,
@@ -98,7 +90,6 @@ export class Claim extends BaseEntity {
     @FilterableField(() => GraphQLISODateTime, { nullable: true })
     @Column({ nullable: true })
     dateOfAccident: Date;
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 
     @Field({ nullable: true })
     @Column({ nullable: true })
@@ -113,7 +104,6 @@ export class Claim extends BaseEntity {
     })
     claimPhotos: ClaimPhoto[];
 
-<<<<<<< HEAD
   /* New Fields Added */
   
   @Field({ nullable: true })
@@ -188,7 +178,6 @@ export class Claim extends BaseEntity {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @DeleteDateColumn()
   deletedAt: Date; /* stops a timestamp when a claim is deleted*/
-=======
     @FilterableField(() => GraphQLISODateTime)
     @CreateDateColumn()
     createdAt: Date;
@@ -200,5 +189,4 @@ export class Claim extends BaseEntity {
     @Field(() => GraphQLISODateTime, { nullable: true })
     @DeleteDateColumn()
     deletedAt: Date;
->>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 }
