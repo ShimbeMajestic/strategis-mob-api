@@ -1,12 +1,15 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsNotEmpty, IsOptional } from "class-validator";
+import { Field, InputType } from '@nestjs/graphql';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 @InputType()
 export class VehicleDetailRequestDto {
-
     @Field()
     @IsNotEmpty()
     motorCoverReqId?: number;
+
+    @Field()
+    @IsOptional()
+    coverNoteStartDate?: Date;
 
     @Field({ nullable: true })
     @IsOptional()

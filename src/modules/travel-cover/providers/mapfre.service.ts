@@ -8,20 +8,20 @@ import { appConfig } from 'src/config/app.config';
 
 @Injectable()
 export class MapfreService {
-  private readonly logger = new Logger(MapfreService.name);
+    private readonly logger = new Logger(MapfreService.name);
 
-  constructor(private readonly http: HttpService) {}
+    constructor(private readonly http: HttpService) {}
 
-  async issuePolicy(order: TravelCoverRequest) {
-    const xml = await this.getXml(order);
-    const token = await this.getToken();
+    async issuePolicy(order: TravelCoverRequest) {
+        const xml = await this.getXml(order);
+        const token = await this.getToken();
 
-    const headers = {
-      'Content-Type': 'text/xml;charset=UTF-8',
-      SOAPAction: 'http://wws.mapfreassistance.com/issuing',
-    };
+        const headers = {
+            'Content-Type': 'text/xml;charset=UTF-8',
+            SOAPAction: 'http://wws.mapfreassistance.com/issuing',
+        };
 
-    const requestXml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wws="http://wws.mapfreassistance.com/">
+        const requestXml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wws="http://wws.mapfreassistance.com/">
     <soapenv:Header/>
     <soapenv:Body>
         <wws:issuing>
@@ -31,56 +31,61 @@ export class MapfreService {
     </soapenv:Body>
 </soapenv:Envelope>`;
 
-    this.logger.log('Issuing Request: ' + requestXml);
+        this.logger.log('Issuing Request: ' + requestXml);
 
-    const response = await this.http
-      .post(mapfreConfig.wsdlUrl, requestXml, { headers })
-      .toPromise();
+        const response = await this.http
+            .post(mapfreConfig.wsdlUrl, requestXml, { headers })
+            .toPromise();
 
-    const responseXml = response.data;
+        const responseXml = response.data;
 
-    this.logger.log('Issuing Response: ' + responseXml);
+        this.logger.log('Issuing Response: ' + responseXml);
 
-    return Xml.xmlToJson(responseXml);
-  }
+        return Xml.xmlToJson(responseXml);
+    }
 
-  protected async getXml(order: TravelCoverRequest) {
-    // Refetch order
-    order = await TravelCoverRequest.findOne({
-      where: {
-        id: order.id,
-      },
-      relations: [
-        'customer',
-        'plan',
-        'plan.destination',
-        'plan.travelEntity',
-        'plan.travelProduct',
-      ],
-    });
+    protected async getXml(order: TravelCoverRequest) {
+        // Refetch order
+        order = await TravelCoverRequest.findOne({
+            where: {
+                id: order.id,
+            },
+            relations: [
+                'customer',
+                'plan',
+                'plan.destination',
+                'plan.travelEntity',
+                'plan.travelProduct',
+            ],
+        });
 
-    const strStartDate = moment(order.departureDate).format('DD/MM/YYYY');
-    const strEndDate = moment(order.returnDate).format('DD/MM/YYYY');
-    const daysDuration =
-      moment(order.returnDate).diff(moment(order.departureDate), 'days') + 1;
-    // Remove MMT prefix, and remain with numeric part only
-    const policyNumber = order.id;
-    // $usdGrossPrice = $order->amount_usd;
-    const usdReinsurancePrice = order.plan.priceInUSD; // Price needs to be in USD
+        const strStartDate = moment(order.departureDate).format('DD/MM/YYYY');
+        const strEndDate = moment(order.returnDate).format('DD/MM/YYYY');
+        const daysDuration =
+            moment(order.returnDate).diff(moment(order.departureDate), 'days') +
+            1;
+        // Remove MMT prefix, and remain with numeric part only
+        const policyNumber = order.id;
+        // $usdGrossPrice = $order->amount_usd;
+        const usdReinsurancePrice = order.plan.priceInUSD; // Price needs to be in USD
 
-    const coverType = order.plan.travelEntity.name.toLowerCase();
-    const region = order.plan.destination.name.toLowerCase();
+        const coverType = order.plan.travelEntity.name.toLowerCase();
+        const region = order.plan.destination.name.toLowerCase();
 
-    const product = order.plan.travelProduct;
+        const product = order.plan.travelProduct;
 
-    const insuredLastName =
-      appConfig.environment === 'STAGING' ? 'TEST' : order.customer.lastName;
-    const insuredFirstNames =
-      appConfig.environment === 'STAGING' ? 'TEST' : order.customer.firstName;
-    const insuredDob = order.customer.dob;
-    const insuredAge = moment().diff(moment(insuredDob), 'years');
+        const insuredLastName =
+            appConfig.environment === 'STAGING'
+                ? 'TEST'
+                : order.customer.lastName;
+        const insuredFirstNames =
+            appConfig.environment === 'STAGING'
+                ? 'TEST'
+                : order.customer.firstName;
+        const insuredDob = order.customer.dob;
+        const insuredAge = moment().diff(moment(insuredDob), 'years');
 
-    const xml = `<root>
+        const xml = `<root>
    <policyData>
     <txtSufijo>${product.productSuffix}</txtSufijo>
     <txtFhInicio>${strStartDate}</txtFhInicio>
@@ -171,11 +176,11 @@ export class MapfreService {
 	</parameters>
 </root>`;
 
-    return xml;
-  }
+        return xml;
+    }
 
-  async getToken(): Promise<string> {
-    const requestXml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wws="http://wws.mapfreassistance.com/">
+    async getToken(): Promise<string> {
+        const requestXml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wws="http://wws.mapfreassistance.com/">
       <soapenv:Header/>
       <soapenv:Body>
          <wws:login>
@@ -187,27 +192,27 @@ export class MapfreService {
       </soapenv:Body>
    </soapenv:Envelope>`;
 
-    const headers = {
-      'Content-Type': 'text/xml;charset=UTF-8',
-      SOAPAction: 'http://wws.mapfreassistance.com/login',
-    };
+        const headers = {
+            'Content-Type': 'text/xml;charset=UTF-8',
+            SOAPAction: 'http://wws.mapfreassistance.com/login',
+        };
 
-    this.logger.log('Login Request: ' + requestXml);
+        this.logger.log('Login Request: ' + requestXml);
 
-    const response = await this.http
-      .post(mapfreConfig.wsdlUrl, requestXml, { headers })
-      .toPromise();
+        const response = await this.http
+            .post(mapfreConfig.wsdlUrl, requestXml, { headers })
+            .toPromise();
 
-    const responseXml = response.data;
+        const responseXml = response.data;
 
-    this.logger.log('Login Response: ' + responseXml);
+        this.logger.log('Login Response: ' + responseXml);
 
-    const token = Xml.extractXmlNode(responseXml, 'token', false);
+        const token = Xml.extractXmlNode(responseXml, 'token', false);
 
-    if (!(token?.length > 0)) {
-      throw new Error('Could not obtain Mapfre token');
+        if (!(token?.length > 0)) {
+            throw new Error('Could not obtain Mapfre token');
+        }
+
+        return token;
     }
-
-    return token;
-  }
 }

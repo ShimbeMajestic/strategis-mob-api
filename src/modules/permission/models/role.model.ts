@@ -12,15 +12,20 @@ import {
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Permission } from './permission.model';
 import { GuardType } from './guard-type.enum';
-import { FilterableField, OffsetConnection, PagingStrategies } from '@nestjs-query/query-graphql';
+import {
+    FilterableField,
+    OffsetConnection,
+    PagingStrategies,
+} from '@ptc-org/nestjs-query-graphql';
 import { User } from 'src/modules/user/models/user.model';
 
 @ObjectType()
-@OffsetConnection('permissions', () => Permission, { pagingStrategy: PagingStrategies.NONE })
+@OffsetConnection('permissions', () => Permission, {
+    pagingStrategy: PagingStrategies.NONE,
+})
 @OffsetConnection('users', () => User)
 @Entity()
 export class Role extends BaseEntity {
-
     @FilterableField(() => Int)
     @PrimaryGeneratedColumn()
     id: number;
@@ -49,16 +54,10 @@ export class Role extends BaseEntity {
     @DeleteDateColumn()
     deletedAt?: Date;
 
-    @ManyToMany(
-        () => Permission,
-        permission => permission.roles,
-    )
+    @ManyToMany(() => Permission, (permission) => permission.roles)
     @JoinTable({ name: 'role_permission' })
     permissions: Permission[];
 
-    @ManyToMany(
-        () => User,
-        user => user.role,
-    )
+    @ManyToMany(() => User, (user) => user.role)
     users: User[];
 }

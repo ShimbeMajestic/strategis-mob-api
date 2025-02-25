@@ -1,19 +1,25 @@
 import * as path from 'path';
+import * as dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 export const appConfig = {
-  baseUrl: process.env.APP_URL || 'http://localhost:3000',
+    appName: process.env.APP_NAME || 'Strategis',
 
-  port: process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT) : 3000,
+    baseUrl: process.env.APP_URL || 'http://localhost:3000',
 
-  secret: process.env.SECRET,
+    port: process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT) : 3000,
 
-  rootDir: path.join(__dirname, '../../'),
+    secret: process.env.SECRET,
 
-  appCallbackUrl: process.env.APP_CALLBACK_URL,
+    rootDir: path.join(__dirname, '../../'),
 
-  tiraApiUrl: process.env.TIRA_BRIDGE_API_URL,
+    appCallbackUrl: process.env.APP_CALLBACK_URL,
 
-  environment: process.env.ENVIRONMENT || 'STAGING',
+    tiraApiUrl: process.env.TIRA_BRIDGE_API_URL,
+
+    environment: process.env.ENVIRONMENT || 'local',
+
+    uploadsDir:
+        process.env.UPLOADS_PATH || path.join(__dirname, '../../../../uploads'),
 };

@@ -16,6 +16,10 @@ export class CreateUserInput {
     @Field({ nullable: true, defaultValue: true })
     active?: boolean;
 
+    @IsOptional()
+    @Field({ nullable: true })
+    roleId?: number;
+
     @Field()
     firstName: string;
 

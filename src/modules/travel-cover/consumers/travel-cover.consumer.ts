@@ -7,22 +7,22 @@ import { MapfreService } from '../providers/mapfre.service';
 
 @Processor(TRAVEL_COVER_QUEUE)
 export class TravelConsumer {
-  protected readonly logger = new Logger(TravelConsumer.name);
+    protected readonly logger = new Logger(TravelConsumer.name);
 
-  constructor(private mapfreService: MapfreService) {}
+    constructor(private mapfreService: MapfreService) {}
 
-  @Process('TRAVEL_COVER_REQUEST_JOB')
-  async processMapfreCoverRequest(job: Job<TravelCoverRequest>) {
-    this.logger.log(
-      `Processing travel cover request job for mapfre: ${job.id}`,
-    );
+    @Process('TRAVEL_COVER_REQUEST_JOB')
+    async processMapfreCoverRequest(job: Job<TravelCoverRequest>) {
+        this.logger.log(
+            `Processing travel cover request job for mapfre: ${job.id}`,
+        );
 
-    const order = job.data;
+        const order = job.data;
 
-    const result = await this.mapfreService.issuePolicy(order);
+        const result = await this.mapfreService.issuePolicy(order);
 
-    this.logger.log(
-      `Response from Mapfre for order: ${JSON.stringify(result)}`,
-    );
-  }
+        this.logger.log(
+            `Response from Mapfre for order: ${JSON.stringify(result)}`,
+        );
+    }
 }

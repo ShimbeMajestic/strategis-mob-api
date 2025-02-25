@@ -30,5 +30,4 @@ export class AccessToken extends BaseEntity {
 
     @Column()
     expiresAt: Date;
-
 }

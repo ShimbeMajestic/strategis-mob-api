@@ -1,8 +1,8 @@
 import {
-  NestjsQueryGraphQLModule,
-  PagingStrategies,
-} from '@nestjs-query/query-graphql';
-import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
+    NestjsQueryGraphQLModule,
+    PagingStrategies,
+} from '@ptc-org/nestjs-query-graphql';
+import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
 import { Module } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/auth.guard';
 import { UsePermission } from '../permission/decorators/permission.decorator';
@@ -13,72 +13,98 @@ import { UpdateHospitalDto } from './dto/update-hospitals.dto';
 import { HealthCoverEnquiry } from './models/enquiry.model';
 import { Hospital } from './models/hospital.model';
 import { HealthPlan } from './models/plan.model';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { HealthResolver } from './health-list.resolver';
 
 @Module({
-  imports: [
-    NestjsQueryGraphQLModule.forFeature({
-      imports: [
-        NestjsQueryTypeOrmModule.forFeature([
-          Hospital,
-          HealthCoverEnquiry,
-          HealthPlan,
-        ]),
-      ],
-      resolvers: [
-        {
-          DTOClass: Hospital,
-          EntityClass: Hospital,
-          CreateDTOClass: CreateHospitalDto,
-          UpdateDTOClass: UpdateHospitalDto,
-          guards: [GqlAuthGuard],
-          read: { pagingStrategy: PagingStrategies.NONE },
-          create: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_HOSPITALS)],
-          },
-          update: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_HOSPITALS)],
-          },
-          delete: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_HOSPITALS)],
-          },
-        },
-        {
-          DTOClass: HealthCoverEnquiry,
-          EntityClass: HealthCoverEnquiry,
-          CreateDTOClass: CreateHealthCoverEnquiryDto,
-          guards: [GqlAuthGuard],
-          create: {
-            decorators: [
-              UsePermission(PermissionEnum.MANAGE_HEALTH_COVER_ENQUIRIES),
+    imports: [
+        NestjsQueryGraphQLModule.forFeature({
+            imports: [
+                NestjsQueryTypeOrmModule.forFeature([
+                    Hospital,
+                    HealthCoverEnquiry,
+                    HealthPlan,
+                ]),
             ],
-          },
-          update: {
-            decorators: [
-              UsePermission(PermissionEnum.MANAGE_HEALTH_COVER_ENQUIRIES),
+            resolvers: [
+                {
+                    DTOClass: Hospital,
+                    EntityClass: Hospital,
+                    CreateDTOClass: CreateHospitalDto,
+                    UpdateDTOClass: UpdateHospitalDto,
+                    // guards: [GqlAuthGuard],
+                    read: {
+                        pagingStrategy: PagingStrategies.CURSOR,
+                        defaultSort: [
+                            { field: 'id', direction: SortDirection.DESC },
+                        ],
+                    },
+                    create: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_HOSPITALS),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_HOSPITALS),
+                        ],
+                    },
+                    delete: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_HOSPITALS),
+                        ],
+                    },
+                },
+                {
+                    DTOClass: HealthCoverEnquiry,
+                    EntityClass: HealthCoverEnquiry,
+                    CreateDTOClass: CreateHealthCoverEnquiryDto,
+                    guards: [GqlAuthGuard],
+                    create: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_HEALTH_COVER_ENQUIRIES,
+                            ),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_HEALTH_COVER_ENQUIRIES,
+                            ),
+                        ],
+                    },
+                    delete: {
+                        decorators: [
+                            UsePermission(
+                                PermissionEnum.MANAGE_HEALTH_COVER_ENQUIRIES,
+                            ),
+                        ],
+                    },
+                },
+                {
+                    DTOClass: HealthPlan,
+                    EntityClass: HealthPlan,
+                    guards: [GqlAuthGuard],
+                    create: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS),
+                        ],
+                    },
+                    delete: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS),
+                        ],
+                    },
+                },
             ],
-          },
-          delete: {
-            decorators: [
-              UsePermission(PermissionEnum.MANAGE_HEALTH_COVER_ENQUIRIES),
-            ],
-          },
-        },
-        {
-          DTOClass: HealthPlan,
-          EntityClass: HealthPlan,
-          guards: [GqlAuthGuard],
-          create: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS)],
-          },
-          update: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS)],
-          },
-          delete: {
-            decorators: [UsePermission(PermissionEnum.MANAGE_HEALTH_PLANS)],
-          },
-        },
-      ],
-    }),
-  ],
+        }),
+    ],
+    providers: [HealthResolver],
 })
 export class HealthCoverModule {}

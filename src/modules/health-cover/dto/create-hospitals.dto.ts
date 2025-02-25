@@ -4,27 +4,27 @@ import { Location } from '../models/location.model';
 
 @InputType()
 export class CreateHospitalDto {
-  @Field()
-  @IsNotEmpty()
-  name: string;
+    @Field()
+    @IsNotEmpty()
+    name: string;
 
-  @Field()
-  @IsNotEmpty()
-  address: string;
+    @Field()
+    @IsNotEmpty()
+    address: string;
 
-  @Field()
-  @IsNotEmpty()
-  location: Location;
+    @Field()
+    @IsNotEmpty()
+    location: Location;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  email: string;
+    @Field({ nullable: true })
+    @IsOptional()
+    email: string;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  phone: string;
+    @Field({ nullable: true })
+    @IsOptional()
+    phone: string;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  website: string;
+    @Field({ nullable: true })
+    @IsOptional()
+    website: string;
 }

@@ -3,12 +3,12 @@ import { UserService } from './providers/user.service';
 import { UserResolver } from './resolvers/user.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './repositories/user.repository';
-import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
-import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
+import { NestjsQueryGraphQLModule } from '@ptc-org/nestjs-query-graphql';
+import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
 import { User } from './models/user.model';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { SortDirection } from '@nestjs-query/core';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { UsePermission } from '../permission/decorators/permission.decorator';
 import { PermissionEnum } from '../permission/enums/permission.enum';
 import { GqlAuthGuard } from '../auth/auth.guard';
@@ -36,10 +36,18 @@ import { PermissionGuard } from '../permission/guards/permission.guard';
                                 direction: SortDirection.DESC,
                             },
                         ],
-                        decorators: [UsePermission(PermissionEnum.VIEW_USERS)]
+                        decorators: [UsePermission(PermissionEnum.VIEW_USERS)],
                     },
-                    create: { decorators: [UsePermission(PermissionEnum.MANAGE_USERS)] },
-                    update: { decorators: [UsePermission(PermissionEnum.MANAGE_USERS)] },
+                    create: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_USERS),
+                        ],
+                    },
+                    update: {
+                        decorators: [
+                            UsePermission(PermissionEnum.MANAGE_USERS),
+                        ],
+                    },
                     delete: { disabled: true },
                 },
             ],
@@ -48,4 +56,4 @@ import { PermissionGuard } from '../permission/guards/permission.guard';
     providers: [UserService, UserResolver],
     exports: [UserService],
 })
-export class UserModule { }
+export class UserModule {}

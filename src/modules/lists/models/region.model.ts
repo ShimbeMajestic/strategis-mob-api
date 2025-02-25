@@ -2,7 +2,7 @@ import {
     FilterableField,
     KeySet,
     OffsetConnection,
-} from '@nestjs-query/query-graphql';
+} from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
 import {
     Entity,
@@ -13,15 +13,22 @@ import {
     DeleteDateColumn,
     UpdateDateColumn,
     ManyToOne,
-    BeforeInsert,
+    OneToMany,
 } from 'typeorm';
 import { Country } from './country.model';
+import { District } from './district.model';
+import { Customer } from 'src/modules/customer/models/customer.model';
+import { User } from 'src/modules/user/models/user.model';
 
 @ObjectType()
 @KeySet(['id'])
 @OffsetConnection('country', () => Country, {
-    disableUpdate: true,
-    disableRemove: true,
+    remove: { enabled: false },
+    update: { enabled: false },
+})
+@OffsetConnection('districts', () => District, {
+    remove: { enabled: false },
+    update: { enabled: false },
 })
 @Entity()
 export class Region extends BaseEntity {
@@ -32,10 +39,6 @@ export class Region extends BaseEntity {
     @FilterableField()
     @Column({ unique: true })
     name: string;
-
-    @FilterableField({ nullable: true })
-    @Column({ unique: true, nullable: true })
-    code: string;
 
     @FilterableField(() => Int)
     @Column({ type: 'int', unsigned: true })
@@ -53,14 +56,12 @@ export class Region extends BaseEntity {
     @DeleteDateColumn()
     deletedAt: Date;
 
-    @ManyToOne(
-        () => Country,
-        country => country.regions,
-    )
+    @ManyToOne(() => Country, (country) => country.regions)
     country: Country;
 
-    @BeforeInsert()
-    async beforeInsert() {
-        this.code = this.code ? this.code.toUpperCase() : null;
-    }
+    @OneToMany(() => District, (district) => district.region)
+    districts: District[];
+
+    @OneToMany(() => User, (user) => user.region)
+    users: User[];
 }

@@ -1,3 +1,0 @@
-export const PAYMENT_QUEUE = 'PAYMENT_QUEUE';
-export const PAYMENT_JOB = 'PAYMENT_JOB';
-export const PAYMENT_DRIVER= 'PAYMENT_DRIVER';

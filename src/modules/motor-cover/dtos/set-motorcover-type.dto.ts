@@ -3,11 +3,11 @@ import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class SetMotorCoverType {
-  @Field()
-  @IsNotEmpty()
-  coverTypedId: number;
+    @Field()
+    @IsNotEmpty()
+    coverTypedId: number;
 
-  @Field()
-  @IsNotEmpty()
-  requestId: number;
+    @Field()
+    @IsNotEmpty()
+    requestId: number;
 }

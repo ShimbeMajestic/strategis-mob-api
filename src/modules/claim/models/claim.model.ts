@@ -1,25 +1,29 @@
 import {
-  Authorize,
-  FilterableField,
-  Relation,
-} from '@nestjs-query/query-graphql';
+    Authorize,
+    FilterableField,
+    FilterableRelation,
+    Relation,
+} from '@ptc-org/nestjs-query-graphql';
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
-import { UserContext } from 'src/modules/auth/models/authenticated-user.interface';
 import { Customer } from 'src/modules/customer/models/customer.model';
 import { MotorPolicy } from 'src/modules/motor-cover/models/motor-policy.model';
 import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 import { ClaimAuthorizer } from '../authorizers/claim.authorizer';
 import { ClaimEnum } from '../enums/claim.enum';
+import { ClaimPhoto } from './claim-photo.model';
+import { VehiclePhoto } from 'src/modules/motor-cover/models/vehicle-photo.model';
 
+<<<<<<< HEAD
 @Entity()/*marks the class as TypeORM entity */
 @ObjectType()/* exposes the class as a GraphQl object*/
 @Relation('policy', () => MotorPolicy)/* defines a relation to motor policy entity*/
@@ -34,17 +38,42 @@ export class Claim extends BaseEntity {
   @Column()
   @Field()
   policyId: number;/* policy id is stored as a column (foreign key)*/
+=======
+@Entity()
+@ObjectType()
+@Relation('policy', () => MotorPolicy)
+@Relation('customer', () => Customer)
+@FilterableRelation('claimPhotos', () => ClaimPhoto, {
+    nullable: true,
+})
+@Authorize(ClaimAuthorizer)
+export class Claim extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    @FilterableField(() => ID)
+    id: number;
 
-  @ManyToOne(() => MotorPolicy)
-  policy: MotorPolicy;
+    @Column()
+    @Field()
+    policyId: number;
+>>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 
+    @ManyToOne(() => MotorPolicy)
+    policy: MotorPolicy;
+
+<<<<<<< HEAD
   @Column()
   @Field()
   customerId: number;/* stores the customer making the claim*/
+=======
+    @Column()
+    @Field()
+    customerId: number;
+>>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 
-  @ManyToOne(() => Customer)
-  customer: Customer;
+    @ManyToOne(() => Customer)
+    customer: Customer;
 
+<<<<<<< HEAD
   @Column({/* manages claim statuses*/
     default: ClaimEnum.PENDING,/* set to pending(as default) once a new claim is created*/
     enum: ClaimEnum,
@@ -57,19 +86,34 @@ export class Claim extends BaseEntity {
   @FilterableField(() => GraphQLISODateTime, { nullable: true })
   @Column({ nullable: true })
   dateOfAccident: Date;
+=======
+    @Column({
+        default: ClaimEnum.PENDING,
+        enum: ClaimEnum,
+        enumName: 'ClaimEnum',
+    })
+    @Field()
+    status: ClaimEnum;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  locationOfAccident: string;
+    @FilterableField(() => GraphQLISODateTime, { nullable: true })
+    @Column({ nullable: true })
+    dateOfAccident: Date;
+>>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  alternatePhoneNumber: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    locationOfAccident: string;
 
-  @Field(() => [String], { nullable: true })
-  @Column('text', { array: true, nullable: true })
-  imageUrls: string[];
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    alternatePhoneNumber: string;
 
+    @OneToMany(() => ClaimPhoto, (photo) => photo.claim, {
+        cascade: true,
+    })
+    claimPhotos: ClaimPhoto[];
+
+<<<<<<< HEAD
   /* New Fields Added */
   
   @Field({ nullable: true })
@@ -144,4 +188,17 @@ export class Claim extends BaseEntity {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @DeleteDateColumn()
   deletedAt: Date; /* stops a timestamp when a claim is deleted*/
+=======
+    @FilterableField(() => GraphQLISODateTime)
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @FilterableField(() => GraphQLISODateTime)
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @Field(() => GraphQLISODateTime, { nullable: true })
+    @DeleteDateColumn()
+    deletedAt: Date;
+>>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
 }

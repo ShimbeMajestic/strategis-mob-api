@@ -1,3 +1,3 @@
-import { getConnections } from './src/database/connections';
+import { getDataSourceOptions } from './src/database/dataSourceOptions';
 
-export = getConnections();
+export = getDataSourceOptions();

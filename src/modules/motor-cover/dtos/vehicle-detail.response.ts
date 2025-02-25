@@ -1,6 +1,5 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { MotorCategory } from "../enums/motor-category.enum";
-
+import { Field, ObjectType } from '@nestjs/graphql';
+import { MotorCategory } from '../enums/motor-category.enum';
 
 @ObjectType()
 export class TiraResponseHeaders {
@@ -19,7 +18,6 @@ export class TiraResponseHeaders {
 
 @ObjectType()
 export class VehicleDetail {
-
     @Field()
     MotorCategory: MotorCategory;
 
@@ -79,21 +77,17 @@ export class VehicleDetail {
 
     @Field()
     OwnerCategory?: string;
-
 }
 
 @ObjectType()
 export class VehicleDetailResponse {
     @Field(() => TiraResponseHeaders, {
-        nullable
-            : true
+        nullable: true,
     })
     headers?: TiraResponseHeaders;
 
     @Field(() => VehicleDetail, {
-        nullable
-            : true
+        nullable: true,
     })
     data?: VehicleDetail;
 }
-

@@ -3,12 +3,12 @@ import { MotorCoverRequest } from '../models/motor-cover-request.model';
 
 @ObjectType()
 export class ApprovalResult {
-  @Field()
-  success: boolean;
+    @Field()
+    success: boolean;
 
-  @Field()
-  message: string;
+    @Field()
+    message: string;
 
-  @Field({ nullable: true })
-  data: MotorCoverRequest;
+    @Field({ nullable: true })
+    data: MotorCoverRequest;
 }

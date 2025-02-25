@@ -24,7 +24,9 @@ export const mailConfig = {
         timeout: null as number,
 
         from: {
-            address: process.env.MAIL_FROM_ADDRESS || 'notifications@codeblock.co.tz',
+            address:
+                process.env.MAIL_FROM_ADDRESS ||
+                'notifications@codeblock.co.tz',
             name: process.env.MAIL_FROM_NAME || 'CHAPCHAP',
         },
     },

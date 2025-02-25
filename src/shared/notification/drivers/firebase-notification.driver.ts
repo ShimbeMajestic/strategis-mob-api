@@ -1,44 +1,38 @@
-import { Injectable } from "@nestjs/common";
-import { SendNotificationDto } from "../dtos/send-device-notification.dto";
-import { SendTopicNotificationDto } from "../dtos/send-topic-notification.dto";
-import { TestNotificationDto } from "../dtos/test-notification.dto";
+import { Injectable } from '@nestjs/common';
+import { SendNotificationDto } from '../dtos/send-device-notification.dto';
+import { SendTopicNotificationDto } from '../dtos/send-topic-notification.dto';
+import { TestNotificationDto } from '../dtos/test-notification.dto';
 import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FirebaseNotificationService {
-
-    constructor() { }
-
     async testNotification(notificationData: TestNotificationDto) {
-
         const { title, body, token } = notificationData;
 
         const message = {
             notification: {
                 title,
-                body
+                body,
             },
-            token
+            token,
         };
 
-        const result = await admin.messaging().send(message)
+        const result = await admin.messaging().send(message);
         return result;
     }
 
     async notifyCustomersTopic(notificationDto: SendTopicNotificationDto) {
         const { title, body, image, topic } = notificationDto;
 
-        const result = await admin.messaging().sendToTopic(topic,
-            {
-                notification: {
-                    title,
-                    body
-                },
-                data: {
-                    image
-                }
-            }
-        );
+        const result = await admin.messaging().sendToTopic(topic, {
+            notification: {
+                title,
+                body,
+            },
+            data: {
+                image,
+            },
+        });
         return result;
     }
 
@@ -49,8 +43,8 @@ export class FirebaseNotificationService {
             notification: {
                 title,
                 body,
-                image
-            }
+                image,
+            },
         });
 
         return result;

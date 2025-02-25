@@ -4,9 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export const storageConfig = {
-
     s3: {
-
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
 
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -18,9 +16,9 @@ export const storageConfig = {
         fileSize: 1000 * 1024 * 1024,
 
         acl: 'public',
-
     },
 
-    mediaUrl: process.env.MEDIA_URL || `https://${process.env.AWS_BUCKET}.s3.amazonaws.com`,
-
+    mediaUrl:
+        process.env.MEDIA_URL ||
+        `https://${process.env.AWS_BUCKET}.s3.amazonaws.com`,
 };

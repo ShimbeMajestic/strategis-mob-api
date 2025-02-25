@@ -1,5 +1,6 @@
-require('dotenv').config();
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 class ConfigService {
     constructor(private env: { [k: string]: string | undefined }) {}
 
@@ -14,7 +15,7 @@ class ConfigService {
     }
 
     public ensureValues(keys: string[]) {
-        keys.forEach(k => this.getValue(k, true));
+        keys.forEach((k) => this.getValue(k, true));
         return this;
     }
 

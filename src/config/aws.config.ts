@@ -4,4 +4,4 @@ export const awsConfig = {
     defaultRegion: process.env.AWS_DEFAULT_REGION,
     bucketName: process.env.AWS_S3_BUCKET_NAME,
     baseUrl: process.env.ASSETS_BASE_URL,
-}
+};

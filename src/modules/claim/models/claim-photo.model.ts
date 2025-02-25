@@ -39,10 +39,13 @@ export class ClaimPhoto extends BaseEntity {
     uploadId: number;
 
     @FilterableField()
+<<<<<<< HEAD
     @Column({ nullable: true })
     attachmentType: string;
 
     @FilterableField()
+=======
+>>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
     @CreateDateColumn()
     createdAt: Date;
 
@@ -56,7 +59,11 @@ export class ClaimPhoto extends BaseEntity {
     @ManyToOne(() => Claim, (claim) => claim.claimPhotos, {
         nullable: true,
         onDelete: 'CASCADE',
+<<<<<<< HEAD
     })  
+=======
+    })
+>>>>>>> 1a445934da4b350261b65a0c2e25edaaf5a011c3
     claim: Claim;
 
     @ManyToOne(() => Upload, {

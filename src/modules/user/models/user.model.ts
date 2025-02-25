@@ -12,7 +12,11 @@ import {
     ManyToOne,
 } from 'typeorm';
 import { Permission } from 'src/modules/permission/models/permission.model';
-import { FilterableField, KeySet, OffsetConnection } from '@nestjs-query/query-graphql';
+import {
+    FilterableField,
+    FilterableRelation,
+    KeySet,
+} from '@ptc-org/nestjs-query-graphql';
 import { Hash } from 'src/shared/helpers/hash.helper';
 import { Region } from 'src/modules/lists/models/region.model';
 import { Country } from 'src/modules/lists/models/country.model';
@@ -22,17 +26,17 @@ import { AuthenticatedUser } from 'src/modules/auth/models/authenticated-user.in
 
 @ObjectType()
 @KeySet(['id'])
-@OffsetConnection('role', () => Role)
-@OffsetConnection('permissions', () => Permission)
-@OffsetConnection('country', () => Country, {
+@FilterableRelation('role', () => Role)
+@FilterableRelation('permissions', () => Permission)
+@FilterableRelation('country', () => Country, {
     nullable: true,
-    disableUpdate: true,
-    disableRemove: true,
+    update: { enabled: false },
+    remove: { enabled: false },
 })
-@OffsetConnection('region', () => Region, {
+@FilterableRelation('region', () => Region, {
     nullable: true,
-    disableUpdate: true,
-    disableRemove: true,
+    update: { enabled: false },
+    remove: { enabled: false },
 })
 @Entity()
 export class User extends Person implements AuthenticatedUser {
@@ -50,7 +54,7 @@ export class User extends Person implements AuthenticatedUser {
     @Column({ unique: true })
     email: string;
 
-    @Column({ comment: 'Hashed password' })
+    @Column({ comment: 'Hashed password', nullable: true })
     password: string;
 
     @FilterableField({ nullable: true, defaultValue: true })
@@ -91,21 +95,15 @@ export class User extends Person implements AuthenticatedUser {
     @ManyToOne(() => Region)
     region: Region;
 
-    @ManyToMany(
-        () => Permission,
-        permission => permission.users,
-    )
+    @ManyToMany(() => Permission, (permission) => permission.users)
     @JoinTable({ name: 'user_permission' })
     permissions: Permission[];
 
-    @ManyToOne(
-        () => Role,
-        role => role.users,
-    )
+    @ManyToOne(() => Role, (role) => role.users)
     role: Role;
 
     @BeforeInsert()
-    async beforeInsert() {
+    async hashPassword() {
         this.password = await Hash.make(this.password);
     }
 }

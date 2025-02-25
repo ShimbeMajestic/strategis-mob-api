@@ -1,12 +1,12 @@
-import { FilterableField } from '@nestjs-query/query-graphql';
+import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 import { GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 import { BaseEntity, Column } from 'typeorm';
 import { GenderEnum } from '../enums/gender.enum';
 
 @ObjectType()
-export abstract class Person extends BaseEntity {
+export class Person extends BaseEntity {
     @FilterableField()
-    @Column()
+    @Column({ nullable: true })
     firstName: string;
 
     @FilterableField({ nullable: true })
@@ -14,7 +14,7 @@ export abstract class Person extends BaseEntity {
     middleName?: string;
 
     @FilterableField()
-    @Column()
+    @Column({ nullable: true })
     lastName: string;
 
     @FilterableField({ nullable: true })

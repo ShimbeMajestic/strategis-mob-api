@@ -6,7 +6,7 @@ import { LoginRequestDto } from './dto/login-request.dto';
 import { ChangePasswordRequest } from './dto/change-password-request.dto';
 import { Hash } from 'src/shared/helpers/hash.helper';
 import { AccessToken } from './models/access-token.model';
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError } from '@nestjs/apollo';
 import { Validator } from 'src/shared/helpers/validator.helper';
 import { AccessTokenService } from './providers/access-token.service';
 
@@ -17,7 +17,7 @@ export class AuthService {
     constructor(
         protected readonly userService: UserService,
         protected readonly accessTokenService: AccessTokenService,
-    ) { }
+    ) {}
 
     async login(loginDto: LoginRequestDto): Promise<LoginResponseDto> {
         const user = await this.validateUserCredentials(loginDto);
@@ -42,11 +42,11 @@ export class AuthService {
 
         // Find by Email
         if (Validator.isEmail(identifier)) {
-            user = await User.findOne({ email: identifier });
+            user = await User.findOne({ where: { email: identifier } });
         }
         // Find by Phone Number
         else if (Validator.isPhone(identifier)) {
-            user = await User.findOne({ phone: identifier });
+            user = await User.findOne({ where: { phone: identifier } });
         } else {
             throw new AuthenticationError(
                 'Invalid identifier provided! Identifier must be a VALID email or phone.',
@@ -78,7 +78,10 @@ export class AuthService {
 
     async logout(user: User): Promise<boolean> {
         const result = await AccessToken.createQueryBuilder('access_token')
-            .where('userId = :userId and userType = :userType', { userId: user.id, userType: 'user' })
+            .where('userId = :userId and userType = :userType', {
+                userId: user.id,
+                userType: 'user',
+            })
             .update({ isRevoked: true })
             .execute();
 

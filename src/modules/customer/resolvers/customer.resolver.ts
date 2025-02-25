@@ -1,11 +1,12 @@
-import { CRUDResolver } from '@nestjs-query/query-graphql';
+import { CRUDResolver } from '@ptc-org/nestjs-query-graphql';
 import { UseGuards } from '@nestjs/common';
 import {
-  Resolver,
-  ResolveField,
-  Parent,
-  Mutation,
-  Args,
+    Resolver,
+    ResolveField,
+    Parent,
+    Mutation,
+    Args,
+    Query,
 } from '@nestjs/graphql';
 import { CurrentUser } from 'src/modules/auth/auth-user.decorator';
 import { GqlAuthGuard } from 'src/modules/auth/auth.guard';
@@ -23,30 +24,48 @@ import { CustomerService } from '../providers/customer.service';
 @UseGuards(GqlAuthGuard, PermissionGuard)
 @Resolver(() => Customer)
 export class CustomerResolver extends CRUDResolver(Customer, {
-  read: { decorators: [UsePermission(PermissionEnum.VIEW_CUSTOMERS)] },
-  enableAggregate: true,
-  enableTotalCount: true,
-  enableSubscriptions: true,
+    read: { decorators: [UsePermission(PermissionEnum.VIEW_CUSTOMERS)] },
+    enableAggregate: true,
+    enableTotalCount: true,
+    enableSubscriptions: true,
 }) {
-  constructor(readonly service: CustomerService) {
-    super(service);
-  }
+    constructor(readonly service: CustomerService) {
+        super(service);
+    }
 
-  @ResolveField(() => Boolean)
-  requiresProfileUpdate(@Parent() customer: Customer): boolean {
-    const requiresUpdate = !customer.firstName || !customer.lastName;
+    @ResolveField(() => Boolean)
+    requiresProfileUpdate(@Parent() customer: Customer): boolean {
+        const requiresUpdate = !customer.firstName || !customer.lastName;
 
-    return !!requiresUpdate;
-  }
+        return !!requiresUpdate;
+    }
 
-  // Update the customer profile
-  @Mutation(() => Customer)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  updateCustomerProfile(
-    @Args('input') input: UpdateCustomerProfileInput,
-    @CurrentUser() user: User,
-  ) {
-    return this.service.updateOne(user.id, input);
-  }
+    // Update the customer profile
+    @Mutation(() => Customer)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    updateCustomerProfile(
+        @Args('input') input: UpdateCustomerProfileInput,
+        @CurrentUser() user: User,
+    ) {
+        return this.service.updateOne(user.id, input);
+    }
+
+    // Get all customers
+    @Query(() => [Customer])
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async allCustomers(): Promise<Customer[]> {
+        const customers = await Customer.find({
+            order: {
+                id: 'DESC',
+            },
+        });
+
+        return customers;
+    }
+
+    @ResolveField(() => Boolean)
+    async profileCompleted(@Parent() customer: Customer): Promise<boolean> {
+        return this.service.checkProfileCompletion(customer.id);
+    }
 }

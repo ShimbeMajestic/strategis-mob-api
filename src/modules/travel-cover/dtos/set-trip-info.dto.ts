@@ -2,15 +2,27 @@ import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class SetTripInformationDto {
-  @Field()
-  returnDate: Date;
+    @Field()
+    name: string;
 
-  @Field()
-  departureDate: Date;
+    @Field()
+    gender: string;
 
-  @Field()
-  passportNo: string;
+    @Field()
+    dateOfBirth: Date;
 
-  @Field()
-  requestId: number;
+    @Field()
+    email: string;
+
+    @Field()
+    returnDate: Date;
+
+    @Field()
+    departureDate: Date;
+
+    @Field()
+    passportNo: string;
+
+    @Field()
+    requestId: number;
 }

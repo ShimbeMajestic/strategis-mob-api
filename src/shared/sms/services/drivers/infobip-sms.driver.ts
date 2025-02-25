@@ -1,12 +1,8 @@
-import {
-    HttpService,
-    Inject,
-    Injectable,
-    Logger
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { smsConfig } from '../../../../config/sms.config';
 import { SendSMSDto } from '../../dtos/SendSMS.dto';
 import { SmsDriver } from './sms-driver.interface';
+import { HttpService } from '@nestjs/axios';
 
 /**
  * This SMS driver relays messages using Fasthub SMS gateway
@@ -15,9 +11,7 @@ import { SmsDriver } from './sms-driver.interface';
 export class InfobipSms implements SmsDriver {
     private logger = new Logger(InfobipSms.name);
 
-    constructor(
-        private httpService: HttpService,
-    ) { }
+    constructor(private httpService: HttpService) {}
 
     async sendSms(smsDto: SendSMSDto): Promise<void> {
         const { infobip } = smsConfig;
@@ -27,15 +21,15 @@ export class InfobipSms implements SmsDriver {
         const payload = {
             messages: [
                 {
-                    "destinations": [
+                    destinations: [
                         {
-                            "to": formattedRecipient
-                        }
+                            to: formattedRecipient,
+                        },
                     ],
-                    "text": smsDto.message,
-                    "from": infobip.defaultSender
-                }
-            ]
+                    text: smsDto.message,
+                    from: infobip.defaultSender,
+                },
+            ],
         };
 
         const endpoint = infobip.baseUrl + 'sms/2/text/advanced';
@@ -45,21 +39,19 @@ export class InfobipSms implements SmsDriver {
         try {
             // Post request
             const result = await this.httpPost(endpoint, payload);
-            this.logger.log(`SMS Response from Infobip: ${result.statusText}`)
-
+            this.logger.log(`SMS Response from Infobip: ${result.statusText}`);
         } catch (error) {
             // On error
             this.logger.error(error.message);
         }
-
     }
 
     async httpPost(endpoint: string, payload: any) {
         return this.httpService
             .post(endpoint, payload, {
                 headers: {
-                    "Authorization": `App ${smsConfig.infobip.apiKey}`
-                }
+                    Authorization: `App ${smsConfig.infobip.apiKey}`,
+                },
             })
             .toPromise();
     }

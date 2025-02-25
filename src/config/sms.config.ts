@@ -17,7 +17,7 @@ export const smsConfig = {
         password: process.env.INFOBIP_PASSWORD,
         defaultSender: process.env.INFOBIP_DEFAULT_SENDER,
         baseUrl: process.env.INFOBIP_BASE_URL,
-        apiKey: process.env.INFOBIP_API_KEY
+        apiKey: process.env.INFOBIP_API_KEY,
     },
 
     fastHub: {

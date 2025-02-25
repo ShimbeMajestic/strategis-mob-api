@@ -1,15 +1,15 @@
 export class InitiateSelcomTransactionDto {
-  orderId: string;
+    orderId: string;
 
-  buyerEmail: string;
+    buyerEmail: string;
 
-  buyerName: string;
+    buyerName: string;
 
-  buyerPhone: string;
+    buyerPhone: string;
 
-  amount: number;
+    amount: number;
 
-  currency: string;
+    currency: string;
 
-  noOfItems: number;
+    noOfItems: number;
 }

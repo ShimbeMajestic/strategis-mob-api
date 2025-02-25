@@ -1,5 +1,5 @@
-import { InputType } from "@nestjs/graphql";
-import { CreateMotorCoverDurationDto } from "./create-motor-cover-duration.dto";
+import { InputType } from '@nestjs/graphql';
+import { CreateMotorCoverDurationDto } from './create-motor-cover-duration.dto';
 
 @InputType()
-export class UpdateMotorCoverDurationDto extends CreateMotorCoverDurationDto { }
+export class UpdateMotorCoverDurationDto extends CreateMotorCoverDurationDto {}

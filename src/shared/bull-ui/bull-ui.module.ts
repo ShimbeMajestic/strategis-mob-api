@@ -5,24 +5,22 @@ import * as basicAuth from 'express-basic-auth';
 import { bullUiConfig } from './config/bull-ui.config';
 
 @Module({
-    providers: [
-        BullUiProvider,
-        BullExpressAdapter,
-    ],
+    providers: [BullUiProvider, BullExpressAdapter],
 })
 export class BullUiModule implements NestModule {
-
-    constructor(private bullServerAdapter: BullExpressAdapter) { }
+    constructor(private bullServerAdapter: BullExpressAdapter) {}
 
     configure(consumer: MiddlewareConsumer): void {
-
         if (bullUiConfig.authEnabled) {
             consumer
                 .apply(
                     basicAuth({
                         challenge: true,
-                        users: { [bullUiConfig.basicAuth.username]: bullUiConfig.basicAuth.password },
-                    })
+                        users: {
+                            [bullUiConfig.basicAuth.username]:
+                                bullUiConfig.basicAuth.password,
+                        },
+                    }),
                 )
                 .forRoutes(bullUiConfig.basePath);
         }
@@ -30,6 +28,5 @@ export class BullUiModule implements NestModule {
         consumer
             .apply(this.bullServerAdapter.getRouter())
             .forRoutes(bullUiConfig.basePath);
-
     }
 }

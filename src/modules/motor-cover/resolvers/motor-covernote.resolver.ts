@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver, Query, Int, ID } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { CurrentUser } from 'src/modules/auth/auth-user.decorator';
 import { GqlAuthGuard } from 'src/modules/auth/auth.guard';
 import { Customer } from 'src/modules/customer/models/customer.model';
@@ -12,102 +12,119 @@ import { ApprovalDto } from '../dtos/approval.dto';
 import { ApprovalResult } from '../dtos/approval.result';
 import { GetVehicleDetailsDto } from '../dtos/get-vehicle-details.response';
 import { PayMotorCoverDto } from '../dtos/pay-motor-cover.dto';
-import { PaymentResult } from '../dtos/payment-result.dto';
 import { SetMotorUsageTypeDto } from '../dtos/set-motor-usage-type.dto';
-import { SetMotorCoverDurationDto } from '../dtos/set-motorcover-duration.dto';
+import {
+    SetMotorCoverDurationDto,
+    SetMotorCoverDurationInput,
+} from '../dtos/set-motorcover-duration.dto';
 import { SetMotorCoverType } from '../dtos/set-motorcover-type.dto';
-import { SetVehicleImagesDto } from '../dtos/set-vehicle-images.dto';
 import { SetVehicleValueDto } from '../dtos/set-vehicle-value.dto';
 import { CreateVehicleDetailDto } from '../dtos/vehicle-detail.dto';
 import { VehicleDetailRequestDto } from '../dtos/vehicle-detail.request';
 import { MotorCoverRequest } from '../models/motor-cover-request.model';
 import { MotorCovernoteService } from '../providers/motor-covernote.service';
+import { MotorPolicy } from '../models/motor-policy.model';
 
 @Resolver(() => MotorCoverRequest)
 @UseGuards(GqlAuthGuard)
 export class MotorCovernoteResolver {
-  constructor(private motorCovernoteService: MotorCovernoteService) {}
+    constructor(private motorCovernoteService: MotorCovernoteService) {}
 
-  @Mutation(() => MotorCoverRequest)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  setMotorCoverAndDurationToRequest(
-    @Args('input') input: SetMotorCoverDurationDto,
-    @CurrentUser() customer: Customer,
-  ): Promise<MotorCoverRequest> {
-    return this.motorCovernoteService.setMotorCoverAndDuration(input, customer);
-  }
+    @Mutation(() => MotorCoverRequest)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    setMotorCoverAndDurationToRequest(
+        @Args('input') input: SetMotorCoverDurationDto,
+        @CurrentUser() customer: Customer,
+    ): Promise<MotorCoverRequest> {
+        return this.motorCovernoteService.setMotorCoverAndDuration(
+            input,
+            customer,
+        );
+    }
 
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  @Query(() => GetVehicleDetailsDto)
-  getVehicleDetails(
-    @Args('input') request: VehicleDetailRequestDto,
-  ): Promise<GetVehicleDetailsDto> {
-    return this.motorCovernoteService.getVehicleDetails(request);
-  }
+    @Mutation(() => MotorCoverRequest)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    setMotorCoverDuration(
+        @Args('input') input: SetMotorCoverDurationInput,
+    ): Promise<MotorCoverRequest> {
+        return this.motorCovernoteService.setMotorCoverDuration(input);
+    }
 
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  @Query(() => MotorCoverRequest)
-  getTotalAmountToBePaid(
-    @Args('requestId') requestId: number,
-  ): Promise<MotorCoverRequest> {
-    return this.motorCovernoteService.getTotalAmountToBePaid(requestId);
-  }
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    @Query(() => GetVehicleDetailsDto)
+    getVehicleDetails(
+        @Args('input') request: VehicleDetailRequestDto,
+    ): Promise<GetVehicleDetailsDto> {
+        return this.motorCovernoteService.getVehicleDetails(request);
+    }
 
-  @Mutation(() => MotorCoverRequest)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  setMotorUsageType(
-    @Args('input') input: SetMotorUsageTypeDto,
-  ): Promise<MotorCoverRequest> {
-    return this.motorCovernoteService.setMotorUsageType(input);
-  }
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    @Query(() => MotorCoverRequest)
+    getTotalAmountToBePaid(
+        @Args('requestId') requestId: number,
+    ): Promise<MotorCoverRequest> {
+        return this.motorCovernoteService.getTotalAmountToBePaid(requestId);
+    }
 
-  @Mutation(() => MotorCoverRequest)
-  setMotorVehicleDetails(@Args('input') input: CreateVehicleDetailDto) {
-    return this.motorCovernoteService.setMotorVehicleDetails(input);
-  }
+    @Mutation(() => MotorCoverRequest)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    setMotorUsageType(
+        @Args('input') input: SetMotorUsageTypeDto,
+    ): Promise<MotorCoverRequest> {
+        return this.motorCovernoteService.setMotorUsageType(input);
+    }
 
-  @Mutation(() => TransactionPaymentResultDto)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  payForCover(
-    @Args('input') input: PayMotorCoverDto,
-    @CurrentUser() customer: Customer,
-  ) {
-    return this.motorCovernoteService.payForMotorCover(input, customer);
-  }
+    @Mutation(() => MotorCoverRequest)
+    setMotorVehicleDetails(@Args('input') input: CreateVehicleDetailDto) {
+        return this.motorCovernoteService.setMotorVehicleDetails(input);
+    }
 
-  @Mutation(() => MotorCoverRequest)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  setMotorVehicleValue(@Args('input') input: SetVehicleValueDto) {
-    return this.motorCovernoteService.setVehicleValue(input);
-  }
+    @Mutation(() => TransactionPaymentResultDto)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    payForCover(
+        @Args('input') input: PayMotorCoverDto,
+        @CurrentUser() customer: Customer,
+    ) {
+        return this.motorCovernoteService.payForMotorCover(input, customer);
+    }
 
-  @Mutation(() => MotorCoverRequest)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  setMotorVehicleImageUrls(@Args('input') input: SetVehicleImagesDto) {
-    return this.motorCovernoteService.setVehicleImages(input);
-  }
+    @Mutation(() => MotorCoverRequest)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    setMotorVehicleValue(@Args('input') input: SetVehicleValueDto) {
+        return this.motorCovernoteService.setVehicleValue(input);
+    }
 
-  @Mutation(() => MotorCoverRequest)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.CUSTOMER)
-  setMotorCoverType(@Args('input') input: SetMotorCoverType) {
-    return this.motorCovernoteService.setMotorCoverType(input);
-  }
+    @Mutation(() => MotorCoverRequest)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.CUSTOMER)
+    setMotorCoverType(@Args('input') input: SetMotorCoverType) {
+        return this.motorCovernoteService.setMotorCoverType(input);
+    }
 
-  @Mutation(() => ApprovalResult)
-  @UseGuards(UserTypeGuard)
-  @AllowUserType(UserTypeEnum.ADMIN)
-  approveCoverRequest(
-    @CurrentUser() user: User,
-    @Args('input') input: ApprovalDto,
-  ) {
-    return this.motorCovernoteService.approveCoverRequest(user, input);
-  }
+    @Mutation(() => ApprovalResult)
+    @UseGuards(UserTypeGuard)
+    @AllowUserType(UserTypeEnum.ADMIN)
+    approveCoverRequest(
+        @CurrentUser() user: User,
+        @Args('input') input: ApprovalDto,
+    ) {
+        return this.motorCovernoteService.approveCoverRequest(user, input);
+    }
+
+    @Query(() => [MotorPolicy])
+    @AllowUserType(UserTypeEnum.ADMIN)
+    async allMotorPolicies(): Promise<MotorPolicy[]> {
+        return await MotorPolicy.find({
+            order: {
+                id: 'DESC',
+            },
+        });
+    }
 }
